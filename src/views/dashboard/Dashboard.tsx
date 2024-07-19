@@ -1,9 +1,11 @@
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 
 import React, { useState } from "react";
+import { Col, Row } from "react-bootstrap";
 import Alert from "react-bootstrap/Alert";
 import Container from "react-bootstrap/Container";
 import StudyPanel from "../studypanel/StudyPanel";
+import StudyStepPanel from "../studysteppanel/StudyStepPanel";
 
 
 export const Dashboard = () => {
@@ -42,6 +44,7 @@ export const Dashboard = () => {
 
 	return (
 		<Container>
+			<Row>
 				{authError === "consent_required" && (
 					<Alert color="warning">
 						You need to{" "}
@@ -67,8 +70,21 @@ export const Dashboard = () => {
 						</a>
 					</Alert>
 				)}
+			</Row>
+			<Row>
+				<Col md={5}>
 					<StudyPanel authErrorCallback={setAuthError}
 						selected={selected} onChangeSelection={handleSelection} />
+				</Col>
+				<Col md={7}>
+					<Row>
+
+					</Row>
+					<Row>
+						<StudyStepPanel studyId={selected} authErrorCallback={setAuthError} />
+					</Row>
+				</Col>
+			</Row>
 		</Container>
 	);
 };
