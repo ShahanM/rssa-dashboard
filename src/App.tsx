@@ -4,6 +4,7 @@ import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
 import NavBar from './components/navbar/Navbar';
+import Dashboard from './views/dashboard/Dashboard';
 import Profile from './views/profile/Profile';
 import Landing from './views/landing/Landing';
 
@@ -25,6 +26,7 @@ const App: React.FC = () => {
 				<NavBar />
 				<Routes>
 					<Route path="/" element={<Landing />} />
+					<Route path="/rssa-dashboard" element={<Dashboard />} />
 					<Route path="/profile" element={<Profile />} />
 				</Routes>
 			</div>
