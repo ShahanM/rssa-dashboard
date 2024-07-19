@@ -1,0 +1,17 @@
+.study-card {
+	background-color: #fff;
+	border-radius: 0.5rem;
+	box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.10);
+	padding: 1rem;
+	margin: 1rem 1rem 1rem 0;
+	cursor: pointer;
+}
+
+.study-card-date {
+	font-size: 0.8rem;
+	color: #6c757d;
+}
+
+.selected {
+	background-color: #58595a25;
+}
