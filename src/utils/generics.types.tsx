@@ -5,22 +5,23 @@ export interface Study {
 	date_created: string;
 }
 
-export interface StudyStep {
+export interface OrderedComponent {
 	id: string;
+	order_position: number;
+}
+
+export interface StudyStep extends OrderedComponent {
 	study_id: string;
 	name: string;
 	description: string;
-	order_position: number;
 	date_created: string;
 }
 
-export interface Page {
-	id: string;
+export interface Page extends OrderedComponent {
 	study_id: string;
 	step_id: string;
 	name: string;
 	description: string;
-	order_position: number;
 	date_created: string;
 }
 
@@ -34,16 +35,4 @@ export interface SelectableCardProps<Type> {
 	component: Type;
 	selected: boolean;
 	onClick: (id: string) => void;
-}
-
-export interface InputFormModalProps {
-	show: boolean;
-	showHideCallback: (show: boolean) => void;
-	requestToken: () => Promise<string>;
-	onSuccess: (response: any) => void; // TODO: Define response type
-	onAuthError: (error: any) => void; // TODO: Define error type	
-}
-
-export interface OrderedInputFormModalProps extends InputFormModalProps {
-	maxEmptyPosition: number;
 }

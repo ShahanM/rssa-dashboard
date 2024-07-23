@@ -22,3 +22,10 @@
 	overflow-y: hidden;
 	padding: 0.25rem;
 }
+
+.horizontal-card {
+	background-color: #885fa532;
+	border-radius: 0.5rem;
+	margin: 0;
+	padding: 0.25rem;
+}

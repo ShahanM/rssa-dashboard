@@ -2,7 +2,8 @@ import React from "react";
 import { Alert } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import { Page, SelectableCardListProps, Study, StudyStep } from "../../utils/generics.types";
-import { StudyCard, StudyStepCard } from "../componentcard/ComponentCard";
+import { StudyCard, StudyStepCard, PageCard } from "../componentcard/ComponentCard";
+import './ComponentList.css';
 
 // TODO: I see that the StudyList and StudyStepList components are very similar. It might be a good idea to make a generic ComponentList component.
 // Each type of content can have its own FormModal component. This way, we can just pass the correct FormModal component to the generic ComponentList component.
@@ -48,9 +49,9 @@ export const StudyStepList: React.FC<SelectableCardListProps<StudyStep>>
 export const PageList: React.FC<SelectableCardListProps<Page>>
 	= ({ components, selected, onChangeSelection }) => {
 		return (
-			<Container>
+			<Container className="horizontal-list">
 				{components.length > 0 ? components.map((page) => (
-					<StudyStepCard key={page.id} component={page}
+					<PageCard key={page.id} component={page}
 						selected={selected === page.id}
 						onClick={onChangeSelection} />
 				)) :

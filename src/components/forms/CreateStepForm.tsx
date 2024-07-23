@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
-import { OrderedInputFormModalProps, StudyStep } from '../../utils/generics.types';
+import {StudyStep } from '../../utils/generics.types';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import { isAuthError } from '../../utils/errors';
-
-
-interface CreateStepFormProps extends OrderedInputFormModalProps {
-	studyId: string;
-}
+import {CreateStepFormProps} from './forms.types';
 
 
 const CreateStepForm: React.FC<CreateStepFormProps> = ({

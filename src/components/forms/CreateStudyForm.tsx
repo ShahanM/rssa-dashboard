@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal, Form, Button, Alert } from "react-bootstrap";
 import { isAuthError } from "../../utils/errors";
-import { InputFormModalProps } from "../../utils/generics.types";
+import { InputFormModalProps } from "./forms.types";
 
 const CreateStudyForm: React.FC<InputFormModalProps> = ({
 	show,

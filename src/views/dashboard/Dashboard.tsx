@@ -8,6 +8,7 @@ import StudyPanel from "../studypanel/StudyPanel";
 import StudyStepPanel from "../studysteppanel/StudyStepPanel";
 import "./Dashboard.css";
 import { SelectionState } from "./Dashboard.types";
+import PagePanel from "../pagepanel/PagePanel";
 
 
 export const Dashboard = () => {
@@ -91,12 +92,15 @@ export const Dashboard = () => {
 					<Row>
 						<StudyStepPanel studyId={selected.studyId}
 							authErrorCallback={setAuthError}
-							selected={selected} onChangeSelection={handleSelection}/>
+							selected={selected} onChangeSelection={handleSelection} />
 					</Row>
 				</Col>
 			</Row>
 			<Row className="page-selector">
-
+				<PagePanel studyId={selected.studyId}
+					stepId={selected.stepId}
+					authErrorCallback={setAuthError}
+					selected={selected} onChangeSelection={handleSelection} />
 			</Row>
 		</Container>
 	);

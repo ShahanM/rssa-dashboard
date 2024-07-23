@@ -2,36 +2,13 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { StudyStepList } from '../../components/componentlist/ComponentList';
-import CreateStepForm from "../../components/createstepform/CreateStepForm";
+import CreateStepForm from "../../components/forms/CreateStepForm";
 import { isAuthError } from "../../utils/errors";
 import { StudyStep } from "../../utils/generics.types";
 import './StudyStepPanel.css';
 import { StudyStepPanelProps } from "./StudyStepPanel.types";
+import {findFirstEmptyPosition} from "../../utils/utils";
 
-
-// TODO: Move this to a utils file
-function findFirstEmptyPosition(steps: StudyStep[]): number {
-	if (steps.length === 0) return 0;
-	if (steps.length === 1 && steps[0].order_position > 0) return 0;
-	if (steps.length === 1 && steps[0].order_position > 0) return 1;
-
-	let firstIdx = 0;
-	let lastIdx = steps.length - 1;
-
-	while (firstIdx <= lastIdx) {
-		let midIdx = Math.floor((firstIdx + lastIdx) / 2);
-		if (steps[midIdx].order_position === midIdx) {
-			firstIdx = midIdx + 1;
-		} else {
-			if (midIdx === 0 || steps[midIdx - 1].order_position === midIdx - 1) {
-				return midIdx;
-			}
-			lastIdx = midIdx - 1;
-		}
-	}
-
-	return steps.length;
-}
 
 const StudyStepPanel: React.FC<StudyStepPanelProps> = ({
 	studyId, selected, onChangeSelection, authErrorCallback }) => {
