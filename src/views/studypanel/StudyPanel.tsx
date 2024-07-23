@@ -1,11 +1,12 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEffect, useState } from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row, Container } from 'react-bootstrap';
 import CreateStudyForm from '../../components/createstudyform/CreateStudyForm';
-import StudyListContainer from '../../components/studylistcontainer/StudyListContainer';
+import { StudyList } from '../../components/componentlist/ComponentList';
 import { isAuthError } from '../../utils/errors';
 import { Study } from '../../utils/generics.types';
 import { StudyPanelProps } from './StudyPanel.types';
+import './StudyPanel.css';
 
 
 const StudyPanel: React.FC<StudyPanelProps> = ({ selected, onChangeSelection, authErrorCallback }) => {
@@ -23,6 +24,9 @@ const StudyPanel: React.FC<StudyPanelProps> = ({ selected, onChangeSelection, au
 		setStudies([...studies, response]);
 	}
 
+	const handleSelection = (id: string) => {
+		onChangeSelection({ studyId: id, stepId: "", pageId: "" });
+	}
 
 	useEffect(() => {
 		const callApi = async () => {
@@ -57,12 +61,12 @@ const StudyPanel: React.FC<StudyPanelProps> = ({ selected, onChangeSelection, au
 	}, [getAccessTokenSilently, authErrorCallback])
 
 	return (
-		<>
-			<Row className="d-flex">
+		<Container className="study-panel">
+			<Row className="d-flex header">
 				<Col md={8}>
 					<h2>Your studies</h2>
 				</Col>
-				<Col md={4}>
+				<Col md={4} className="header-button">
 					<Button color="primary" onClick={() => setShow(true)}>
 						Create Study
 					</Button>
@@ -73,11 +77,12 @@ const StudyPanel: React.FC<StudyPanelProps> = ({ selected, onChangeSelection, au
 					onSuccess={handleCreateStudySuccess}
 					onAuthError={handleAuthError} />
 			</Row>
-			<Row>
-				<StudyListContainer studies={studies} selected={selected}
-					onChangeSelection={onChangeSelection} />
+			<Row className="list-container">
+				<StudyList components={studies}
+					selected={selected.studyId}
+					onChangeSelection={handleSelection} />
 			</Row>
-		</>
+		</Container>
 	)
 }
 

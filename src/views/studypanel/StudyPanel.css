@@ -1,0 +1,20 @@
+.study-panel {
+	margin: 0.25rem;
+	background-color: #987fe532;
+	border-radius: 0.25rem;
+}
+
+.study-panel .header {
+	padding: 0.5rem;
+}
+
+.study-panel .header-button {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.study-panel .list-container {
+	height: 27vh;
+	overflow-y: scroll;
+	margin: 0.5rem 0 0.5rem 0;
+}

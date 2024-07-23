@@ -6,16 +6,23 @@ import Alert from "react-bootstrap/Alert";
 import Container from "react-bootstrap/Container";
 import StudyPanel from "../studypanel/StudyPanel";
 import StudyStepPanel from "../studysteppanel/StudyStepPanel";
+import "./Dashboard.css";
+import { SelectionState } from "./Dashboard.types";
 
 
 export const Dashboard = () => {
 
 	const { loginWithPopup, getAccessTokenWithPopup } = useAuth0();
 	const [authError, setAuthError] = useState<string>("");
-	const [selected, setSelected] = useState<string>("");
+	const [selected, setSelected] = useState<SelectionState>({
+		studyId: "",
+		stepId: "",
+		pageId: ""
+	});
 
-	const handleSelection = (id: string) => {
-		setSelected(id);
+	const handleSelection = (newState: SelectionState) => {
+		console.log(newState);
+		setSelected(newState);
 	}
 
 	const handleConsent = async () => {
@@ -43,7 +50,7 @@ export const Dashboard = () => {
 	};
 
 	return (
-		<Container>
+		<Container id="dashboard">
 			<Row>
 				{authError === "consent_required" && (
 					<Alert color="warning">
@@ -71,19 +78,25 @@ export const Dashboard = () => {
 					</Alert>
 				)}
 			</Row>
-			<Row>
-				<Col md={5}>
-					<StudyPanel authErrorCallback={setAuthError}
-						selected={selected} onChangeSelection={handleSelection} />
-				</Col>
-				<Col md={7}>
+			<Row className="navigation-row d-flex">
+				<Col md={{ span: 5 }}>
 					<Row>
+						<StudyPanel authErrorCallback={setAuthError}
+							selected={selected} onChangeSelection={handleSelection} />
+					</Row>
+				</Col>
+				<Col md={{ span: 1 }}>
+				</Col>
+				<Col md={{ span: 6 }}>
+					<Row>
+						<StudyStepPanel studyId={selected.studyId}
+							authErrorCallback={setAuthError}
+							selected={selected} onChangeSelection={handleSelection}/>
+					</Row>
+				</Col>
+			</Row>
+			<Row className="page-selector">
 
-					</Row>
-					<Row>
-						<StudyStepPanel studyId={selected} authErrorCallback={setAuthError} />
-					</Row>
-				</Col>
 			</Row>
 		</Container>
 	);

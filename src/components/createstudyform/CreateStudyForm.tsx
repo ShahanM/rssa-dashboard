@@ -1,12 +1,9 @@
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
-import { CreateStudyFormProps } from "./CreateStudyForm.types";
 import { useState } from "react";
+import { Modal, Form, Button, Alert } from "react-bootstrap";
 import { isAuthError } from "../../utils/errors";
-import Alert from "react-bootstrap/Alert";
+import { InputFormModalProps } from "../../utils/generics.types";
 
-const CreateStudyForm: React.FC<CreateStudyFormProps> = ({
+const CreateStudyForm: React.FC<InputFormModalProps> = ({
 	show,
 	showHideCallback,
 	requestToken,
@@ -72,7 +69,7 @@ const CreateStudyForm: React.FC<CreateStudyFormProps> = ({
 		<>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header closeButton>
-					<Modal.Title>Modal heading</Modal.Title>
+					<Modal.Title>Create study</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{error !== "" && (
@@ -107,7 +104,7 @@ const CreateStudyForm: React.FC<CreateStudyFormProps> = ({
 					<Button variant="secondary" onClick={handleClose}>
 						Close
 					</Button>
-					<Button variant="primary" disabled={ !submitEnabled }
+					<Button variant="primary" disabled={!submitEnabled}
 						onClick={createStudy}>
 						Save Changes
 					</Button>

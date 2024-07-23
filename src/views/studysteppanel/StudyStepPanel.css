@@ -1,0 +1,20 @@
+.study-step-panel {
+	margin: 0.25rem;
+	background-color: #f8962335;
+	border-radius: 0.25rem;
+}
+
+.study-step-panel .header {
+	padding: 0.5rem;
+}
+
+.study-step-panel .header-button {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.study-step-panel .list-container {
+	height: 27vh;
+	overflow-y: scroll;
+	margin: 0.5rem 0 0.5rem 0;
+}
