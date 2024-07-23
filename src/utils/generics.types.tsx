@@ -1,4 +1,4 @@
-export interface Study {
+export type Study = {
 	id: string;
 	name: string;
 	description: string;
@@ -31,7 +31,7 @@ export interface SelectableCardListProps<Type> {
 	onChangeSelection: (id: string) => void;
 }
 
-export interface SelectableCardProps<Type> {
+export type SelectableCardProps<Type> = {
 	component: Type;
 	selected: boolean;
 	onClick: (id: string) => void;

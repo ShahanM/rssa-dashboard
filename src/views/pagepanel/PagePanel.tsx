@@ -1,12 +1,12 @@
-import { Container, Row, Col, Button } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { useState, useEffect } from "react";
-import { PagePanelProps } from "./PagePanel.types";
-import { Page } from "../../utils/generics.types";
-import { isAuthError } from "../../utils/errors";
-import { PageList } from "../../components/componentlist/ComponentList";
+import React, { useEffect, useState } from "react";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import { HorizontalComponentList } from "../../components/componentlist/ComponentList";
 import CreatePageForm from "../../components/forms/CreatePageForm";
-import {findFirstEmptyPosition} from "../../utils/utils";
+import { isAuthError } from "../../utils/errors";
+import { Page } from "../../utils/generics.types";
+import { findFirstEmptyPosition } from "../../utils/utils";
+import { PagePanelProps } from "./PagePanel.types";
 
 
 const PagePanel: React.FC<PagePanelProps> = ({
@@ -56,8 +56,7 @@ const PagePanel: React.FC<PagePanelProps> = ({
 				}
 			}
 		};
-
-		callApi();
+		if (studyId && stepId) callApi();
 	}, [getAccessTokenSilently, authErrorCallback, stepId, studyId]);
 
 
@@ -82,7 +81,7 @@ const PagePanel: React.FC<PagePanelProps> = ({
 					onAuthError={handleAuthError} />
 			</Row>
 			<Row>
-				<PageList components={pages}
+				<HorizontalComponentList components={pages}
 					selected={selected.studyId}
 					onChangeSelection={handleSelection} />
 			</Row>

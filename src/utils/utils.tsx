@@ -1,4 +1,4 @@
-import { OrderedComponent } from './generics.types';
+import { OrderedComponent, Study } from './generics.types';
 
 export function findFirstEmptyPosition(comp: OrderedComponent[]): number {
 	if (comp.length === 0) return 0;
@@ -21,4 +21,21 @@ export function findFirstEmptyPosition(comp: OrderedComponent[]): number {
 	}
 
 	return comp.length;
+}
+
+export function formatDateString(datestr: string) {
+	return new Intl.DateTimeFormat("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "2-digit",
+	}).format(new Date(datestr));
+}
+
+
+export function isStudy(component: any): component is Study {
+	const study = component as Study;
+	return (study.id !== undefined && typeof study.id === 'string') &&
+		(study.name !== undefined && typeof study.name === 'string') &&
+		(study.description !== undefined && typeof study.description === 'string') &&
+		(study.date_created !== undefined && typeof study.date_created === 'string');
 }

@@ -1,13 +1,12 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useEffect, useState } from 'react';
-import { Button, Col, Row, Container } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
+import { VerticalComponentList } from '../../components/componentlist/ComponentList';
 import CreateStudyForm from '../../components/forms/CreateStudyForm';
-import { StudyList } from '../../components/componentlist/ComponentList';
 import { isAuthError } from '../../utils/errors';
 import { Study } from '../../utils/generics.types';
-import { StudyPanelProps } from './StudyPanel.types';
 import './StudyPanel.css';
-import {findFirstEmptyPosition} from "../../utils/utils";
+import { StudyPanelProps } from './StudyPanel.types';
 
 
 const StudyPanel: React.FC<StudyPanelProps> = ({
@@ -80,7 +79,7 @@ const StudyPanel: React.FC<StudyPanelProps> = ({
 					onAuthError={handleAuthError} />
 			</Row>
 			<Row className="list-container">
-				<StudyList components={studies}
+				<VerticalComponentList components={studies}
 					selected={selected.studyId}
 					onChangeSelection={handleSelection} />
 			</Row>

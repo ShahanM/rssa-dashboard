@@ -1,13 +1,13 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import { StudyStepList } from '../../components/componentlist/ComponentList';
+import { VerticalComponentList } from '../../components/componentlist/ComponentList';
 import CreateStepForm from "../../components/forms/CreateStepForm";
 import { isAuthError } from "../../utils/errors";
 import { StudyStep } from "../../utils/generics.types";
+import { findFirstEmptyPosition } from "../../utils/utils";
 import './StudyStepPanel.css';
 import { StudyStepPanelProps } from "./StudyStepPanel.types";
-import {findFirstEmptyPosition} from "../../utils/utils";
 
 
 const StudyStepPanel: React.FC<StudyStepPanelProps> = ({
@@ -102,7 +102,7 @@ const StudyStepPanel: React.FC<StudyStepPanelProps> = ({
 					maxEmptyPosition={findFirstEmptyPosition(steps)} />
 			</Row>
 			<Row className="list-container">
-				<StudyStepList components={steps}
+				<VerticalComponentList components={steps}
 					selected={selected.stepId}
 					onChangeSelection={handleSelection} />
 			</Row>
