@@ -2,6 +2,7 @@ import { CreatePageFormProps } from "./forms.types";
 import { Button, Form, Modal, Alert } from "react-bootstrap";
 import React, { useState } from "react";
 import { isAuthError } from "../../utils/errors";
+import { createPage } from "../../api/endpoints";
 
 
 const CreatePageForm: React.FC<CreatePageFormProps> = ({
@@ -43,28 +44,14 @@ const CreatePageForm: React.FC<CreatePageFormProps> = ({
 	const insertPage = async () => {
 		try {
 			const token = await requestToken();
-			const response = await fetch(`http://localhost:8000/v2/${studyId}/${stepId}/page/`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "http://localhost:3339",
-					"Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-					"Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-					"Authorization": `Bearer ${token}`
-				},
-				body: JSON.stringify({
-					study_id: studyId,
-					step_id: stepId,
-					name: pageName,
-					order_position: orderPosition,
-					description: pageDescription
-				})
-			});
-			const responseData = await response.json();
-			if (response.status !== 200) {
-				throw new Error(response.statusText);
-			}
-			onSuccess(responseData);
+			const response = await createPage({
+				study_id: studyId,
+				step_id: stepId,
+				name: pageName,
+				order_position: orderPosition,
+				description: pageDescription
+			}, token);
+			onSuccess(response);
 			handleClose();
 		} catch (error) {
 			if (isAuthError(error)) {

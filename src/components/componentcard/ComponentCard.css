@@ -26,6 +26,8 @@
 .horizontal-card {
 	background-color: #885fa532;
 	border-radius: 0.5rem;
-	margin: 0;
+	margin: 0.25rem;
 	padding: 0.25rem;
+	width: 300px;
+	align-content: space-between;
 }

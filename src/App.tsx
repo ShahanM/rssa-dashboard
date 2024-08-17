@@ -7,6 +7,8 @@ import NavBar from './components/navbar/Navbar';
 import Dashboard from './views/dashboard/Dashboard';
 import Profile from './views/profile/Profile';
 import Landing from './views/landing/Landing';
+import ConstructLibrary from './views/constructlibrary/ConstructLibrary';
+import MetaInfoControl from './views/metainfocontrol/MetaInfoControl';
 
 
 const App: React.FC = () => {
@@ -27,6 +29,8 @@ const App: React.FC = () => {
 				<Routes>
 					<Route path="/" element={<Landing />} />
 					<Route path="/rssa-dashboard" element={<Dashboard />} />
+					<Route path="/survey-construct-library" element={<ConstructLibrary />} />
+					<Route path="/metainfo-control" element={<MetaInfoControl />} />
 					<Route path="/profile" element={<Profile />} />
 				</Routes>
 			</div>

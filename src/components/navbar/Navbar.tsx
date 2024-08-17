@@ -5,6 +5,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import './Navbar.css';
 
 const NavBar = () => {
 	const navigate = useNavigate();
@@ -25,9 +26,15 @@ const NavBar = () => {
 				<Navbar.Brand onClick={() => navigate("/")}>RSSA</Navbar.Brand>
 				<Navbar.Toggle aria-controls="basic-navbar-nav" />
 				<Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-					<Nav>
+					<Nav className="rs-navbar">
 						<Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
-						<Nav.Link onClick={() => navigate("/rssa-dashboard")}>Dashboard</Nav.Link>
+						{isAuthenticated &&
+							<>
+								<Nav.Link onClick={() => navigate("/rssa-dashboard")}>Dashboard</Nav.Link>
+								<Nav.Link onClick={() => navigate("/survey-construct-library")}>Construct Library</Nav.Link>
+								<Nav.Link onClick={() => navigate("/metainfo-control")}>Meta Info Control</Nav.Link>
+							</>
+						}
 						{(isAuthenticated && user) && (
 							<NavDropdown title={(
 								<Image src={user.picture}

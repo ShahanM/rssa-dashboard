@@ -5,8 +5,9 @@ import { HorizontalComponentList } from "../../components/componentlist/Componen
 import CreatePageForm from "../../components/forms/CreatePageForm";
 import { isAuthError } from "../../utils/errors";
 import { Page } from "../../utils/generics.types";
-import { findFirstEmptyPosition } from "../../utils/utils";
+import { findFirstEmptyPosition, orderPosition } from "../../utils/utils";
 import { PagePanelProps } from "./PagePanel.types";
+import { getStepPages } from "../../api/endpoints";
 
 
 const PagePanel: React.FC<PagePanelProps> = ({
@@ -32,21 +33,8 @@ const PagePanel: React.FC<PagePanelProps> = ({
 		const callApi = async () => {
 			try {
 				const token = await getAccessTokenSilently();
-				const response = await fetch(`http://localhost:8000/v2/${studyId}/${stepId}/page`, {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						"Access-Control-Allow-Origin": "http://localhost:3339",
-						"Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-						"Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-						"Authorization": `Bearer ${token}`
-					},
-				});
-				const responseData = await response.json();
-				if (response.status !== 200) {
-					throw new Error(response.statusText);
-				}
-				setPages(responseData);
+				const response = await getStepPages(stepId, token);
+				setPages(orderPosition(response));
 			} catch (error) {
 				if (isAuthError(error)) {
 					authErrorCallback((error as Error).message);
@@ -57,6 +45,7 @@ const PagePanel: React.FC<PagePanelProps> = ({
 			}
 		};
 		if (studyId && stepId) callApi();
+		else setPages([]);
 	}, [getAccessTokenSilently, authErrorCallback, stepId, studyId]);
 
 
@@ -67,7 +56,8 @@ const PagePanel: React.FC<PagePanelProps> = ({
 					<h6>Showing pages for <b>Step:</b> {stepId}</h6>
 				</Col>
 				<Col md={4} className="header-button">
-					<Button color="primary" onClick={() => setShow(true)}>
+					<Button color="primary" onClick={() => setShow(true)}
+						disabled={!stepId || stepId === ""}>
 						Insert page
 					</Button>
 				</Col>

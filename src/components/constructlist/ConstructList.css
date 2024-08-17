@@ -1,0 +1,20 @@
+.construct-table {
+	
+}
+
+.construct-table .header {
+	
+}
+
+.construct-table td {
+	text-align: "left";
+	cursor: pointer;
+}
+
+.construct-table td:hover {
+	background-color: #f0a050;
+}
+
+.construct-table td.selected {
+	background-color: #f0a050;
+}

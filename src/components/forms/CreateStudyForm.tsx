@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal, Form, Button, Alert } from "react-bootstrap";
 import { isAuthError } from "../../utils/errors";
 import { InputFormModalProps } from "./forms.types";
+import { createStudy as createStudyRequest } from "../../api/endpoints";
 
 const CreateStudyForm: React.FC<InputFormModalProps> = ({
 	show,
@@ -23,9 +24,7 @@ const CreateStudyForm: React.FC<InputFormModalProps> = ({
 	const handleNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const name = e.target.value;
 		setStudyName(name);
-		if (name.length >= 4) {
-			setSubmitEnabled(true);
-		}
+		if (name.length >= 4) { setSubmitEnabled(true); }
 	}
 
 	const handleDescriptionInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,25 +34,11 @@ const CreateStudyForm: React.FC<InputFormModalProps> = ({
 	const createStudy = async () => {
 		try {
 			const token = await requestToken();
-			const response = await fetch("http://localhost:8000/v2/study/", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "http://localhost:3339",
-					"Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-					"Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-					"Authorization": `Bearer ${token}`
-				},
-				body: JSON.stringify({
-					study_name: studyName,
-					study_description: studyDescription
-				})
-			});
-			const responseData = await response.json();
-			if (response.status !== 200) {
-				throw new Error(response.statusText);
-			}
-			onSuccess(responseData);
+			const response = await createStudyRequest({
+				name: studyName,
+				description: studyDescription
+			}, token);
+			onSuccess(response);
 			handleClose();
 		} catch (error) {
 			if (isAuthError(error)) {

@@ -3,6 +3,7 @@ import {StudyStep } from '../../utils/generics.types';
 import { Modal, Form, Button, Alert } from 'react-bootstrap';
 import { isAuthError } from '../../utils/errors';
 import {CreateStepFormProps} from './forms.types';
+import { createStudyStep } from '../../api/endpoints';
 
 
 const CreateStepForm: React.FC<CreateStepFormProps> = ({
@@ -51,27 +52,13 @@ const CreateStepForm: React.FC<CreateStepFormProps> = ({
 	const addStep = async () => {
 		try {
 			const token = await requestToken();
-			const response = await fetch(`http://localhost:8000/v2/${studyId}/step/`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": "http://localhost:3339",
-					"Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-					"Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-					"Authorization": `Bearer ${token}`
-				},
-				body: JSON.stringify({
-					study_id: studyId,
-					order_position: orderPosition,
-					name: stepName,
-					description: stepDescription
-				})
-			});
-			const responseData = await response.json();
-			if (response.status !== 200) {
-				throw new Error(response.statusText);
-			}
-			handleSuccesResponse(responseData);
+			const response = await createStudyStep({
+				study_id: studyId,
+				order_position: orderPosition,
+				name: stepName,
+				description: stepDescription
+			}, token);
+			handleSuccesResponse(response);
 		} catch (error) {
 			if (isAuthError(error)) {
 				onAuthError(error);

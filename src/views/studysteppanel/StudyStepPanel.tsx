@@ -5,9 +5,10 @@ import { VerticalComponentList } from '../../components/componentlist/ComponentL
 import CreateStepForm from "../../components/forms/CreateStepForm";
 import { isAuthError } from "../../utils/errors";
 import { StudyStep } from "../../utils/generics.types";
-import { findFirstEmptyPosition } from "../../utils/utils";
+import { findFirstEmptyPosition, orderPosition } from "../../utils/utils";
 import './StudyStepPanel.css';
 import { StudyStepPanelProps } from "./StudyStepPanel.types";
+import { getStudySteps } from '../../api/endpoints';
 
 
 const StudyStepPanel: React.FC<StudyStepPanelProps> = ({
@@ -19,41 +20,14 @@ const StudyStepPanel: React.FC<StudyStepPanelProps> = ({
 
 	const handleSelection = (id: string) => {
 		onChangeSelection({ studyId: selected.studyId, stepId: id, pageId: "" });
-
 	}
 
 	useEffect(() => {
 		const callApi = async () => {
 			try {
 				const token = await getAccessTokenSilently();
-				const response = await fetch(
-					`http://localhost:8000/v2/${studyId}/step/`, {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						"Access-Control-Allow-Origin": "http://localhost:3339",
-						"Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-						"Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-						"Authorization": `Bearer ${token}`
-					},
-				});
-				if (response.status !== 200) {
-					throw new Error(response.statusText);
-				}
-				const responseData: StudyStep[] = await response.json();
-				console.log(responseData);
-
-				// Sort the steps by order_position
-				if (responseData.length === 0) {
-					setSteps([]);
-					return;
-				}
-
-				// FIXME: refactor this to a utility function
-				const sortedarray = responseData.sort((a, b) =>
-					a.order_position < b.order_position ? -1
-						: a.order_position > b.order_position ? 1 : 0)
-				setSteps(sortedarray);
+				const response = await getStudySteps(studyId, token);
+				setSteps(orderPosition(response));
 			} catch (error) {
 				if (isAuthError(error)) {
 					authErrorCallback((error as Error).message);
@@ -75,11 +49,9 @@ const StudyStepPanel: React.FC<StudyStepPanelProps> = ({
 		// updated in the database as well.
 		// Or we can just do it entirely in the backend and fetch all the steps again.
 		// Or we can do it in the frontend and make relevant update calls to the backend.
-		newSteps.sort((a, b) => a.order_position < b.order_position ? -1
-			: a.order_position > b.order_position ? 1 : 0);
+		newSteps = orderPosition(newSteps);
 		setSteps(newSteps);
 	}
-
 
 	return (
 		<Container className="study-step-panel">
@@ -100,6 +72,9 @@ const StudyStepPanel: React.FC<StudyStepPanelProps> = ({
 					onSuccess={handleAddStepSuccess}
 					onAuthError={authErrorCallback}
 					maxEmptyPosition={findFirstEmptyPosition(steps)} />
+			</Row>
+			<Row>
+				<p>Showing steps for <b>Study:</b> {studyId}</p>
 			</Row>
 			<Row className="list-container">
 				<VerticalComponentList components={steps}

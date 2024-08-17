@@ -7,6 +7,7 @@ import { isAuthError } from '../../utils/errors';
 import { Study } from '../../utils/generics.types';
 import './StudyPanel.css';
 import { StudyPanelProps } from './StudyPanel.types';
+import { getStudies } from '../../api/endpoints';
 
 
 const StudyPanel: React.FC<StudyPanelProps> = ({
@@ -33,21 +34,8 @@ const StudyPanel: React.FC<StudyPanelProps> = ({
 		const callApi = async () => {
 			try {
 				const token = await getAccessTokenSilently();
-				const response = await fetch("http://localhost:8000/v2/study/", {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						"Access-Control-Allow-Origin": "http://localhost:3339",
-						"Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-						"Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-						"Authorization": `Bearer ${token}`
-					},
-				});
-				const responseData = await response.json();
-				if (response.status !== 200) {
-					throw new Error(response.statusText);
-				}
-				setStudies(responseData);
+				const response = await getStudies(token);
+				setStudies(response);
 			} catch (error) {
 				if (isAuthError(error)) {
 					authErrorCallback((error as Error).message);

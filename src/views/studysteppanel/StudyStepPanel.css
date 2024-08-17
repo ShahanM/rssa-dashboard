@@ -14,7 +14,7 @@
 }
 
 .study-step-panel .list-container {
-	height: 27vh;
+	height: 50vh;
 	overflow-y: scroll;
 	margin: 0.5rem 0 0.5rem 0;
 }

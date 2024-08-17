@@ -1,3 +1,5 @@
+import { createStudyCondition } from "../../api/endpoints";
+
 export interface InputFormModalProps {
 	show: boolean;
 	showHideCallback: (show: boolean) => void;
@@ -16,4 +18,16 @@ export interface CreateStepFormProps extends OrderedInputFormModalProps {
 
 export interface CreatePageFormProps extends CreateStepFormProps {
 	stepId: string;
+}
+
+// export interface CreateConstructProps extends InputFormModalProps {
+
+// }
+
+export interface CreateItemFormProps extends OrderedInputFormModalProps {
+	constructId: string;
+}
+
+export interface CreateStudyConditionProps extends InputFormModalProps {
+	studyId: string;
 }

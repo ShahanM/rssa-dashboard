@@ -4,11 +4,12 @@ import React, { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import Alert from "react-bootstrap/Alert";
 import Container from "react-bootstrap/Container";
+import PagePanel from "../pagepanel/PagePanel";
 import StudyPanel from "../studypanel/StudyPanel";
 import StudyStepPanel from "../studysteppanel/StudyStepPanel";
 import "./Dashboard.css";
 import { SelectionState } from "./Dashboard.types";
-import PagePanel from "../pagepanel/PagePanel";
+import { StudyConditionWidget } from "../../components/metadatawidgets/MetadataWidgets";
 
 
 export const Dashboard = () => {
@@ -22,7 +23,6 @@ export const Dashboard = () => {
 	});
 
 	const handleSelection = (newState: SelectionState) => {
-		console.log(newState);
 		setSelected(newState);
 	}
 
@@ -86,15 +86,14 @@ export const Dashboard = () => {
 							selected={selected} onChangeSelection={handleSelection} />
 					</Row>
 				</Col>
-				<Col md={{ span: 1 }}>
-				</Col>
-				<Col md={{ span: 6 }}>
+				<Col md={{ span: 7 }}>
 					<Row>
 						<StudyStepPanel studyId={selected.studyId}
 							authErrorCallback={setAuthError}
 							selected={selected} onChangeSelection={handleSelection} />
 					</Row>
 				</Col>
+				<StudyConditionWidget studyId={selected.studyId} />
 			</Row>
 			<Row className="page-selector">
 				<PagePanel studyId={selected.studyId}

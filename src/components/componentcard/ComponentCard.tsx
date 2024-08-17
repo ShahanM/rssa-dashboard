@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
-import { Page, SelectableCardProps, Study, StudyStep } from '../../utils/generics.types';
-import { formatDateString, isStudy } from '../../utils/utils';
+import { Page, SelectableCardProps, Study, StudyStep, SurveyConstruct } from '../../utils/generics.types';
+import { formatDateString, isPage, isStudy } from '../../utils/utils';
+import LinkConstructButton from '../linkconstructbutton/LinkConstructButton';
 import './ComponentCard.css';
-
-// TODO: I see that the StudyCard and StudyStepCard components are very similar. It might be a good idea to make a generic ComponentCard component.
-// Instead of differentiating between Study, StudyStep, and Page cards, we can build custom edit buttons for each type of card.
-// On second thought, each type of content can have its own FormModal component. This way, we can just pass the correct
-// FormModal component to the generic ComponentCard component.
+import { getPageContent } from '../../api/endpoints';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export const VerticalComponentCard: React.FC<SelectableCardProps<Study | StudyStep | Page>> = ({
 	component, selected, onClick }) => {
@@ -29,14 +27,62 @@ export const VerticalComponentCard: React.FC<SelectableCardProps<Study | StudySt
 	);
 }
 
-export const HorizontalComponentCard: React.FC<SelectableCardProps<Study | StudyStep | Page>> = ({ 
+export const HorizontalComponentCard: React.FC<SelectableCardProps<Study | StudyStep | Page>> = ({
 	component, selected, onClick }) => {
+	const [linkingEnabled, setLinkingEnabled] = useState<boolean>(false);
+	const [pageContent, setPageContent] = useState<SurveyConstruct[]>([]);
+	const { getAccessTokenSilently } = useAuth0();
+	const handlePageContentLinking = (construct: SurveyConstruct) => {
+		setPageContent([...pageContent, construct]);
+	}
+
+	useEffect(() => {
+		const fetchPageContent = async () => {
+			try {
+				const token = await getAccessTokenSilently();
+				const response = await getPageContent(component.id, token);
+				setPageContent(response);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+		if (isPage(component)) fetchPageContent();
+
+	}, [component, getAccessTokenSilently]);
+
+	useEffect(() => {
+		// Right now we only allow one construct to be linked to a page
+		if (pageContent.length > 0) {
+			setLinkingEnabled(false);
+		} else {
+			setLinkingEnabled(true);
+		}
+	}, [pageContent]);
+
 	return (
 		<Row className={`horizontal-card d-flex align-items-center ${selected ? 'selected' : ''}`}
 			onClick={() => onClick(component.id)}>
 			<h6>{component.name}</h6>
 			<p className="description">{component.description}</p>
-			<Button variant="primary">Edit</Button>
+
+			{isPage(component) ?
+				<>
+					{pageContent.length > 0 &&
+						pageContent.map((construct) => (
+							<p key={construct.id} className="linked-construct">
+								{construct.name}
+							</p>
+						))
+					}
+					<LinkConstructButton
+						component={component}
+						linkCallback={handlePageContentLinking}
+						enabled={linkingEnabled}
+					/>
+				</>
+				:
+				<Button variant="primary">Edit</Button>
+			}
 		</Row>
 	)
 }
