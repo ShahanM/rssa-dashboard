@@ -93,6 +93,8 @@ export const Dashboard = () => {
 							selected={selected} onChangeSelection={handleSelection} />
 					</Row>
 				</Col>
+			</Row>
+			<Row>
 				<StudyConditionWidget studyId={selected.studyId} />
 			</Row>
 			<Row className="page-selector">

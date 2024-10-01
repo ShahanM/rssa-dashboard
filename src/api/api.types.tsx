@@ -63,3 +63,11 @@ export type PageContent = {
 export type NewParticipantType = {
 	type: string;
 }
+
+export type NewParticipant = {
+	study_id: string;
+	participant_type: string;
+	external_id: string;
+	current_step: string;
+	current_page: string | null;
+}

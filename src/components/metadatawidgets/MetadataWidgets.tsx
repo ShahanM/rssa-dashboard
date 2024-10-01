@@ -300,6 +300,7 @@ export const StudyConditionWidget: React.FC<{ studyId: string }> = ({ studyId })
 			<Row className="d-flex header">
 				<Col md={8}>
 					<h6>Stuy conditions</h6>
+					<p><strong>Study Id:</strong> {studyId}</p>
 				</Col>
 				<Col md={4} className="header-button">
 					<Button color="primary" onClick={() => setShow(true)}>

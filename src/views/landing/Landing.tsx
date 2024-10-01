@@ -1,4 +1,5 @@
 import React from 'react';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 export const Landing: React.FC = () => {
 	return (
@@ -8,4 +9,6 @@ export const Landing: React.FC = () => {
 	)
 }
 
-export default Landing;
+export default withAuthenticationRequired(Landing, {
+	onRedirecting: () => <>Loading</>,
+});
