@@ -58,16 +58,21 @@ const ConstructList: React.FC<ConstructListProps> = ({ onChangeSelection, refres
 					<thead>
 						<tr>
 							<th>Construct</th>
+							<th>Type</th>
 						</tr>
 					</thead>
 					<tbody>
 						{constructs.map((construct) => {
 							return (
 								<tr key={"construct_" + construct.id}
-									construct-id={construct.id}>
-									<td onClick={handleSelection}
-										className={selectedConstructId === construct.id ? "selected" : ""}>
+									construct-id={construct.id}
+									onClick={handleSelection}
+									className={selectedConstructId === construct.id ? "selected" : ""}>
+									<td>
 										{construct.name}
+									</td>
+									<td>
+										{construct.type.type}
 									</td>
 								</tr>
 							)

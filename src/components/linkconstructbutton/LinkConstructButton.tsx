@@ -20,7 +20,7 @@ interface ConstructLibraryPopupProps {
 }
 
 export const ConstructLibraryPopup: React.FC<ConstructLibraryPopupProps> = ({ show, onHide, linkCallback, tokenRequest }) => {
-	const [selectedConstruct, setSelectedConstruct] = useState<SurveyConstruct>(emptyConstruct);
+	const [selectedConstruct, setSelectedConstruct] = useState<SurveyConstruct>();
 
 	const [constructs, setConstructs] = useState<SurveyConstruct[]>([]);
 	const [linkEnabled, setLinkEnabled] = useState<boolean>(false);
@@ -34,15 +34,19 @@ export const ConstructLibraryPopup: React.FC<ConstructLibraryPopupProps> = ({ sh
 	}
 
 	useEffect(() => {
-		if (selectedConstruct.id !== "") {
-			setLinkEnabled(true);
-		} else {
-			setLinkEnabled(false);
+		if (selectedConstruct) {
+			if (selectedConstruct.id !== "") {
+				setLinkEnabled(true);
+			} else {
+				setLinkEnabled(false);
+			}
 		}
 	}, [selectedConstruct]);
 
 	const handleLink = () => {
-		linkCallback(selectedConstruct.id);
+		if (selectedConstruct) {
+			linkCallback(selectedConstruct.id);
+		}
 	}
 
 	useEffect(() => {

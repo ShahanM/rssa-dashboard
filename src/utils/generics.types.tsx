@@ -44,17 +44,25 @@ export type SelectableCardProps<Type> = {
 	onClick: (id: string) => void;
 }
 
+export type ConstructType = {
+	id: string;
+	type: string;
+}
+
 export type SurveyConstruct = {
 	id: string;
 	name: string;
 	desc: string;
-	typeId?: string;
+	// typeId?: string;
+	type: ConstructType;
 	scaleId?: string;
 }
 
-export type ConstructType = {
-	id: string;
-	type: string;
+export type CreateSurveyConstruct = {
+	name: string;
+	desc: string;
+	typeId: string;
+	scaleId?: string;
 }
 
 export type ConstructScale = {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Form, Modal } from "react-bootstrap";
-import { ConstructType, SurveyConstruct, ConstructScale } from "../../utils/generics.types";
+import { ConstructType, SurveyConstruct, ConstructScale, CreateSurveyConstruct } from "../../utils/generics.types";
 import { InputFormModalProps } from "./forms.types";
 import { createSurveyConstruct, getConstructScales, getConstructTypes } from "../../api/endpoints";
 import { isAuthError } from "../../utils/errors";
@@ -23,7 +23,7 @@ const CreateConstructForm: React.FC<InputFormModalProps> = ({
 	const [constructTypes, setConstructTypes] = useState<ConstructType[]>([]);
 	const [relevantScales, setRelevantScales] = useState<ConstructScale[]>([]);
 
-	const [construct, setConstruct] = useState<SurveyConstruct>(emptyConstruct);
+	const [construct, setConstruct] = useState<CreateSurveyConstruct>(emptyConstruct);
 
 	useEffect(() => {
 		if (construct.name.length >= 4 && construct.desc.length >= 4) {
@@ -70,6 +70,7 @@ const CreateConstructForm: React.FC<InputFormModalProps> = ({
 	}
 
 	const createConstruct = async () => {
+		console.log(construct);
 		try {
 			const token = await requestToken();
 			const response = await createSurveyConstruct({

@@ -52,7 +52,7 @@ export const HorizontalComponentCard: React.FC<SelectableCardProps<Study | Study
 
 	useEffect(() => {
 		// Right now we only allow one construct to be linked to a page
-		if (pageContent.length > 0) {
+		if (pageContent.length > 3) {
 			setLinkingEnabled(false);
 		} else {
 			setLinkingEnabled(true);

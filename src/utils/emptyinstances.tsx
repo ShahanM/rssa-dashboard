@@ -1,4 +1,4 @@
-import { ConstructScale, ConstructType, SurveyConstruct, SurveyConstructDetails } from "./generics.types";
+import { ConstructScale, ConstructType, CreateSurveyConstruct, SurveyConstruct, SurveyConstructDetails } from "./generics.types";
 
 
 export const emptyConstructType: ConstructType = {
@@ -13,8 +13,7 @@ export const emptyConstructScale: ConstructScale = {
 	scale_levels: []
 };
 
-export const emptyConstruct: SurveyConstruct = {
-	id: "",
+export const emptyConstruct: CreateSurveyConstruct = {
 	name: "",
 	desc: "",
 	typeId: "",

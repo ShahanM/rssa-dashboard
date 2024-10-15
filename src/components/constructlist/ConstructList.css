@@ -6,15 +6,15 @@
 	
 }
 
-.construct-table td {
+.construct-table tr {
 	text-align: "left";
 	cursor: pointer;
 }
 
-.construct-table td:hover {
+.construct-table tr:hover td {
 	background-color: #f0a050;
 }
 
-.construct-table td.selected {
+.construct-table tr.selected td {
 	background-color: #f0a050;
 }
