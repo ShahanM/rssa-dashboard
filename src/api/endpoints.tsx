@@ -143,6 +143,14 @@ export function createStudy(data: NewStudy, token: string): Promise<Study> {
 		});
 }
 
+export function duplicateStudy(studyId: string, token: string): Promise<Study> {
+	return authenticatedPost(
+		{ url: `${API}study/${studyId}`, token: token, data: { studyId } })
+		.then((res) => {
+			return res;
+		});
+}
+
 export function createStudyCondition(data: NewStudyCondition, token: string): Promise<StudyCondition> {
 	return authenticatedPost(
 		{ url: `${API}studycondition/`, token: token, data: data })

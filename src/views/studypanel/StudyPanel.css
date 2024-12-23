@@ -8,9 +8,13 @@
 	padding: 0.5rem;
 }
 
-.study-panel .header-button {
+.study-panel .header-button-container {
 	display: flex;
 	justify-content: flex-end;
+}
+
+.study-panel .header-button {
+	margin: 0.5rem 0 0.5em 0;
 }
 
 .study-panel .list-container {

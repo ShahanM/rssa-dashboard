@@ -56,24 +56,17 @@ export const Dashboard = () => {
 				{authError === "consent_required" && (
 					<Alert color="warning">
 						You need to{" "}
-						<a
-							href="#/"
-							className="alert-link"
-							onClick={(e) => handle(e, handleConsent)}
-						>
+						<a href="#/" className="alert-link"
+							onClick={(e) => handle(e, handleConsent)}>
 							consent to get access to users api
 						</a>
 					</Alert>
 				)}
-
 				{authError === "login_required" && (
 					<Alert color="warning">
 						You need to{" "}
-						<a
-							href="#/"
-							className="alert-link"
-							onClick={(e) => handle(e, handleLoginAgain)}
-						>
+						<a href="#/" className="alert-link"
+							onClick={(e) => handle(e, handleLoginAgain)}>
 							log in again
 						</a>
 					</Alert>
@@ -82,15 +75,19 @@ export const Dashboard = () => {
 			<Row className="navigation-row d-flex">
 				<Col md={{ span: 5 }}>
 					<Row>
-						<StudyPanel authErrorCallback={setAuthError}
-							selected={selected} onChangeSelection={handleSelection} />
+						<StudyPanel
+							authErrorCallback={setAuthError}
+							selected={selected}
+							onChangeSelection={handleSelection} />
 					</Row>
 				</Col>
 				<Col md={{ span: 7 }}>
 					<Row>
-						<StudyStepPanel studyId={selected.studyId}
+						<StudyStepPanel
+							studyId={selected.studyId}
 							authErrorCallback={setAuthError}
-							selected={selected} onChangeSelection={handleSelection} />
+							selected={selected}
+							onChangeSelection={handleSelection} />
 					</Row>
 				</Col>
 			</Row>

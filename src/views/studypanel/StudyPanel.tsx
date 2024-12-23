@@ -7,7 +7,8 @@ import { isAuthError } from '../../utils/errors';
 import { Study } from '../../utils/generics.types';
 import './StudyPanel.css';
 import { StudyPanelProps } from './StudyPanel.types';
-import { getStudies } from '../../api/endpoints';
+import { duplicateStudy, getStudies } from '../../api/endpoints';
+import ConfirmDuplicateDialog from '../../components/dialogs/ConfirmDuplicate';
 
 
 const StudyPanel: React.FC<StudyPanelProps> = ({
@@ -16,6 +17,8 @@ const StudyPanel: React.FC<StudyPanelProps> = ({
 	const [show, setShow] = useState<boolean>(false);
 	const [studies, setStudies] = useState<Study[]>([]);
 
+	const [confirmDupe, setConfirmDupe] = useState<boolean>(false);
+
 	const { getAccessTokenSilently } = useAuth0();
 
 	const handleAuthError = (error: any) => {
@@ -23,7 +26,9 @@ const StudyPanel: React.FC<StudyPanelProps> = ({
 	}
 
 	const handleCreateStudySuccess = (response: Study) => {
-		setStudies([...studies, response]);
+		setShow(false);
+		setConfirmDupe(false);
+		if (response) setStudies([...studies, response]);
 	}
 
 	const handleSelection = (id: string) => {
@@ -55,11 +60,22 @@ const StudyPanel: React.FC<StudyPanelProps> = ({
 				<Col md={8}>
 					<h2>Your studies</h2>
 				</Col>
-				<Col md={4} className="header-button">
-					<Button color="primary" onClick={() => setShow(true)}>
-						Create Study
-					</Button>
+				<Col md={4} className="header-button-container">
+					<Row>
+						<Button className="header-button" color="primary" onClick={() => setShow(true)}>
+							Create Study
+						</Button>
+						{selected && selected.studyId &&
+							<Button className="header-button" color="primary" onClick={() => setConfirmDupe(true)}>
+								Duplicate Study
+							</Button>
+						}
+					</Row>
 				</Col>
+				<ConfirmDuplicateDialog show={confirmDupe}
+					onClose={() => setConfirmDupe(false)}
+					onConfirm={() => dupeStudy(selected.studyId,
+						getAccessTokenSilently, handleCreateStudySuccess, authErrorCallback)} />
 				<CreateStudyForm
 					show={show} showHideCallback={setShow}
 					requestToken={getAccessTokenSilently}
@@ -76,3 +92,18 @@ const StudyPanel: React.FC<StudyPanelProps> = ({
 }
 
 export default StudyPanel;
+
+
+async function dupeStudy(studyId: string, requestToken: () => Promise<string>,
+	onSuccess: (response: any) => void, onAuthError: (error: any) => void) {
+	try {
+		const token = await requestToken();
+		const response = await duplicateStudy(
+			studyId, token);
+		onSuccess(response);
+	} catch (error) {
+		if (isAuthError(error)) {
+			onAuthError(error);
+		}
+	}
+}

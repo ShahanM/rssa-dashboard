@@ -318,7 +318,14 @@ export const StudyConditionWidget: React.FC<{ studyId: string }> = ({ studyId })
 			<Row>
 				<ul>
 					{studyConditions.map((condition, index) => (
-						<li key={condition.id}>{condition.name}</li>
+						<li key={condition.id}>
+							<p>
+								{condition.id}: {condition.name}
+								<span>
+									<Button color="info">Edit</Button>
+								</span>
+							</p>
+						</li>
 					))}
 				</ul>
 			</Row>
