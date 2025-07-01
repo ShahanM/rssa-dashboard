@@ -1,7 +1,6 @@
-import { SelectionState } from '../dashboard/Dashboard.types';
 
 export interface StudyPanelProps {
-	selected: SelectionState;
-	onChangeSelection: (state: SelectionState) => void;
+	selectedStudyId: string | undefined;
+	onChangeSelection: (studyId: string) => void;
 	authErrorCallback: (errorMessage: string) => void;
 }

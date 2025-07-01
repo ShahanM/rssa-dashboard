@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Button, Card, Col, Row } from 'react-bootstrap';
 import { Page, SelectableCardProps, Study, StudyStep, SurveyConstruct } from '../../utils/generics.types';
 import { formatDateString, isPage, isStudy } from '../../utils/utils';
 import LinkConstructButton from '../linkconstructbutton/LinkConstructButton';
@@ -7,34 +7,59 @@ import './ComponentCard.css';
 import { getPageContent } from '../../api/endpoints';
 import { useAuth0 } from '@auth0/auth0-react';
 
+
+const LinkedConstructList: React.FC<{ constructs: SurveyConstruct[] }> = ({ constructs }) => {
+	return (
+		<div>
+			{constructs.map((construct) => (
+				<p key={construct.id} className="linked-construct">
+					{construct.name}
+				</p>
+			))}
+		</div>
+	);
+};
+
+
 export const VerticalComponentCard: React.FC<SelectableCardProps<Study | StudyStep | Page>> = ({
 	component, selected, onClick }) => {
 
 	return (
-		<Row className={`component-card d-flex align-items-center ${selected ? 'selected' : ''}`}
-			onClick={() => onClick(component.id)}>
-			<Col md={10}>
-				<h6>{component.name}</h6>
-				{isStudy(component) &&
-					<p className="date">{formatDateString(component.date_created)}</p>
-				}
-				<p className="description">{component.description}</p>
-			</Col>
-			<Col md={2}>
+		<Card className={`component-card ${selected ? 'selected' : ''}`} onClick={() => onClick(component.id)}>
+			<Card.Header>
+				<Card.Title>{component.name}</Card.Title>
+				<Card.Subtitle className="mb-2 text-muted">
+					{isStudy(component) && formatDateString(component.date_created)}
+				</Card.Subtitle>
+			</Card.Header>
+			<Card.Body>
+				<Card.Text className="description">
+					{component.description ? component.description : "No description available."}
+				</Card.Text>
+			</Card.Body>
+			<Card.Footer>
 				<Button variant="primary">Edit</Button>
-			</Col>
-		</Row>
+			</Card.Footer>
+		</Card>
 	);
 }
 
+
 export const HorizontalComponentCard: React.FC<SelectableCardProps<Study | StudyStep | Page>> = ({
-	component, selected, onClick }) => {
-	const [linkingEnabled, setLinkingEnabled] = useState<boolean>(false);
+	component, selected, onClick,
+}) => {
 	const [pageContent, setPageContent] = useState<SurveyConstruct[]>([]);
 	const { getAccessTokenSilently } = useAuth0();
+
+	const linkingEnabled = useMemo(() => pageContent.length <= 3, [pageContent]);
+
 	const handlePageContentLinking = (construct: SurveyConstruct) => {
-		setPageContent([...pageContent, construct]);
-	}
+		setPageContent((prev) => [...prev, construct]);
+	};
+
+	const handleCardClick = () => {
+		onClick(component.id);
+	};
 
 	useEffect(() => {
 		const fetchPageContent = async () => {
@@ -43,46 +68,40 @@ export const HorizontalComponentCard: React.FC<SelectableCardProps<Study | Study
 				const response = await getPageContent(component.id, token);
 				setPageContent(response);
 			} catch (error) {
-				console.error(error);
+				console.error("Failed to fetch page content:", error);
+				alert("Failed to load page content.");
 			}
-		}
-		if (isPage(component)) fetchPageContent();
+		};
 
+		if (isPage(component)) {
+			fetchPageContent();
+		}
 	}, [component, getAccessTokenSilently]);
 
-	useEffect(() => {
-		// Right now we only allow one construct to be linked to a page
-		if (pageContent.length > 3) {
-			setLinkingEnabled(false);
-		} else {
-			setLinkingEnabled(true);
-		}
-	}, [pageContent]);
-
 	return (
-		<Row className={`horizontal-card d-flex align-items-center ${selected ? 'selected' : ''}`}
-			onClick={() => onClick(component.id)}>
-			<h6>{component.name}</h6>
-			<p className="description">{component.description}</p>
-
-			{isPage(component) ?
-				<>
-					{pageContent.length > 0 &&
-						pageContent.map((construct) => (
-							<p key={construct.id} className="linked-construct">
-								{construct.name}
-							</p>
-						))
-					}
-					<LinkConstructButton
-						component={component}
-						linkCallback={handlePageContentLinking}
-						enabled={linkingEnabled}
-					/>
-				</>
-				:
-				<Button variant="primary">Edit</Button>
-			}
-		</Row>
-	)
-}
+		<Card className={`component-card ${selected ? 'selected' : ''}`} onClick={handleCardClick}>
+			<Card.Header>
+				<Card.Title>{component.name}</Card.Title>
+				<Card.Subtitle className="mb-2 text-muted">
+					{isStudy(component) && formatDateString(component.date_created)}
+				</Card.Subtitle>
+			</Card.Header>
+			<Card.Body>
+				<Card.Text className="description">
+					{component.description ? component.description : "No description available."}
+				</Card.Text>
+				{isPage(component) ? (
+					<>
+						{pageContent.length > 0 && <LinkedConstructList constructs={pageContent} />}
+						{/* <LinkConstructButton component={component} linkCallback={handlePageContentLinking} enabled={linkingEnabled} /> */}
+					</>
+				) : (
+					<Button variant="primary">Edit</Button>
+				)}
+			</Card.Body>
+			<Card.Footer>
+				<Button variant="primary" onClick={handleCardClick}>Edit</Button>
+			</Card.Footer>
+		</Card>
+	);
+};

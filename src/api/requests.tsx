@@ -42,9 +42,11 @@ export const authenticatedPost = async (params: RequestProps) => {
 // }
 
 export const authenticatedGet = async (params: RequestProps) => {
+	const headers = getHeaders(params.token);
+	console.log("Fetching:", params.url, "with headers:", headers);
 	const response = await fetch(params.url, {
 		method: 'GET',
-		headers: getHeaders(params.token)
+		headers: headers,
 	});
 	if (response.status !== 200) {
 		throw new Error(response.statusText);

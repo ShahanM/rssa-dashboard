@@ -22,6 +22,7 @@ export interface StudyStep extends OrderedComponent {
 	name: string;
 	description: string;
 	date_created: string;
+	pages?: Page[];
 }
 
 export interface Page extends OrderedComponent {
@@ -34,7 +35,7 @@ export interface Page extends OrderedComponent {
 
 export interface SelectableCardListProps<Type> {
 	components: Type[];
-	selected: string;
+	selected: string | undefined;
 	onChangeSelection: (id: string) => void;
 }
 
@@ -102,4 +103,33 @@ export type ConstructItemType = {
 export type ParticipantType = {
 	id: string;
 	type: string;
+}
+
+export type ConditionCount = {
+	condition_id: string
+	condition_name: string
+	participant_count: number
+}
+
+export type StudySummary = {
+	id: string
+	name: string
+	description: string
+	date_created: Date
+	created_by?: string
+	owner?: string
+	total_participants: number
+	participants_by_condition: ConditionCount[]
+}
+
+export type StudyDetail = {
+	id: string
+	name: string
+	description: string
+	date_created: Date
+	created_by?: string
+	owner?: string
+	steps: StudyStep[]
+	conditions: StudyCondition[]
+
 }

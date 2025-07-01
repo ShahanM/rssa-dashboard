@@ -1,62 +1,84 @@
-import { useAuth0 } from '@auth0/auth0-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
+import { duplicateStudy } from '../../api/endpoints';
 import { VerticalComponentList } from '../../components/componentlist/ComponentList';
-import CreateStudyForm from '../../components/forms/CreateStudyForm';
+import { useApi } from '../../hooks/useApi';
 import { isAuthError } from '../../utils/errors';
 import { Study } from '../../utils/generics.types';
 import './StudyPanel.css';
 import { StudyPanelProps } from './StudyPanel.types';
-import { duplicateStudy, getStudies } from '../../api/endpoints';
-import ConfirmDuplicateDialog from '../../components/dialogs/ConfirmDuplicate';
 
 
 const StudyPanel: React.FC<StudyPanelProps> = ({
-	selected, onChangeSelection, authErrorCallback }) => {
+	selectedStudyId, onChangeSelection, authErrorCallback }) => {
 
 	const [show, setShow] = useState<boolean>(false);
-	const [studies, setStudies] = useState<Study[]>([]);
+	// const [studies, setStudies] = useState<Study[]>([]);
+	// const { getAccessTokenSilently } = useAuth0();
 
 	const [confirmDupe, setConfirmDupe] = useState<boolean>(false);
 
-	const { getAccessTokenSilently } = useAuth0();
 
-	const handleAuthError = (error: any) => {
-		authErrorCallback((error as Error).message);
-	}
+	const { data: studies, loading, error, api } = useApi<Study[]>();
+
+	// const handleAuthError = (error: any) => {
+	// 	authErrorCallback((error as Error).message);
+	// }
 
 	const handleCreateStudySuccess = (response: Study) => {
 		setShow(false);
 		setConfirmDupe(false);
-		if (response) setStudies([...studies, response]);
+		// if (response) setStudies([...studies, response]);
 	}
 
-	const handleSelection = (id: string) => {
-		onChangeSelection({ studyId: id, stepId: "", pageId: "" });
+	const handleSelection = (studyId: string) => {
+		onChangeSelection(studyId);
 	}
 
-	useEffect(() => {
-		const callApi = async () => {
-			try {
-				const token = await getAccessTokenSilently();
-				const response = await getStudies(token);
-				setStudies(response);
-			} catch (error) {
-				if (isAuthError(error)) {
-					authErrorCallback((error as Error).message);
-				} else {
-					// FIXME: Handle error
-					console.log("We are in the error block", error);
-				}
-			}
-		};
+	// useEffect(() => {
+	// 	const callApi = async () => {
+	// 		try {
+	// 			const token = await getAccessTokenSilently();
+	// 			const response = await getStudies(token);
+	// 			setStudies(response);
+	// 		} catch (error) {
+	// 			if (isAuthError(error)) {
+	// 				authErrorCallback((error as Error).message);
+	// 			} else {
+	// 				console.error("Error fetching studies:", error);
 
-		callApi();
-	}, [getAccessTokenSilently, authErrorCallback])
+	// 			}
+	// 		}
+	// 	};
+
+	// 	callApi();
+	// }, [getAccessTokenSilently, authErrorCallback])
+
+	const fetchStudies = useCallback(async () => {
+		try {
+			await api.get("studies/");
+		} catch (error) {
+			console.error("Error fetching studies:", error);
+		}
+	}, [api]);
+
+	useEffect(() => { fetchStudies(); }, [fetchStudies])
+
+	if (loading) {
+		return <div>Loading studies...</div>;
+	}
+
+	if (error) {
+		return <div>Error: {error.message}</div>;
+	}
+
+	if (!studies || studies.length === 0) {
+		return <div>No studies found.</div>;
+	}
 
 	return (
 		<Container className="study-panel">
-			<Row className="d-flex header">
+			<Row className="header">
 				<Col md={8}>
 					<h2>Your studies</h2>
 				</Col>
@@ -65,26 +87,27 @@ const StudyPanel: React.FC<StudyPanelProps> = ({
 						<Button className="header-button" color="primary" onClick={() => setShow(true)}>
 							Create Study
 						</Button>
-						{selected && selected.studyId &&
-							<Button className="header-button" color="primary" onClick={() => setConfirmDupe(true)}>
-								Duplicate Study
-							</Button>
-						}
+						<Button className="header-button" color="primary" onClick={() => setConfirmDupe(true)}
+							disabled={!(selectedStudyId && selectedStudyId.length > 0)}>
+							Duplicate Study
+						</Button>
 					</Row>
 				</Col>
-				<ConfirmDuplicateDialog show={confirmDupe}
-					onClose={() => setConfirmDupe(false)}
-					onConfirm={() => dupeStudy(selected.studyId,
-						getAccessTokenSilently, handleCreateStudySuccess, authErrorCallback)} />
+				{/* {selectedStudyId && selectedStudyId.length > 0 &&
+					<ConfirmDuplicateDialog show={confirmDupe}
+						onClose={() => setConfirmDupe(false)}
+						onConfirm={() => dupeStudy(selectedStudyId,
+							getAccessTokenSilently, handleCreateStudySuccess, authErrorCallback)} />
+				}
 				<CreateStudyForm
 					show={show} showHideCallback={setShow}
 					requestToken={getAccessTokenSilently}
 					onSuccess={handleCreateStudySuccess}
-					onAuthError={handleAuthError} />
+					onAuthError={handleAuthError} /> */}
 			</Row>
 			<Row className="list-container">
 				<VerticalComponentList components={studies}
-					selected={selected.studyId}
+					selected={selectedStudyId}
 					onChangeSelection={handleSelection} />
 			</Row>
 		</Container>
@@ -94,8 +117,11 @@ const StudyPanel: React.FC<StudyPanelProps> = ({
 export default StudyPanel;
 
 
-async function dupeStudy(studyId: string, requestToken: () => Promise<string>,
-	onSuccess: (response: any) => void, onAuthError: (error: any) => void) {
+async function dupeStudy(
+	studyId: string,
+	requestToken: () => Promise<string>,
+	onSuccess: (response: any) => void,
+	onAuthError: (error: any) => void) {
 	try {
 		const token = await requestToken();
 		const response = await duplicateStudy(
@@ -104,6 +130,9 @@ async function dupeStudy(studyId: string, requestToken: () => Promise<string>,
 	} catch (error) {
 		if (isAuthError(error)) {
 			onAuthError(error);
+		} else {
+			console.error("Error duplicating study:", error);
+			alert("Error duplicating study: " + (error as Error).message);
 		}
 	}
 }

@@ -32,7 +32,6 @@ export const ConstructTypeWidget = () => {
 	const [refreshList, setRefreshList] = useState<boolean>(true);
 	const { getAccessTokenSilently } = useAuth0();
 
-
 	const handleCreateConstructType = (constructType: ConstructType) => {
 		setRefreshList(true);
 	}

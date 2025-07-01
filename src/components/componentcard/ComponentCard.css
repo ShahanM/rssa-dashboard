@@ -1,11 +1,6 @@
 .component-card {
-	border-radius: 0.5rem;
-	background-color: #885fa532;
 	cursor: pointer;
-	padding: 0.5rem;
 	margin: 0.5rem;
-	height: 8rem;
-	overflow: hidden;
 }
 
 .component-card .date {
@@ -14,7 +9,7 @@
 }
 
 .component-card.selected {
-	background-color: #885fa590;
+	background-color: #fdead4;
 }
 
 .component-card .description {

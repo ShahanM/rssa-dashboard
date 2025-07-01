@@ -1,10 +1,10 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import './Navbar.css';
 
 const NavBar = () => {
@@ -30,7 +30,7 @@ const NavBar = () => {
 						<Nav.Link onClick={() => navigate("/")}>Home</Nav.Link>
 						{isAuthenticated &&
 							<>
-								<Nav.Link onClick={() => navigate("/rssa-dashboard")}>Dashboard</Nav.Link>
+								<Nav.Link onClick={() => navigate("/studies")}>Studies</Nav.Link>
 								<Nav.Link onClick={() => navigate("/survey-construct-library")}>Construct Library</Nav.Link>
 								<Nav.Link onClick={() => navigate("/metainfo-control")}>Meta Info Control</Nav.Link>
 							</>

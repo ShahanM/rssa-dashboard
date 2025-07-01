@@ -1,6 +1,7 @@
 .study-step-panel {
 	margin: 0.25rem;
-	background-color: #f8962335;
+	/* background-color: #f8962335; */
+	background-color: #f5f2fd;
 	border-radius: 0.25rem;
 }
 
@@ -15,6 +16,7 @@
 
 .study-step-panel .list-container {
 	height: 50vh;
+	/* height: inherit; */
 	overflow-y: scroll;
 	margin: 0.5rem 0 0.5rem 0;
 }

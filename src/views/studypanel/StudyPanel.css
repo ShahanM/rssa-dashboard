@@ -1,11 +1,15 @@
 .study-panel {
 	margin: 0.25rem;
-	background-color: #987fe532;
+	background-color: #f5f2fd;
 	border-radius: 0.25rem;
+	/* padding: 0.25rem; */
 }
 
 .study-panel .header {
-	padding: 0.5rem;
+	padding: 1rem;
+	border-radius: 0.25rem 0.25rem 0 0;
+	/* background-color: #e0dcec; */
+	/* overflow: hidden; */
 }
 
 .study-panel .header-button-container {
@@ -18,7 +22,7 @@
 }
 
 .study-panel .list-container {
-	height: 50vh;
-	overflow-y: scroll;
+	/* height: 50vh; */
+	/* overflow-y: scroll; */
 	margin: 0.5rem 0 0.5rem 0;
 }

@@ -1,97 +1,60 @@
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 
-import React, { useState } from "react";
-import { Col, Row } from "react-bootstrap";
-import Alert from "react-bootstrap/Alert";
+import { useState } from "react";
+import { Button, Col, Row } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
-import PagePanel from "../pagepanel/PagePanel";
+import AuthErrorAlert from "../../components/AuthErrorAlert";
 import StudyPanel from "../studypanel/StudyPanel";
-import StudyStepPanel from "../studysteppanel/StudyStepPanel";
+import StudySummaryView from "../StudySummary";
 import "./Dashboard.css";
-import { SelectionState } from "./Dashboard.types";
-import { StudyConditionWidget } from "../../components/metadatawidgets/MetadataWidgets";
+import { Link } from "react-router-dom";
 
 
 export const Dashboard = () => {
-
-	const { loginWithPopup, getAccessTokenWithPopup } = useAuth0();
 	const [authError, setAuthError] = useState<string>("");
-	const [selected, setSelected] = useState<SelectionState>({
-		studyId: "",
-		stepId: "",
-		pageId: ""
-	});
+	// const [selected, setSelected] = useState<SelectionState>({
+	// 	studyId: "",
+	// 	stepId: "",
+	// 	pageId: ""
+	// });
+	const [selectedStudyId, setSelectedStudyId] = useState<string>();
 
-	const handleSelection = (newState: SelectionState) => {
-		setSelected(newState);
+	const handleSelection = (studyId: string) => {
+		setSelectedStudyId(studyId);
 	}
-
-	const handleConsent = async () => {
-		try {
-			await getAccessTokenWithPopup();
-			setAuthError("");
-		} catch (error) {
-			setAuthError((error as Error).message);
-		}
-	};
-
-	const handleLoginAgain = async () => {
-		try {
-			await loginWithPopup();
-			setAuthError("");
-		} catch (error) {
-			setAuthError((error as Error).message);
-		}
-	};
-
-	const handle = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-		fn: () => void) => {
-		e.preventDefault();
-		fn();
-	};
 
 	return (
 		<Container id="dashboard">
-			<Row>
-				{authError === "consent_required" && (
-					<Alert color="warning">
-						You need to{" "}
-						<a href="#/" className="alert-link"
-							onClick={(e) => handle(e, handleConsent)}>
-							consent to get access to users api
-						</a>
-					</Alert>
-				)}
-				{authError === "login_required" && (
-					<Alert color="warning">
-						You need to{" "}
-						<a href="#/" className="alert-link"
-							onClick={(e) => handle(e, handleLoginAgain)}>
-							log in again
-						</a>
-					</Alert>
-				)}
-			</Row>
+			<AuthErrorAlert error={authError} />
 			<Row className="navigation-row d-flex">
 				<Col md={{ span: 5 }}>
-					<Row>
-						<StudyPanel
-							authErrorCallback={setAuthError}
-							selected={selected}
-							onChangeSelection={handleSelection} />
-					</Row>
+					<StudyPanel
+						authErrorCallback={setAuthError}
+						selectedStudyId={selectedStudyId}
+						onChangeSelection={handleSelection} />
 				</Col>
 				<Col md={{ span: 7 }}>
+					<Row className="mt-4">
+						<Link to={`/studies/${selectedStudyId}`}>
+							<Button>Show details &gt;</Button>
+						</Link>
+					</Row>
+
+					{/* <StudyDetails  */}
+					{/* <StudyStepPanel
+						studyId={selected.studyId}
+						authErrorCallback={setAuthError}
+						selected={selected}
+						onChangeSelection={handleSelection} /> */}
 					<Row>
-						<StudyStepPanel
-							studyId={selected.studyId}
+						<StudySummaryView
+							studyId={selectedStudyId}
 							authErrorCallback={setAuthError}
-							selected={selected}
-							onChangeSelection={handleSelection} />
+						/>
 					</Row>
 				</Col>
 			</Row>
-			<Row>
+			{/* <Row>
 				<StudyConditionWidget studyId={selected.studyId} />
 			</Row>
 			<Row className="page-selector">
@@ -99,7 +62,7 @@ export const Dashboard = () => {
 					stepId={selected.stepId}
 					authErrorCallback={setAuthError}
 					selected={selected} onChangeSelection={handleSelection} />
-			</Row>
+			</Row> */}
 		</Container>
 	);
 };

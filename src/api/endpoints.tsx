@@ -6,10 +6,12 @@ import {
 	Page,
 	ParticipantType,
 	Study,
+	StudyCondition,
+	StudyDetail,
 	StudyStep,
+	StudySummary,
 	SurveyConstruct,
-	SurveyConstructDetails,
-	StudyCondition
+	SurveyConstructDetails
 } from "../utils/generics.types";
 import {
 	NewConstructItem,
@@ -17,12 +19,12 @@ import {
 	NewConstructScale,
 	NewConstructType,
 	NewPage,
+	NewParticipantType,
 	NewStudy,
+	NewStudyCondition,
 	NewStudyStep,
 	NewSurveyConstruct,
-	PageContent,
-	NewParticipantType,
-	NewStudyCondition
+	PageContent
 } from "./api.types";
 import { authenticatedGet, authenticatedPost } from "./requests";
 
@@ -39,7 +41,7 @@ const API = process.env.NODE_ENV === "production" ? RSSA_API : RSSA_API_DEV;
  */
 export function getStudySteps(studyId: string, token: string): Promise<StudyStep[]> {
 	return authenticatedGet(
-		{ url: `${API}step/${studyId}`, token: token, data: null })
+		{ url: `${API}studies/${studyId}/steps`, token: token, data: null })
 		.then((res) => {
 			return res;
 		});
@@ -68,11 +70,28 @@ export function getPageContent(pageId: string, token: string): Promise<SurveyCon
  */
 export function getStudies(token: string): Promise<Study[]> {
 	return authenticatedGet(
-		{ url: `${API}study/`, token: token, data: null })
+		{ url: `${API}studies/`, token: token, data: null })
 		.then((res) => {
 			return res;
 		});
 }
+
+export function getStudySummary(studyId: string, token: string): Promise<StudySummary> {
+	return authenticatedGet(
+		{ url: `${API}studies/${studyId}/summary`, token: token, data: null })
+		.then((res) => {
+			return res;
+		});
+}
+
+export function getStudyDetail(studyId: string, token: string): Promise<StudyDetail> {
+	return authenticatedGet(
+		{ url: `${API}studies/${studyId}`, token: token, data: null })
+		.then((res) => {
+			return res;
+		});
+}
+
 
 export function getStudyConditions(studyId: string, token: string): Promise<StudyCondition[]> {
 	return authenticatedGet(

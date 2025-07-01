@@ -1,35 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
-import { Page, SurveyConstruct } from '../../utils/generics.types';
-import { emptyConstruct } from '../../utils/emptyinstances';
-import { useAuth0 } from '@auth0/auth0-react';
-import { getSurveyConstructs, linkConstructToPage } from '../../api/endpoints';
+import { PageContent } from '../../api/api.types';
+import { useApi } from '../../hooks/useApi';
+import { SurveyConstruct } from '../../utils/generics.types';
+import { SurveyPage } from '../../views/PageDetails';
 
 
 interface LinkConstructButtonProps {
-	component: Page;
-	linkCallback: (construct: SurveyConstruct) => void;
-	enabled: boolean;
+	component: SurveyPage;
+	onSuccess: () => void;
+	// linkCallback: (construct: SurveyConstruct) => void;
+	// enabled: boolean;
 }
 
 interface ConstructLibraryPopupProps {
 	show: boolean;
 	onHide: () => void;
 	linkCallback: (id: string) => void;
-	tokenRequest: () => Promise<string>;
+	// tokenRequest: () => Promise<string>;
 }
 
-export const ConstructLibraryPopup: React.FC<ConstructLibraryPopupProps> = ({ show, onHide, linkCallback, tokenRequest }) => {
+export const ConstructLibraryPopup: React.FC<ConstructLibraryPopupProps> = ({ show, onHide, linkCallback }) => {
 	const [selectedConstruct, setSelectedConstruct] = useState<SurveyConstruct>();
 
-	const [constructs, setConstructs] = useState<SurveyConstruct[]>([]);
 	const [linkEnabled, setLinkEnabled] = useState<boolean>(false);
+	const { data: constructs, loading, error, api } = useApi<SurveyConstruct[]>();
+
+
+	const fetchConstructsForLinking = useCallback(async () => {
+		try {
+			await api.get("constructs/");
+		} catch (error) {
+			console.log("Error fetching construct list.");
+		}
+	}, [api])
+
+	useEffect(() => { fetchConstructsForLinking() }, [fetchConstructsForLinking]);
+
+	useEffect(() => {
+		if (constructs) {
+			console.log("Constructs ", constructs);
+		}
+	}, [constructs])
 
 	const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const id = e.target.value;
-		const construct = constructs.find((c) => c.id === id);
-		if (construct) {
-			setSelectedConstruct(construct);
+		if (constructs) {
+			const construct = constructs.find((c) => c.id === id);
+			if (construct) {
+				setSelectedConstruct(construct);
+			}
 		}
 	}
 
@@ -49,18 +69,18 @@ export const ConstructLibraryPopup: React.FC<ConstructLibraryPopupProps> = ({ sh
 		}
 	}
 
-	useEffect(() => {
-		const fetchConstructs = async () => {
-			try {
-				const token = await tokenRequest();
-				const response = await getSurveyConstructs(token);
-				setConstructs(response);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		if (show) fetchConstructs();
-	}, [show, tokenRequest]);
+	if (!constructs) {
+		return (
+			<Modal show={show} onHide={onHide}>
+				<Modal.Header closeButton>
+					<Modal.Title>Select a survey construct</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					Loading constructs
+				</Modal.Body>
+			</Modal>
+		)
+	}
 
 	return (
 		<Modal show={show} onHide={onHide}>
@@ -95,38 +115,45 @@ export const ConstructLibraryPopup: React.FC<ConstructLibraryPopupProps> = ({ sh
 }
 
 
-const LinkConstructButton: React.FC<LinkConstructButtonProps> = ({ component, linkCallback, enabled }) => {
+const LinkConstructButton: React.FC<LinkConstructButtonProps> = ({ component, onSuccess }) => {
 
 	const [showPopup, setShowPopup] = useState<boolean>(false);
-	const { getAccessTokenSilently } = useAuth0();
+	const { data: pageContent, loading, error, api } = useApi<PageContent>();
 
-	const linkConstruct = async (id: string) => {
-		console.log(`Linking construct ${id} to component ${component.id}`);
-		try {
-			const token = await getAccessTokenSilently();
-			const response = await linkConstructToPage({
+	const lastConstructOrderPos = useMemo(() => {
+		const lastOrderPosition = component?.page_contents?.[component.page_contents.length - 1]?.order_position;
+		return (lastOrderPosition ?? 0) + 1;
+	}, [component?.page_contents]);
+
+	const linkConstructHandler = useCallback(async (selectedConstructId: string) => {
+		if (selectedConstructId) {
+			console.log("Selected ID", selectedConstructId);
+			await api.post(`pages/${component.id}`, {
+				construct_id: selectedConstructId,
 				page_id: component.id,
-				construct_id: id,
-				order_position: 1
-			}, token);
-			linkCallback(response);
-			setShowPopup(false);
-		} catch (error) {
-			console.error(error);
+				order_position: lastConstructOrderPos
+			});
+
 		}
-	}
+	}, [api, component.id, lastConstructOrderPos])
+
+	useEffect(() => {
+		if (pageContent) {
+			setShowPopup(false);
+			onSuccess();
+		}
+	}, [pageContent, onSuccess]);
+
 
 	return (
 		<>
-			<Button variant="primary" onClick={() => setShowPopup(true)}
-				disabled={!enabled}>
+			<Button variant="primary" onClick={() => setShowPopup(true)}>
 				Link survey construct
 			</Button>
 			<ConstructLibraryPopup
 				show={showPopup}
 				onHide={setShowPopup.bind(null, false)}
-				linkCallback={linkConstruct}
-				tokenRequest={getAccessTokenSilently} />
+				linkCallback={linkConstructHandler} />
 		</>
 	);
 }
