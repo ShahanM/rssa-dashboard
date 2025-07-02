@@ -45,7 +45,7 @@ const PageCreateForm: React.FC<PageCreateFormProps> = ({
 	const pageCreateRequest = useCallback(async () => {
 		if (studyId && stepId && pageName && orderPosition && pageDescription && api) {
 			try {
-				await api.post("pages", {
+				await api.post("pages/", {
 					study_id: studyId,
 					step_id: stepId,
 					order_position: orderPosition,
