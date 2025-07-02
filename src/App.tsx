@@ -27,7 +27,7 @@ const App: React.FC = () => {
 	}
 
 	return (
-		<Router>
+		<Router basename='/rssa-dashboard'>
 			<div id="RSSA-App" className="d-flex flex-column h-100">
 				<NavBar />
 				<Routes>
