@@ -94,6 +94,12 @@ export const useApi = <T = any>(): ApiResponse<T> => {
 				throw new Error(errorMessage);
 			}
 
+			if (response.status === 204) {
+				// No content response, return null
+				setData(null);
+				return null;
+			}
+
 			const contentType = response.headers.get('content-type');
 			if (contentType && contentType.includes('application/json')) {
 				const responseData: T = await response.json();

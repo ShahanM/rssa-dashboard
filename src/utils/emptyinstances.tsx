@@ -20,11 +20,11 @@ export const emptyConstruct: CreateSurveyConstruct = {
 	scaleId: ""
 }
 
-export const emptyConstructDetails: SurveyConstructDetails = {
-	id: "",
-	name: "",
-	desc: "",
-	type: emptyConstructType,
-	scale: emptyConstructScale,
-	items: []
-};
+// export const emptyConstructDetails: SurveyConstructDetails = {
+// 	id: "",
+// 	name: "",
+// 	desc: "",
+// 	type: emptyConstructType,
+// 	scale: emptyConstructScale,
+// 	items: []
+// };

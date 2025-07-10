@@ -25,7 +25,7 @@ const providerConfig = {
 	clientId: AUTH0_CLIENT_ID,
 	onRedirectCallback,
 	authorizationParams: {
-		redirect_uri: window.location.origin,
+		redirect_uri: window.location.origin + '/rssa-dashboard',
 		...(AUTH0_AUDIENCE ? { audience: AUTH0_AUDIENCE } : null),
 	},
 };

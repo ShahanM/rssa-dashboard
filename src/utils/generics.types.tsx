@@ -15,6 +15,7 @@ export type StudyCondition = {
 export interface OrderedComponent {
 	id: string;
 	order_position: number;
+	[name: string]: any;
 }
 
 export interface StudyStep extends OrderedComponent {
@@ -36,13 +37,13 @@ export interface Page extends OrderedComponent {
 export interface SelectableCardListProps<Type> {
 	components: Type[];
 	selected: string | undefined;
-	onChangeSelection: (id: string) => void;
+	onChangeSelection: (study: { id: string; name?: string; }) => void;
 }
 
 export type SelectableCardProps<Type> = {
 	component: Type;
 	selected: boolean;
-	onClick: (id: string) => void;
+	onClick: (study: { id: string; name?: string; }) => void;
 }
 
 export type ConstructType = {
@@ -74,6 +75,7 @@ export type ConstructScale = {
 }
 
 export type ScaleLevel = {
+	id: string;
 	level: number;
 	label: string;
 }
@@ -83,15 +85,15 @@ export type SurveyConstructDetails = {
 	name: string;
 	desc: string;
 	type: ConstructType;
-	scale: ConstructScale;
+	// scale: ConstructScale;
+	scale_levels: ScaleLevel[];
+	scale_level_cnt: number;
 	items: ConstructItem[];
 }
 
-export type ConstructItem = {
-	id: string;
+export type ConstructItem = OrderedComponent &{
 	construct_id: string;
 	text: string;
-	order_position: number;
 	item_type: string;
 }
 

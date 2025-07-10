@@ -3,16 +3,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
-import NavBar from './components/navbar/Navbar';
-import ConstructLibrary from './views/constructlibrary/ConstructLibrary';
-import Dashboard from './views/dashboard/Dashboard';
-import Landing from './views/landing/Landing';
-import MetaInfoControl from './views/metainfocontrol/MetaInfoControl';
+import NavBar from './components/Navbar';
+import Landing from './views/Landing';
+import MetaInfoControl from './views/metacomponents/MetaInfoControl';
 import Profile from './views/profile/Profile';
-import Study from './views/Study';
-import StudyDetails from './views/StudyDetails';
-import StepDetails from './views/StepDetails';
-import PageDetails from './views/PageDetails';
+import PageDetails from './views/studycomponents/PageDetails';
+import StepDetails from './views/studycomponents/StepDetails';
+import Study from './views/studycomponents/Study';
+import StudyDetails from './views/studycomponents/StudyDetails';
+import ConstructDetails from './views/surveyconstructs/ConstructDetails';
+import ConstructLibrary from './views/surveyconstructs/ConstructLibrary';
+import ConstructView from './views/surveyconstructs/ConstructView';
+import StudyExplorer from './views/studycomponents/StudyExplorer';
 
 
 const App: React.FC = () => {
@@ -32,15 +34,17 @@ const App: React.FC = () => {
 				<NavBar />
 				<Routes>
 					<Route path="/" element={<Landing />} />
-					<Route path="/studies" element={<Dashboard />} />
+					<Route path="/studies" element={<StudyExplorer />} />
 					<Route path="/studies/:studyId" element={<Study />}>
 						<Route index element={<StudyDetails />} />
 						<Route path="steps/:stepId" element={<StepDetails />} />
 						<Route path="steps/:stepId/pages/:pageId" element={<PageDetails />} />
-						{/* </Route> */}
 						<Route path="data-dashboard" element={<h1>Data Dashboard</h1>} />
 					</Route>
-					<Route path="/survey-construct-library" element={<ConstructLibrary />} />
+					<Route path="/survey-constructs" element={<ConstructLibrary />} />
+					<Route path="/constructs/:constructId" element={<ConstructView />}>
+						<Route index element={<ConstructDetails />} />
+					</Route>
 					<Route path="/metainfo-control" element={<MetaInfoControl />} />
 					<Route path="/profile" element={<Profile />} />
 				</Routes>
