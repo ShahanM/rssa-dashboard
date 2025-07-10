@@ -24,7 +24,7 @@ const ConstructDetails: React.FC = () => {
 	const fetchConstructDetail = useCallback(async () => {
 		if (constructId) {
 			try {
-				await api.get(`constructs/${constructId}/`);
+				await api.get(`constructs/${constructId}`);
 			} catch (error) {
 				console.error("Error fetching studies:", error);
 			}
@@ -47,7 +47,7 @@ const ConstructDetails: React.FC = () => {
 
 	if (!constructId || !construct) {
 		return (
-			<p>Loading study...</p>
+			<p>Loading construct...</p>
 		)
 	} else {
 		console.log("Construct: ", construct);
