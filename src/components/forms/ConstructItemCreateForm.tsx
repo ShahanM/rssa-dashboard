@@ -22,6 +22,7 @@ const ConstructItemCreateForm: React.FC<ConstructItemCreateFormProps> = ({
 	const [submitEnabled, setSubmitEnabled] = useState<boolean>(false);
 	const [itemText, setItemText] = useState<string>("");
 	const [itemType, setItemType] = useState<string>();
+	const [itemTypes, setItemTypes] = useState<{ id: string; type: string }[]>([]);
 
 	const { data: step, loading, error, api, clearData } = useApi<StudyStep>();
 
@@ -43,13 +44,13 @@ const ConstructItemCreateForm: React.FC<ConstructItemCreateFormProps> = ({
 					construct_id: constructId,
 					order_position: orderPosition,
 					text: itemText,
-					item_type: itemType
+					item_type: 'eccefa3a-55fe-4459-bef9-7a826ecd3b58' // FIXME: This should be dynamic
 				});
 			} catch (error) {
 				console.log("Error creating step, contact the administrator.");
 			}
 		}
-	}, [constructId, itemText, orderPosition, itemType, api]);
+	}, [constructId, itemText, orderPosition, api]);
 
 	const handleSuccess = useCallback(async () => {
 		if (step) {
@@ -63,6 +64,15 @@ const ConstructItemCreateForm: React.FC<ConstructItemCreateFormProps> = ({
 	}, [onSuccess, step, clearData, showHideCallback]);
 
 	useEffect(() => { handleSuccess() }, [handleSuccess]);
+
+	const handleItemTypeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const typeId = e.target.value;
+		if (typeId === "-1") {
+			setItemType(undefined);
+		} else {
+			setItemType(typeId);
+		}
+	}
 
 	return (
 		<>
@@ -96,6 +106,21 @@ const ConstructItemCreateForm: React.FC<ConstructItemCreateFormProps> = ({
 								value={orderPosition}
 								disabled
 							/>
+						</Form.Group>
+						<Form.Group
+							className="mb-3"
+							controlId="constructTypeSelect">
+							<Form.Label>Type</Form.Label>
+							<Form.Select aria-label="type select"
+								onChange={handleItemTypeSelect}>
+								<option value={-1}>Select a type</option>
+								{itemTypes && itemTypes.map((type) => (
+									<option value={type.id} key={type.id}>
+										{type.type}
+									</option>
+								))
+								}
+							</Form.Select>
 						</Form.Group>
 						<Form.Group className="mb-3"
 							controlId="constructCreateForm.name">

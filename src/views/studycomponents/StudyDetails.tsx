@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import ConditionCreateForm from "../../components/forms/ConditionCreateForm";
 import StepCreateForm from "../../components/forms/StepCreateForm";
 import StudyComponentList from "../../components/StudyComponentList";
 import { useStudyNavigation } from "../../hooks/StudyNavigationContext";
@@ -14,6 +15,7 @@ const StudyDetails: React.FC = () => {
 	const { data: study, loading, error, api } = useApi<StudyDetail>();
 
 	const [showStepCreateForm, setShowStepCreateForm] = useState<boolean>(false);
+	const [showConditionCreateForm, setShowConditionCreateForm] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (!studyId) {
@@ -79,10 +81,21 @@ const StudyDetails: React.FC = () => {
 					Add a step
 				</Button>
 			</Row>
-			<Row>
+			<Row className="mt-4">
+				<h3>Study Conditions</h3>
 				{study.conditions.map((condition) =>
 					<p key={`sc_${condition.id}`}>{condition.name}</p>)
 				}
+				{
+					studyId &&
+					<ConditionCreateForm
+						studyId={studyId}
+						show={showConditionCreateForm}
+						showHideCallback={setShowConditionCreateForm}
+						onSuccess={fetchStudyDetail}
+					/>
+				}
+				<Button onClick={() => setShowConditionCreateForm(true)}>Add Condition</Button>
 			</Row>
 		</Container>
 	)
