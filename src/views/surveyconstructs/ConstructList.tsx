@@ -3,6 +3,7 @@ import { Button, Col } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
+import ConstructCreateForm from '../../components/forms/ConstructCreateForm';
 import { useApi } from '../../hooks/useApi';
 import { SurveyConstruct } from '../../utils/generics.types';
 
@@ -14,10 +15,9 @@ type ConstructListProps = {
 }
 
 const ConstructList: React.FC<ConstructListProps> = ({ selectedConstructId, onChangeSelection, authErrorCallback }) => {
-	const [show, setShow] = useState<boolean>(false);
 	const { data: constructs, loading, error, api } = useApi<SurveyConstruct[]>();
 
-
+	const [showConstructCreateForm, setShowConstructCreateForm] = useState<boolean>(false);
 	const handleSelection = (constructId: string) => {
 		onChangeSelection(constructId);
 	}
@@ -54,7 +54,8 @@ const ConstructList: React.FC<ConstructListProps> = ({ selectedConstructId, onCh
 				</Col>
 				<Col md={4} className="header-button-container">
 					<Row>
-						<Button className="header-button" color="primary" onClick={() => setShow(true)}>
+						<Button className="header-button" color="primary"
+							onClick={() => setShowConstructCreateForm(true)}>
 							Create construct
 						</Button>
 						{/* <Button className="header-button" color="primary" onClick={() => setConfirmDupe(true)}
@@ -64,6 +65,11 @@ const ConstructList: React.FC<ConstructListProps> = ({ selectedConstructId, onCh
 					</Row>
 				</Col>
 			</Row>
+			<ConstructCreateForm
+				show={showConstructCreateForm}
+				showHideCallback={setShowConstructCreateForm}
+				onSuccess={fetchConstructs}
+			/>
 			<Row>
 				<Table striped bordered hover className="construct-table">
 					<thead>
