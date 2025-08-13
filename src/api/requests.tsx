@@ -27,20 +27,6 @@ export const authenticatedPost = async (params: RequestProps) => {
 	return await response.json();
 }
 
-// export const authenticatedPut = async (url, data) => {
-// 	const response = await fetch(url, {
-// 		method: "PUT",
-// 		body: JSON.stringify(data),
-// 		headers: getHeaders(localStorage.getItem('access_token'))
-// 	});
-// 	if (response.status === 401) {
-// 		console.log("Removing access token.");
-// 		localStorage.removeItem('access_token');
-// 		throw new Error('Unauthorised');
-// 	}
-// 	return await response.json();
-// }
-
 export const authenticatedGet = async (params: RequestProps) => {
 	const headers = getHeaders(params.token);
 	console.log("Fetching:", params.url, "with headers:", headers);

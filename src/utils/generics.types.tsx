@@ -22,6 +22,8 @@ export interface StudyStep extends OrderedComponent {
 	study_id: string;
 	name: string;
 	description: string;
+	title?: string;
+	instructions?: string;
 	date_created: string;
 	pages?: Page[];
 }
@@ -74,9 +76,9 @@ export type ConstructScale = {
 	scale_levels: ScaleLevel[];
 }
 
-export type ScaleLevel = {
+export type ScaleLevel = OrderedComponent &{
 	id: string;
-	level: number;
+	value: number;
 	label: string;
 }
 

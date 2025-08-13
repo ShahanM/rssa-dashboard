@@ -1,67 +1,57 @@
-import { useCallback, useEffect } from "react";
-import { Table } from "react-bootstrap";
-import { MetadataTableRow } from "../../components/MetadataTableRow";
-import { useApi } from "../../hooks/useApi";
+import clsx from "clsx";
+import { Link } from "react-router-dom";
+import ResourceMetaInfo from "../../components/views/ResourceMetaInfo";
+import ResourceViewer from "../../components/views/ResourceViewer";
+import { useAppSelector } from "../../store/hooks";
 
-interface ConstructSummaryViewProps {
-	constructId: string | undefined;
-	authErrorCallback: (errorMessage: string) => void;
-}
 
 interface ConstructSummary {
 	id: string;
+	name: string;
 	desc: string;
 	construct_type: string;
 	scale_name: string;
 }
 
-const ConstructSummaryView: React.FC<ConstructSummaryViewProps> = (
-	{ constructId, authErrorCallback }
-) => {
-	const { data: construct, loading, error, api } = useApi<ConstructSummary>();
-
-	const fetchConstructSummary = useCallback(async () => {
-		if (constructId) {
-			try {
-				await api.get(`constructs/${constructId}/summary`);
-
-			} catch (error) {
-				console.error("Error fetching construct summary:", error);
-			}
-		}
-	}, [constructId, api]);
-
-	useEffect(() => { fetchConstructSummary(); }, [fetchConstructSummary]);
-
-	if (loading) {
-		return <div>Loading construct summary...</div>;
-	}
-
-	if (error) {
-		return <div>Error loading construct summary.</div>;
-	}
-
-	if (!constructId || !construct) {
-		return (
-			<div>
-				<p>Please select a construct to view the summary.</p>
-			</div>
-		);
-	} else {
-		console.log("Construct summary fetched:", construct);
-	}
+const ConstructSummaryView: React.FC = () => {
+	const selectedObject = useAppSelector((state) => state.constructSelection["construct"]);
 
 	return (
-		<>
-			<Table striped bordered>
-				<tbody>
-					<MetadataTableRow label={"Construct ID"} value={construct.id} />
-					<MetadataTableRow label={"Description"} value={construct.desc} />
-					<MetadataTableRow label={"Scale Type"} value={construct.construct_type} />
-					<MetadataTableRow label={"Scale Name"} value={construct.scale_name} />
-				</tbody>
-			</Table>
-		</>
+		<div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
+			<ResourceViewer
+				apiResourceTag="constructs"
+				resourceId={selectedObject?.id}
+				resourceKey="construct"
+				summary
+			>
+				{(construct: ConstructSummary) => (
+					<>
+						<div className="flex items-center justify-between mb-4">
+							<h3 className="text-xl font-bold mb-4">{construct.name}</h3>
+							<Link to={`/constructs/${construct.id}`}>
+								<button
+									className={clsx(
+										"btn btn-primary rounded bg-yellow-500",
+										"hover:bg-yellow-600 text-purple px-4 py-2",
+										"cursor-pointer",
+									)}
+								>
+									<span>Show details &gt;</span>
+								</button>
+							</Link>
+						</div>
+						<ResourceMetaInfo metaInfo={[
+							{ label: 'Name', value: construct.name },
+							{ label: 'ID', value: construct.id },
+							{ label: 'Scale Type', value: construct.construct_type },
+							{ label: 'Scale Name', value: construct.scale_name },
+							{ label: 'Description', value: construct.desc, wide: true },
+						]} />
+					</>
+				)}
+
+			</ResourceViewer>
+		</div>
 	)
 
 }

@@ -1,27 +1,37 @@
-import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import type { DragEndEvent } from '@dnd-kit/core';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { useQueryClient, type QueryKey } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from "react";
 import { useApi } from "../hooks/useApi";
-import { OrderedComponent, Page, StudyStep } from "../utils/generics.types";
+import type { OrderedComponent, Page, StudyStep } from "../utils/generics.types";
 import { SortableItem } from "./SortableItem";
 
 interface StudyComponentListProps {
 	studyComponents: OrderedComponent[];
-	urlPathPrefix: string;
+	urlPathPrefix?: string;
 	patchUrl?: string;
 	labelKey: string;
+	apiResourceTag: string;
+	resourceKey: string;
+	invalidateQueryKey?: QueryKey;
 }
 
 const StudyComponentList: React.FC<StudyComponentListProps> = ({
 	studyComponents,
 	urlPathPrefix,
 	patchUrl,
-	labelKey
+	labelKey,
+	apiResourceTag,
+	resourceKey,
+	invalidateQueryKey = ['study-components'],
 }) => {
 	const [components, setComponents] = useState<OrderedComponent[]>(studyComponents);
 
 	const { api } = useApi<StudyStep[] | Page[]>();
+
+	const queryClient = useQueryClient();
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -43,12 +53,13 @@ const StudyComponentList: React.FC<StudyComponentListProps> = ({
 
 		try {
 			await api.put(patchUrl, updatedComponents);
-			console.log("Order updated successfully on server.");
 		} catch (error) {
 			console.error("Error updating order on server:", error);
 			setComponents(components);
+		} finally {
+			await queryClient.invalidateQueries({ queryKey: invalidateQueryKey })
 		}
-	}, [api, patchUrl, components]);
+	}, [api, patchUrl, components, invalidateQueryKey, queryClient]);
 
 
 	const handleDragEnd = useCallback(async (event: DragEndEvent) => {
@@ -66,7 +77,7 @@ const StudyComponentList: React.FC<StudyComponentListProps> = ({
 			const newOrderedComponents = arrayMove(components, oldIndex, newIndex);
 			const updatedComponents = newOrderedComponents.map((component, index) => ({
 				...component,
-				order_position: index + 1, // Update order_position based on new index
+				order_position: index + 1,
 			}));
 			setComponents(updatedComponents);
 
@@ -95,12 +106,15 @@ const StudyComponentList: React.FC<StudyComponentListProps> = ({
 				items={components.map((component) => component.id)}
 				strategy={verticalListSortingStrategy}
 			>
-				<ul className="study-component-list-container">
+				<ul className="w-full max-w-2xl">
 					{components.map((component) =>
 						<SortableItem
 							key={component.id}
 							urlPathPrefix={urlPathPrefix}
 							studyComponent={component}
+							invalidateQueryKey={invalidateQueryKey}
+							apiResourceTag={apiResourceTag}
+							resourceKey={resourceKey}
 							labelKey={labelKey} />
 					)}
 				</ul>

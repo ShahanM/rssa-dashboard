@@ -1,117 +1,119 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Row, Table } from 'react-bootstrap';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { MetadataTableRow } from '../../components/MetadataTableRow';
-import PageCreateForm from '../../components/forms/PageCreateForm';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import type { NewPage } from '../../api/api.types';
+import CreateResourceButton from '../../components/buttons/CreateResourceButton';
+import type { FormField } from '../../components/forms/DynamicFormField';
 import StudyComponentList from '../../components/StudyComponentList';
-import { useStudyNavigation } from '../../hooks/StudyNavigationContext';
-import { useApi } from '../../hooks/useApi';
-import { StudyStep } from '../../utils/generics.types';
+import ResourceMetaInfo from '../../components/views/ResourceMetaInfo';
+import ResourceViewer from '../../components/views/ResourceViewer';
+import { useAppDispatch } from '../../store/hooks';
+import { setStep } from '../../store/studycomponents/selectionSlice';
+import type { StudyStep } from '../../utils/generics.types';
 
 const StepDetails: React.FC = () => {
 	const { studyId, stepId } = useParams<{ studyId: string; stepId: string }>();
-	const navigate = useNavigate();
-	const { setStepDisplayName } = useStudyNavigation();
-	const [loadingStepData, setLoadingStepData] = useState(true);
-	const { data: step, loading, error, api } = useApi<StudyStep>();
 
-	const [showPageCreateForm, setShowPageCreateForm] = useState<boolean>(false);
+	const summary = false;
 
-	useEffect(() => {
-		if (!studyId) {
-			console.warn("Study ID is missing from URL. Redirecting to studies listings.")
-			navigate('/studies', { replace: true });
-			return;
-		}
+	const dispatch = useAppDispatch();
 
-		if (!stepId) {
-			console.warn("Step ID is missing from URL. Redirecting back to study page.");
-			navigate(`/studies/${studyId}`, { replace: true });
-			return;
-		}
-		setLoadingStepData(true);
-
-	}, [studyId, stepId, navigate]);
-
-	const fetchStudyStep = useCallback(async () => {
-		if (stepId) {
-			try {
-				await api.get(`steps/${stepId}`);
-			} catch (error) {
-				console.log("Error fetching study steps. ", error);
-			}
-		}
-	}, [stepId, api]);
-
-	useEffect(() => {
-		if (step && step.name) {
-			setStepDisplayName(step.name)
-			console.log("Step", step);
-		}
-	}, [step, setStepDisplayName])
-
-	useEffect(() => {
-		fetchStudyStep();
-	}, [fetchStudyStep]);
-
-	const lastPageOrderPos = useMemo(() => {
-		const lastOrderPosition = step?.pages?.[step.pages.length - 1]?.order_position;
-		return (lastOrderPosition ?? 0) + 1;
-	}, [step?.pages]);
-
-	if (!step) {
-		return (
-			<h2>Loading step data</h2>
-		)
+	if (!studyId || !stepId) {
+		console.warn("Study ID or Step ID is missing from URL. Redirecting to studies listings.");
+		return null;
 	}
-	if (!stepId || !studyId) {
-		return <p>Something went wrong</p>;
+
+	const handleStepLoad = (loadedStep: StudyStep) => {
+		const stepForRedux: StudyStep = {
+			id: loadedStep.id,
+			study_id: loadedStep.study_id,
+			name: loadedStep.name,
+			description: loadedStep.description,
+			order_position: loadedStep.order_position,
+			date_created: new Date(loadedStep.date_created).toLocaleDateString()
+		};
+		dispatch(setStep(stepForRedux));
 	}
+
+	const createPageFormFields: FormField[] = [
+		{
+			name: 'study_id',
+			label: 'Study ID',
+			value: studyId,
+			type: 'static',
+			required: true,
+		},
+		{
+			name: 'step_id',
+			label: 'Step ID',
+			value: stepId,
+			type: 'static',
+			required: true,
+		},
+		{
+			name: 'name',
+			label: 'Step Name',
+			type: 'text',
+			required: true,
+		},
+		{
+			name: 'description',
+			label: 'Description',
+			type: 'textarea',
+			required: false,
+		}
+	]
 
 	return (
-		<>
-			<Row>
-				<div className="container-header-content">
-					<Link to={`/studies/${studyId}`}><Button>&lt;</Button></Link>
-				</div>
-				<div className="container-header-content">
-					<h2>{step.name}</h2>
-				</div>
-			</Row>
-			<Table striped bordered hover>
-				<tbody>
-					<MetadataTableRow label={"Step ID"} value={step.id} />
-					<MetadataTableRow label={"Description"} value={step.description} />
-					<MetadataTableRow label={"Date created"} value={step.date_created} />
-					<MetadataTableRow label={"Order position"} value={step.order_position} />
-				</tbody>
-			</Table>
-			<Row>
-				{step.pages &&
-					<StudyComponentList
-						studyComponents={step.pages}
-						urlPathPrefix={`/studies/${studyId}/steps/${stepId}/pages`}
-						labelKey={'name'}
-					/>
-				}
-			</Row>
-			{
-				studyId && stepId &&
-				<PageCreateForm
-					studyId={studyId}
-					stepId={stepId}
-					orderPosition={lastPageOrderPos}
-					show={showPageCreateForm}
-					showHideCallback={setShowPageCreateForm}
-					onSuccess={fetchStudyStep}
-				/>
-			}
-			<Row>
-				<Button onClick={() => setShowPageCreateForm(true)} >
-					Add a page
-				</Button>
-			</Row>
-		</>
+		<div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
+			<ResourceViewer
+				apiResourceTag="steps"
+				resourceId={stepId}
+				resourceKey="step"
+				summary={summary}
+				onResourceLoaded={handleStepLoad}
+			>
+				{(step: StudyStep) => {
+					return (
+						console.log("Step: ", step),
+						<>
+							<h2 className="text-xl font-bold mb-3">{step.name}</h2>
+							<ResourceMetaInfo metaInfo={[
+								{ label: 'Name', value: step.name },
+								{ label: 'ID', value: step.id },
+								{ label: 'Date Created', value: new Date(step.date_created).toLocaleDateString() },
+								{ label: 'Description', value: step.description },
+								{ label: 'Instruction', value: step.instructions }
+							]} />
+							<div className="flex space-x-2 justify-between gap-4">
+								<div>
+
+									<div className="flex justify-between items-center p-0 min-w-100 my-3">
+										<h3 className="text-xl font-bold mb-3">Pages</h3>
+										<CreateResourceButton<NewPage>
+											apiResourceTag="pages"
+											objectName="page"
+											formFields={createPageFormFields}
+											invalidateQueryKey={['steps', stepId, summary]}
+										/>
+									</div>
+									{step.pages && step.pages.length > 0 ?
+										<StudyComponentList
+											studyComponents={step.pages}
+											patchUrl={`steps/${step.id}/pages/order`}
+											urlPathPrefix={`/studies/${studyId}/steps/${stepId}/pages`}
+											apiResourceTag='pages'
+											resourceKey='page'
+											labelKey="name"
+										/>
+										: <p>There are no pages to show for this step.</p>
+									}
+								</div>
+							</div>
+						</>
+					)
+				}}
+			</ResourceViewer>
+		</div>
 	)
 }
 

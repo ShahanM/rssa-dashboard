@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
-import { Button, Row, Table } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import LinkConstructButton from "../../components/LinkConstructButton";
-import { MetadataTableRow } from "../../components/MetadataTableRow";
-import { useStudyNavigation } from "../../hooks/StudyNavigationContext";
-import { useApi } from "../../hooks/useApi";
+import { useParams } from "react-router-dom";
+import CreateResourceButton from "../../components/buttons/CreateResourceButton";
+import type { FormField } from "../../components/forms/DynamicFormField";
+import ResourceMetaInfo from "../../components/views/ResourceMetaInfo";
+import ResourceTable from "../../components/views/ResourceTable";
+import ResourceViewer from "../../components/views/ResourceViewer";
+import type { Page } from "../../utils/generics.types";
 
 type SurveyConstructItem = {
 	id: string;
@@ -40,102 +40,102 @@ export type SurveyPage = {
 	last_page: boolean;
 }
 
+
+type NewContentPage = {
+	page_id: string;
+	construct_id: string;
+	scale_id: string;
+}
+
 const PageDetails: React.FC = () => {
 	const { studyId, stepId, pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
-	const navigate = useNavigate();
-	const { setStepDisplayName } = useStudyNavigation();
-	const [loadingStepData, setLoadingStepData] = useState(true);
-	const { data: page, loading, error, api } = useApi<SurveyPage>();
-	const { setPageDisplayName } = useStudyNavigation()
 
-	useEffect(() => {
-		if (!studyId) {
-			console.warn("Study ID is missing from URL. Redirecting to studies listings.")
-			navigate('/studies', { replace: true });
-			return;
-		}
+	const summary = false;
 
-		if (!stepId) {
-			console.warn("Step ID is missing from URL. Redirecting back to study details page.");
-			navigate(`/studies/${studyId}`, { replace: true });
-			return;
-		}
-
-		if (!pageId) {
-			console.warn("Page ID is missing from URL. Redirecting back to step details page.");
-			navigate(`/studies/${studyId}/${pageId}`, { replace: true });
-			return;
-		}
-		setLoadingStepData(true);
-
-	}, [studyId, stepId, pageId, navigate]);
-
-	const fetchPageInfo = useCallback(async () => {
-		if (pageId) {
-			try {
-				await api.get(`pages/${pageId}`)
-			} catch (error) {
-				console.log("Error fetching step page. ", error);
-			}
-		}
-	}, [pageId, api]);
-
-	useEffect(() => { fetchPageInfo() }, [fetchPageInfo]);
-
-	useEffect(() => {
-		if (page) {
-			setPageDisplayName(page.name);
-			console.log("Page ", page);
-		}
-	}, [page, setPageDisplayName])
-
-	if (!studyId || !stepId || !pageId) {
-		return <p>There was a problem.</p>
+	const handleStudyLoad = (loadedPage: Page) => {
 	}
 
-	if (!page) {
-		return (
-			<h2>Loading step data</h2>
-		)
-	}
+	const createSurveyPageFormFields: FormField[] = [
+		{
+			name: 'page_id',
+			label: 'Page ID',
+			value: pageId,
+			type: 'static',
+			required: true,
+		},
+		{
+			name: 'construct_id',
+			label: 'Survey construct',
+			type: 'select',
+			required: true,
+			optionsEndpoint: 'constructs',
+			optionsValueKey: 'id',
+			optionsLabelKey: 'name',
+		},
+		{
+			name: 'scale_id',
+			label: 'Measurement scale',
+			type: 'select',
+			required: true,
+			optionsEndpoint: 'construct-scales',
+			optionsValueKey: 'id',
+			optionsLabelKey: 'name',
+		}
+	]
 
 	return (
-		<>
-			<Row>
-				<div className="container-header-content">
-					<Link to={`/studies/${studyId}/steps/${stepId}`}><Button>&lt;</Button></Link>
-				</div>
-				<div className="container-header-content">
-					<h2>{page.name}</h2>
-				</div>
-			</Row>
-			<Table striped bordered hover>
-				<tbody>
-					<MetadataTableRow label={"Page ID"} value={page.id} />
-					<MetadataTableRow label={"Description"} value={page.description} />
-					<MetadataTableRow label={"Date created"} value={page.date_created} />
-					<MetadataTableRow label={"Order position"} value={page.order_position} />
-				</tbody>
-			</Table>
-			{/* <Row> */}
-			{
-				page.page_contents && page.page_contents.map((pageContent) =>
-					<div key={`pageContent_${pageContent.content_id}`} style={{ backgroundColor: "beige", borderRadius: "0.5em", margin: "0.25em" }}>
-						<p>{pageContent.content_id}</p>
-						<p>{pageContent.desc}</p>
-						<p>{pageContent.name}</p>
-						<p>{pageContent.order_position}</p>
-						<p>{pageContent.scale_name}</p>
-					</div>
-				)
-			}
-			{/* </Row> */}
-			<Row>
-				<LinkConstructButton component={page}
-					onSuccess={fetchPageInfo} />
-
-			</Row>
-		</>
+		<div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
+			<ResourceViewer
+				apiResourceTag="pages"
+				resourceId={pageId}
+				resourceKey="page"
+				onResourceLoaded={handleStudyLoad}
+				summary={summary}
+			>
+				{(page: Page) => {
+					console.log("Page", page);
+					return (
+						<>
+							<h2 className="text-xl font-bold mb-3">{page.name}</h2>
+							<ResourceMetaInfo metaInfo={[
+								{ label: 'Name', value: page.name },
+								{ label: 'ID', value: page.id },
+								{ label: 'Order position', value: String(page.order_position) },
+								{ label: 'Description', value: page.description, wide: true },
+							]} />
+							{
+								page.page_contents.length > 0 ?
+									<ResourceTable
+										data={page.page_contents}
+										columns={[
+											{
+												accessorKey: "name",
+												header: "Construct Name",
+											},
+											{
+												accessorKey: "scale_name",
+												header: "Scale Name"
+											}
+										]}
+									/> :
+									<p>
+										This Page currently has no survey constructs linked to it.
+										It will appear as a blank page in the survey.
+									</p>
+							}
+							<CreateResourceButton<NewContentPage>
+								apiResourceTag="survey"
+								objectName="surveyPage"
+								buttonLabel="Add Survey Construct"
+								formFields={createSurveyPageFormFields}
+								invalidateQueryKey={['pages', pageId, summary]}
+								className="mt-3"
+							/>
+						</>
+					)
+				}}
+			</ResourceViewer>
+		</div>
 	)
 }
 
