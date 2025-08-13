@@ -57,7 +57,6 @@ export type SurveyConstruct = {
 	id: string;
 	name: string;
 	desc: string;
-	// typeId?: string;
 	type: ConstructType;
 	scaleId?: string;
 }

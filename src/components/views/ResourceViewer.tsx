@@ -18,7 +18,7 @@ const ResourceViewer = <
 	resourceId,
 	summary = false,
 	resourceKey,
-	onResourceLoaded = (data: T) => { },
+	onResourceLoaded,
 	children,
 }: ResourceViewerProps<T, K>) => {
 
@@ -31,7 +31,7 @@ const ResourceViewer = <
 	});
 
 	useEffect(() => {
-		if (resourceObject) {
+		if (resourceObject && onResourceLoaded) {
 			onResourceLoaded(resourceObject);
 		}
 	}, [resourceObject, onResourceLoaded]);

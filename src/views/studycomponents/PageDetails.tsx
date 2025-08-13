@@ -48,11 +48,13 @@ type NewContentPage = {
 }
 
 const PageDetails: React.FC = () => {
-	const { studyId, stepId, pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
+	// const { studyId, stepId, pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
+	const { pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
 
 	const summary = false;
 
 	const handleStudyLoad = (loadedPage: Page) => {
+		console.log(loadedPage);
 	}
 
 	const createSurveyPageFormFields: FormField[] = [

@@ -4,7 +4,8 @@ import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
 
 const StudyNavigationLayout: React.FC = () => {
-	const { studyId, stepId, pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
+	// const { studyId, stepId, pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
+	const { studyId, stepId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
 	const location = useLocation();
 	const { study, step } = useAppSelector((state) => state.studySelection);
 
@@ -51,7 +52,7 @@ const StudyNavigationLayout: React.FC = () => {
 		if (segment === 'steps' || segment === 'pages') return;
 
 		let displayName = segment.substring(0, 8); // Default to truncated ID
-		let isClickable = !isLast;
+		// let isClickable = !isLast;
 
 		if (segment === stepId && step) {
 			displayName = step.name;
