@@ -2,10 +2,10 @@ import React, { createContext, useContext, useState } from 'react';
 
 
 interface ConstructNavigationContextType {
-	setStudyDisplayName: (name: string) => void;
+	setConstructDisplayName: (name: string) => void;
 	setStepDisplayName: (name: string) => void;
 	setPageDisplayName: (name: string) => void;
-	studyDisplayName: string | null;
+	constructDisplayName: string | null;
 	stepDisplayName: string | null;
 	pageDisplayName: string | null;
 }
@@ -26,19 +26,18 @@ interface ConstructNavigationProviderProps {
 }
 
 export const ConstructNavigationProvider: React.FC<ConstructNavigationProviderProps> = ({ children }) => {
-	const [studyDisplayName, setStudyDisplayName] = useState<string | null>(null);
+	const [constructDisplayName, setConstructDisplayName] = useState<string | null>(null);
 	const [stepDisplayName, setStepDisplayName] = useState<string | null>(null);
 	const [pageDisplayName, setPageDisplayName] = useState<string | null>(null);
 
 	const value = {
-		setStudyDisplayName,
+		setConstructDisplayName,
 		setStepDisplayName,
 		setPageDisplayName,
-		studyDisplayName,
+		constructDisplayName,
 		stepDisplayName,
 		pageDisplayName
 	}
-
 
 	return (
 		<ConstructNavigationContext.Provider value={value}>

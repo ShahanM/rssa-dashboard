@@ -1,100 +1,63 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Button, Col } from 'react-bootstrap';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Table from 'react-bootstrap/Table';
-import ConstructCreateForm from '../../components/forms/ConstructCreateForm';
-import { useApi } from '../../hooks/useApi';
-import { SurveyConstruct } from '../../utils/generics.types';
+import {
+	type ColumnDef
+} from '@tanstack/react-table';
+import type { NewSurveyConstruct } from '../../api/api.types';
+import CreateResourceButton from '../../components/buttons/CreateResourceButton';
+import type { FormField } from '../../components/forms/DynamicFormField';
+import ResourceListViewer from '../../components/views/ResourceListViewer';
+import ResourceTable from '../../components/views/ResourceTable';
+import { setConstruct } from '../../store/constructlibrary/selectionSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import type { SurveyConstruct } from '../../utils/generics.types';
 
 
-type ConstructListProps = {
-	selectedConstructId: string | undefined;
-	onChangeSelection: (constructId: string) => void;
-	authErrorCallback: (errorMessage: string) => void;
-}
+const ConstructList: React.FC = () => {
+	const dispatch = useAppDispatch();
+	const selectedConstruct = useAppSelector(state => state.constructSelection.construct);
 
-const ConstructList: React.FC<ConstructListProps> = ({ selectedConstructId, onChangeSelection, authErrorCallback }) => {
-	const { data: constructs, loading, error, api } = useApi<SurveyConstruct[]>();
+	const constructColumns: ColumnDef<SurveyConstruct>[] = [
+		{ accessorKey: 'name', header: 'Construct Name' }
+	]
 
-	const [showConstructCreateForm, setShowConstructCreateForm] = useState<boolean>(false);
-	const handleSelection = (constructId: string) => {
-		onChangeSelection(constructId);
-	}
-
-	const fetchConstructs = useCallback(async () => {
-		try {
-			await api.get("constructs/");
-		} catch (error) {
-			console.error("Error fetching constructs:", error);
+	const createConstructFormFields: FormField[] = [
+		{
+			name: 'name',
+			label: 'Study Name',
+			type: 'text',
+			required: true,
+		},
+		{
+			name: 'desc',
+			label: 'Description',
+			type: 'textarea',
+			required: false,
 		}
-	}, [api]);
+	];
 
-	useEffect(() => { fetchConstructs(); }, [fetchConstructs]);
-
-	if (loading) {
-		return <div>Loading constructs...</div>;
-	}
-
-	if (error) {
-		return <div>Error: {error.message}</div>;
-	}
-
-	if (!constructs || constructs.length === 0) {
-		return <div>No constructs available.</div>;
-	} else {
-		console.log("Constructs fetched:", constructs);
-	}
+	const handleRowClick = (construct: SurveyConstruct) => {
+		dispatch(setConstruct(construct));
+	};
 
 	return (
-		<Container className="list-container">
-			<Row className="header">
-				<Col md={8}>
-					<h2>Survey Constructs</h2>
-				</Col>
-				<Col md={4} className="header-button-container">
-					<Row>
-						<Button className="header-button" color="primary"
-							onClick={() => setShowConstructCreateForm(true)}>
-							Create construct
-						</Button>
-						{/* <Button className="header-button" color="primary" onClick={() => setConfirmDupe(true)}
-											disabled={!(selectedStudyId && selectedStudyId.length > 0)}>
-											Duplicate Study
-										</Button> */}
-					</Row>
-				</Col>
-			</Row>
-			<ConstructCreateForm
-				show={showConstructCreateForm}
-				showHideCallback={setShowConstructCreateForm}
-				onSuccess={fetchConstructs}
-			/>
-			<Row>
-				<Table striped bordered hover className="construct-table">
-					<thead>
-						<tr>
-							<th>Construct</th>
-						</tr>
-					</thead>
-					<tbody>
-						{constructs.map((construct) => {
-							return (
-								<tr key={"construct_" + construct.id}
-									construct-id={construct.id}
-									onClick={() => handleSelection(construct.id)}
-									className={selectedConstructId === construct.id ? "selected" : ""}>
-									<td>
-										{construct.name}
-									</td>
-								</tr>
-							)
-						}
-						)}
-					</tbody>
-				</Table>
-			</Row>
-		</Container >
+		<div className="container mx-auto p-3 bg-gray-50 rounded-lg me-2">
+			<div className="flex justify-between items-center mb-4">
+				<h2 className="text-2xl font-bold mb-4">Your Studies</h2>
+				<CreateResourceButton<NewSurveyConstruct>
+					apiResourceTag="constructs"
+					objectName="construct"
+					formFields={createConstructFormFields}
+				/>
+			</div>
+			<ResourceListViewer<SurveyConstruct> apiResourceTag='constructs'>
+				{(surveyConstructs) => (
+					<ResourceTable
+						data={surveyConstructs}
+						columns={constructColumns}
+						onRowClick={handleRowClick}
+						selectedRowId={selectedConstruct?.id} />
+				)}
+			</ResourceListViewer>
+		</div>
 	)
 }
 

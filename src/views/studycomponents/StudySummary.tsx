@@ -1,94 +1,72 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import React, { useCallback, useEffect, useState } from "react";
-import { Button, Col, Container, ListGroup, Row, Table } from "react-bootstrap";
-import { getStudySummary } from "../../api/endpoints";
-import { isAuthError } from "../../utils/errors";
-import { ConditionCount, StudySummary } from "../../utils/generics.types";
+import clsx from "clsx";
+import React from "react";
 import { Link } from "react-router-dom";
-import { MetadataTableRow } from "../../components/MetadataTableRow";
+import ResourceMetaInfo from "../../components/views/ResourceMetaInfo";
+import ResourceViewer from "../../components/views/ResourceViewer";
+import { useAppSelector } from "../../store/hooks";
+import type { StudySummary } from "../../utils/generics.types";
+import UserCard from "../profile/UserCard";
 
-
-interface StudySummaryViewProps {
-	studyId: string | undefined;
-	authErrorCallback: (errorMessage: string) => void;
-}
-
-
-
-const StudySummaryView: React.FC<StudySummaryViewProps> = (
-	{ studyId, authErrorCallback }
-) => {
-	const [study, setStudy] = useState<StudySummary>();
-	const { getAccessTokenSilently } = useAuth0();
-
-	const fetchStudySummary = useCallback(async () => {
-		if (studyId) {
-			try {
-				const token = await getAccessTokenSilently();
-				const response = await getStudySummary(studyId, token);
-				const studySummary: StudySummary = {
-					...response,
-					date_created: new Date(response.date_created)
-				}
-				setStudy(studySummary);
-				console.log("Study summary fetched:", response);
-			} catch (error) {
-				if (isAuthError(error)) {
-					authErrorCallback((error as Error).message);
-				} else {
-					console.error("Error fetching studies:", error);
-
-				}
-			}
-		}
-
-	}, [studyId, getAccessTokenSilently, authErrorCallback]);
-
-	useEffect(() => {
-		fetchStudySummary();
-	}, [fetchStudySummary]);
-
-	if (!studyId || !study) {
-		return (
-			<Container className="study-summary">
-				<p>Please select a study to view the summary.</p>
-			</Container>
-		);
-	}
+const StudySummaryView: React.FC = () => {
+	const selectedObject = useAppSelector((state) => state.studySelection["study"]);
 
 	return (
-		<>
-			<Table striped bordered>
-				<tbody>
-					<MetadataTableRow label={"Study ID"} value={study.id} />
-					<MetadataTableRow label={"Description"} value={study.description} />
-					<MetadataTableRow label={"Date created"} value={study.date_created.toLocaleDateString()} />
-				</tbody>
-			</Table>
-			<h3>Particpant Summary</h3>
-			<p><strong>Total participants:</strong> {study.total_participants}</p>
-			<ParticipantByConditionView conditionGroups={study.participants_by_condition} />
-		</>
-	);
-}
-
-
-
-const ParticipantByConditionView: React.FC<{ conditionGroups: ConditionCount[] }> = (
-	{ conditionGroups }
-) => {
-	return (
-		<Table striped bordered hover>
-			<tbody>
-				{conditionGroups.map((conditionCount) =>
-					<MetadataTableRow
-						key={conditionCount.condition_id}
-						label={conditionCount.condition_name}
-						value={conditionCount.participant_count} />
+		<div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
+			<ResourceViewer
+				apiResourceTag="studies"
+				resourceId={selectedObject?.id}
+				resourceKey="study"
+				summary
+			>
+				{(study: StudySummary) => (
+					<>
+						<div className="flex items-center justify-between mb-4">
+							<h3 className="text-xl font-bold mb-4">{study.name}</h3>
+							<Link to={`/studies/${study.id}`}>
+								<button
+									className={clsx(
+										"btn btn-primary rounded bg-yellow-500",
+										"hover:bg-yellow-600 text-purple px-4 py-2",
+										"cursor-pointer",
+									)}
+								>
+									<span>Show details &gt;</span>
+								</button>
+							</Link>
+						</div>
+						<ResourceMetaInfo metaInfo={[
+							{ label: 'Name', value: study.name },
+							{ label: 'ID', value: study.id },
+							{
+								label: 'Owner', value: study.owner ?
+									<UserCard userId={study.owner} />
+									: study.owner
+							},
+							{
+								label: 'Created by',
+								value: study.created_by ?
+									<UserCard userId={study.created_by} />
+									: study.created_by
+							},
+							{ label: 'Date Created', value: new Date(study.date_created).toLocaleDateString() },
+							{ label: 'Description', value: study.description, wide: true },
+						]} />
+						<h4 className="text-xl font-bold mb-4">Participant Summary</h4>
+						<ResourceMetaInfo metaInfo={[
+							{ label: 'Total Participants', value: String(study.total_participants), wide: true },
+							...(study.participants_by_condition.length > 0
+								? study.participants_by_condition.map((conditionCount) => ({
+									label: conditionCount.condition_name,
+									value: String(conditionCount.participant_count)
+								}))
+								: [{ label: 'No conditions', value: 'N/A' }])
+						]} />
+					</>
 				)}
-			</tbody>
-		</Table>
-	)
+
+			</ResourceViewer>
+		</div>
+	);
 }
 
 export default StudySummaryView;
