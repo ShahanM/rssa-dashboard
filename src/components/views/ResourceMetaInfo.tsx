@@ -59,7 +59,6 @@ export const EditableResourceMetaInfo = <
 >({
 	apiResourceTag,
 	resourceId,
-	objectName,
 	invalidateQueryKey,
 	editableFields,
 	onSave,
