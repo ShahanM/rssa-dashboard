@@ -6,12 +6,14 @@ interface CopyToClipboardButtonProps {
 	textToCopy: string;
 	animated?: boolean;
 	showLabel?: boolean;
+	className?: string;
 }
 
 export const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
 	textToCopy,
 	animated = false,
 	showLabel = false,
+	className = "",
 }) => {
 	const [isCopied, setIsCopied] = useState(false);
 
@@ -39,7 +41,8 @@ export const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
 				{
 					'bg-purple-300 text-gray-700 hover:text-gray-100 hover:bg-purple-600 focus:ring-yellow-400': !isCopied,
 					'bg-green-500 text-white focus:ring-green-500': isCopied,
-				}
+				},
+				className
 			)}
 		>
 			{animated ?

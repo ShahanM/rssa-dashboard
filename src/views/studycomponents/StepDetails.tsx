@@ -4,7 +4,7 @@ import type { NewPage } from '../../api/api.types';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
 import type { FormField } from '../../components/forms/DynamicFormField';
 import StudyComponentList from '../../components/StudyComponentList';
-import ResourceMetaInfo from '../../components/views/ResourceMetaInfo';
+import { EditableResourceMetaInfo } from '../../components/views/ResourceMetaInfo';
 import ResourceViewer from '../../components/views/ResourceViewer';
 import { useAppDispatch } from '../../store/hooks';
 import { setStep } from '../../store/studycomponents/selectionSlice';
@@ -77,13 +77,28 @@ const StepDetails: React.FC = () => {
 						console.log("Step: ", step),
 						<>
 							<h2 className="text-xl font-bold mb-3">{step.name}</h2>
-							<ResourceMetaInfo metaInfo={[
-								{ label: 'Name', value: step.name },
-								{ label: 'ID', value: step.id },
-								{ label: 'Date Created', value: new Date(step.date_created).toLocaleDateString() },
-								{ label: 'Description', value: step.description },
-								{ label: 'Instruction', value: step.instructions }
-							]} />
+							<EditableResourceMetaInfo
+								apiResourceTag="steps"
+								resourceId={stepId}
+								objectName='step'
+								invalidateQueryKey={["steps", stepId, summary]}
+								editableFields={[
+									{ key: 'name', label: 'Name', value: step.name, type: "text" },
+									{ key: 'id', label: 'ID', value: step.id },
+									{ key: 'description', label: 'Description', value: step.description, type: "textarea" },
+									{ key: 'date_created', label: 'Date Created', value: new Date(step.date_created).toLocaleDateString() },
+									{
+										key: 'title', label: 'Title',
+										value: step.title,
+										type: "text"
+									},
+									{
+										key: 'instructions', label: 'Instruction',
+										value: step.instructions,
+										type: "textarea",
+										wide: true
+									}
+								]} />
 							<div className="flex space-x-2 justify-between gap-4">
 								<div>
 

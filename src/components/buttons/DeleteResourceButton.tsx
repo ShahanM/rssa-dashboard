@@ -25,13 +25,10 @@ const DeleteResourceButton: React.FC<DeleteResourceButtonProps> = ({
 }) => {
 	const { hasPermission } = usePermissions();
 
-	if (!hasPermission(`delete:${apiResourceTag}`)) {
-		return <></>;
-	}
-
+	
 	const { api } = useApi();
 	const [isModalOpen, setIsModalOpen] = useState(false);
-
+	
 	const queryClient = useQueryClient();
 
 	const mutation = useMutation({
@@ -51,10 +48,18 @@ const DeleteResourceButton: React.FC<DeleteResourceButtonProps> = ({
 			console.error("Error deleting resource:", error);
 		},
 	})
-
+	
+	let permissionString = `delete:${apiResourceTag}`;
+	if (apiResourceTag.includes("-")) {
+		permissionString = permissionString.replace("-", "_");
+	}
+	console.log("Required perimission: ", `delete:${apiResourceTag}`, permissionString, hasPermission((permissionString)));
+	if (!hasPermission(permissionString)) {
+		return <></>;
+	}
 	const openModal = () => { setIsModalOpen(true); };
 	const closeModal = () => { setIsModalOpen(false); };
-
+	
 	return (
 		<>
 			<ConfirmationDialog

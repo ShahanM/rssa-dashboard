@@ -11,6 +11,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { setStudy } from "../../store/studycomponents/selectionSlice";
 import type { Study, StudyDetail } from "../../utils/generics.types";
 import UserCard from "../profile/UserCard";
+import ExportStudyConfigButton from "../../components/buttons/ExportStudyConfigButton";
 
 const StudyDetails: React.FC = () => {
 	const { studyId } = useParams<{ studyId: string }>();
@@ -86,16 +87,17 @@ const StudyDetails: React.FC = () => {
 								{ label: 'Date Created', value: new Date(study.date_created).toLocaleDateString() },
 								{ label: 'Description', value: study.description, wide: true },
 							]} />
+							<ExportStudyConfigButton studyId={study.id} studyName={study.name} />
 							<div className="flex space-x-2 justify-between gap-4">
 								<div>
 									<div className="flex justify-between items-center p-0 min-w-100 my-3">
 										<h3 className="text-xl font-bold mb-3">Study steps</h3>
-											<CreateResourceButton<NewStudyStep>
-												apiResourceTag="steps"
-												objectName="step"
-												formFields={createStepFormFields}
-												invalidateQueryKey={['studies', studyId, summary]}
-											/>
+										<CreateResourceButton<NewStudyStep>
+											apiResourceTag="steps"
+											objectName="step"
+											formFields={createStepFormFields}
+											invalidateQueryKey={['studies', studyId, summary]}
+										/>
 									</div>
 									<StudyComponentList
 										studyComponents={study.steps}

@@ -29,22 +29,26 @@ export const CreateResourceButton = <
 	className = '',
 }: CreateResourceButtonProps<T>) => {
 
-	const { hasPermission } = usePermissions()
-
-	if (!hasPermission(`create:${apiResourceTag}`)) {
-		return <></>;
-	}
-
+	const { hasPermission } = usePermissions();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const queryClient = useQueryClient();
 	const { api } = useApi();
-
+	
 	const mutation = useMutation({
 		mutationFn: async (formData: T) => api.post<T>(`${apiResourceTag}`, formData),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: invalidateQueryKey ? invalidateQueryKey : [apiResourceTag] });
 		}
 	});
+	let permissionString = `create:${apiResourceTag}`;
+	if (apiResourceTag.includes("-")) {
+		permissionString = permissionString.replace("-", "_");
+	}
+	console.log("Required perimission: ", `create:${apiResourceTag}`, permissionString);
+	
+	if (!hasPermission(permissionString)) {
+		return <></>;
+	}
 
 	const handleCreate = async (formData: T) => {
 		await mutation.mutateAsync(formData);

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
 
 import hljs from "highlight.js";
-import "highlight.js/styles/monokai-sublime.css";
+// import "highlight.js/styles/monokai-sublime.css";
 import "highlight.js/lib/languages/json";
+import 'highlight.js/styles/atom-one-dark.css'
 
 
 interface HighlightProps {

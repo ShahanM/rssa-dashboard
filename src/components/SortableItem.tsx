@@ -6,7 +6,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import type { OrderedComponent } from "../utils/generics.types";
 import DeleteResourceButton from "./buttons/DeleteResourceButton";
-import { usePermissions } from "../hooks/usePermissions";
 
 interface SortableItemProps {
 	studyComponent: OrderedComponent;
@@ -34,8 +33,6 @@ export const SortableItem: React.FC<SortableItemProps> = ({
 		isDragging,
 	} = useSortable({ id: studyComponent.id });
 
-	const { hasPermission } = usePermissions();
-
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
@@ -44,14 +41,14 @@ export const SortableItem: React.FC<SortableItemProps> = ({
 
 	return (
 		<li style={style} ref={setNodeRef} {...attributes} className="flex space-x-3 items-center">
-			{hasPermission(`delete:${resourceKey}`) && <DeleteResourceButton
+			<DeleteResourceButton
 				apiResourceTag={apiResourceTag}
 				resourceId={studyComponent.id}
 				resourceKey={resourceKey}
 				resourceName={studyComponent[labelKey]}
 				invalidateQueryKey={invalidateQueryKey}
 			/>
-			}
+
 			<div className={clsx(
 				"w-full list-none grid grid-cols-1 md:grid-cols-[1fr_auto]",
 				"items-center gap-2 p-2 mb-1 bg-yellow-500",
