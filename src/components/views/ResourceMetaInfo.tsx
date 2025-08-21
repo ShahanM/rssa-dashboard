@@ -67,7 +67,6 @@ export const EditableResourceMetaInfo = <
 	const { hasPermission } = usePermissions();
 	const [isEditing, setIsEditing] = useState(false);
 	const [formData, setFormData] = useState<Record<string, string>>();
-	// const [isSaving, setIsSaving] = useState(false);
 	const queryClient = useQueryClient();
 	const { api } = useApi();
 
@@ -83,17 +82,6 @@ export const EditableResourceMetaInfo = <
 			setIsEditing(false);
 		}
 	});
-
-	// useEffect(() => {
-	// 	if (isEditing) {
-	// 		const initialFormState = Object.fromEntries(
-	// 			editableFields
-	// 				.filter(field => field.type === "text" || field.type === "textarea")
-	// 				.map(field => [field.key, field.value ?? ''])
-	// 		);
-	// 		setFormData(initialFormState);
-	// 	}
-	// }, [isEditing, editableFields]);
 
 	const switchToEditingMode = useCallback(async () => {
 		const initialFormState = Object.fromEntries(
@@ -116,7 +104,7 @@ export const EditableResourceMetaInfo = <
 	const handleSave = useCallback(async () => {
 		if (!formData) { return }
 		await mutation.mutateAsync(formData as T);
-	}, [formData]);
+	}, [formData, mutation]);
 
 	const handleCancel = () => {
 		setIsEditing(false);

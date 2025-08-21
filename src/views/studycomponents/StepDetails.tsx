@@ -88,6 +88,11 @@ const StepDetails: React.FC = () => {
 									{ key: 'description', label: 'Description', value: step.description, type: "textarea" },
 									{ key: 'date_created', label: 'Date Created', value: new Date(step.date_created).toLocaleDateString() },
 									{
+										key: 'step_type', label: 'Category',
+										value: step.step_type,
+										type: "text"
+									},
+									{
 										key: 'title', label: 'Title',
 										value: step.title,
 										type: "text"
@@ -104,12 +109,14 @@ const StepDetails: React.FC = () => {
 
 									<div className="flex justify-between items-center p-0 min-w-100 my-3">
 										<h3 className="text-xl font-bold mb-3">Pages</h3>
-										<CreateResourceButton<NewPage>
-											apiResourceTag="pages"
-											objectName="page"
-											formFields={createPageFormFields}
-											invalidateQueryKey={['steps', stepId, summary]}
-										/>
+										{step.step_type === 'survey' &&
+											<CreateResourceButton<NewPage>
+												apiResourceTag="pages"
+												objectName="page"
+												formFields={createPageFormFields}
+												invalidateQueryKey={['steps', stepId, summary]}
+											/>
+										}
 									</div>
 									{step.pages && step.pages.length > 0 ?
 										<StudyComponentList

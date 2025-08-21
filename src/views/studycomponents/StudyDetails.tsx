@@ -44,6 +44,18 @@ const StudyDetails: React.FC = () => {
 			required: true,
 		},
 		{
+			name: 'step_type',
+			label: 'Step type',
+			type: 'select',
+			options: [
+				{ value: "survey", label: "Survey" },
+				{ value: "info", label: "Info" },
+				{ value: "pref_elicitation", label: "Preference Elicitation" },
+				{ value: "interaction", label: "Interaction" },
+				{ value: "demographics", label: "Demographics" }
+			]
+		},
+		{
 			name: 'name',
 			label: 'Step Name',
 			type: 'text',

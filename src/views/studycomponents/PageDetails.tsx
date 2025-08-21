@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import CreateResourceButton from "../../components/buttons/CreateResourceButton";
 import type { FormField } from "../../components/forms/DynamicFormField";
-import ResourceMetaInfo from "../../components/views/ResourceMetaInfo";
+import { EditableResourceMetaInfo } from "../../components/views/ResourceMetaInfo";
 import ResourceTable from "../../components/views/ResourceTable";
 import ResourceViewer from "../../components/views/ResourceViewer";
 import type { Page } from "../../utils/generics.types";
@@ -50,6 +50,10 @@ type NewContentPage = {
 const PageDetails: React.FC = () => {
 	// const { studyId, stepId, pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
 	const { pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
+	if (!pageId) {
+		console.warn("Study ID or Step ID is missing from URL. Redirecting to studies listings.");
+		return null;
+	}
 
 	const summary = false;
 
@@ -99,12 +103,29 @@ const PageDetails: React.FC = () => {
 					return (
 						<>
 							<h2 className="text-xl font-bold mb-3">{page.name}</h2>
-							<ResourceMetaInfo metaInfo={[
-								{ label: 'Name', value: page.name },
-								{ label: 'ID', value: page.id },
-								{ label: 'Order position', value: String(page.order_position) },
-								{ label: 'Description', value: page.description, wide: true },
-							]} />
+							<EditableResourceMetaInfo
+								apiResourceTag="pages"
+								resourceId={pageId}
+								objectName='page'
+								invalidateQueryKey={["pages", pageId, summary]}
+								editableFields={
+									[
+										{ key: 'name', label: 'Name', value: page.name, type: "text" },
+										{ key: 'id', label: 'ID', value: page.id },
+										{ key: 'description', label: 'Description', value: page.description, type: "textarea" },
+										{ key: 'date_created', label: 'Date Created', value: new Date(page.date_created).toLocaleDateString() },
+										{
+											key: 'title', label: 'Title',
+											value: page.title,
+											type: "text"
+										},
+										{
+											key: 'instructions', label: 'Instruction',
+											value: page.instructions,
+											type: "textarea",
+											wide: true
+										}
+									]} />
 							{
 								page.page_contents.length > 0 ?
 									<ResourceTable
@@ -125,7 +146,7 @@ const PageDetails: React.FC = () => {
 										It will appear as a blank page in the survey.
 									</p>
 							}
-							<CreateResourceButton<NewContentPage>
+							< CreateResourceButton<NewContentPage>
 								apiResourceTag="survey"
 								objectName="surveyPage"
 								buttonLabel="Add Survey Construct"
