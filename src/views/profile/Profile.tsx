@@ -1,12 +1,12 @@
 
-import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
 import Highlight from "../../components/Highlight";
 
-export const Profile = () => {
+const Profile = () => {
 	const { user } = useAuth0();
 	const navigate = useNavigate();
 
@@ -37,6 +37,6 @@ export const Profile = () => {
 	);
 };
 
-export default withAuthenticationRequired(Profile, {
-	onRedirecting: () => <>Loading</>,
-});
+
+
+export default Profile;

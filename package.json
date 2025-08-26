@@ -34,7 +34,6 @@
 		"lint": "eslint .",
 		"preview": "vite preview"
 	},
-	"homepage": "https://rssa.recsys.dev/rssa-dashboard/",
 	"browserslist": {
 		"production": [
 			">0.2%",

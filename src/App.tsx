@@ -5,7 +5,9 @@ import './App.css';
 import ProtectedAuthorizedLayout from './layouts/AuthorizedLayout';
 import DashboardNavigationLayout from './layouts/DashboardNavigationLayout';
 import StudyComponentLayout from './layouts/StudyComponentLayout';
+import DashboardHome from './views/DashboardHome';
 import Landing from './views/Landing';
+import MovieDatabase from './views/moviedatabase/MovieDatabase';
 import Profile from './views/profile/Profile';
 import PageDetails from './views/studycomponents/PageDetails';
 import StepDetails from './views/studycomponents/StepDetails';
@@ -15,7 +17,6 @@ import ConstructDetails from './views/surveyconstructs/ConstructDetails';
 import ConstructLibrary from './views/surveyconstructs/ConstructLibrary';
 import ScaleDetails from './views/surveyscales/ScaleDetails';
 import SurveyScales from './views/surveyscales/SurveyScales';
-import MovieDatabase from './views/moviedatabase/MovieDatabase';
 
 
 const App: React.FC = () => {
@@ -26,6 +27,7 @@ const App: React.FC = () => {
 				<Routes>
 					<Route path="/unauthorized" element={<Landing />} />
 					<Route path="/" element={<ProtectedAuthorizedLayout />}>
+						<Route index element={<DashboardHome />} />
 						<Route path="studies" element={<StudyExplorer />} />
 						<Route path="studies/:studyId" element={<StudyComponentLayout />}>
 							<Route index element={<StudyDetails />} />
