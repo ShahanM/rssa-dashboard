@@ -21,7 +21,7 @@ import MovieDatabase from './views/moviedatabase/MovieDatabase';
 const App: React.FC = () => {
 
 	return (
-		<BrowserRouter basename='/rssa-dashboard'>
+		<BrowserRouter basename='/rssa-dashboard/'>
 			<div id="RSSA-App" className="d-flex flex-column h-100">
 				<Routes>
 					<Route path="/unauthorized" element={<Landing />} />

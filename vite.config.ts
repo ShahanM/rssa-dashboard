@@ -10,6 +10,6 @@ export default defineConfig({
 	],
 	server: {
 		port: 3339,
-		open: '/rssa-dashboard',
+		open: '/rssa-dashboard/',
 	}
 })
