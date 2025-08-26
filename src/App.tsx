@@ -15,6 +15,7 @@ import ConstructDetails from './views/surveyconstructs/ConstructDetails';
 import ConstructLibrary from './views/surveyconstructs/ConstructLibrary';
 import ScaleDetails from './views/surveyscales/ScaleDetails';
 import SurveyScales from './views/surveyscales/SurveyScales';
+import MovieDatabase from './views/moviedatabase/MovieDatabase';
 
 
 const App: React.FC = () => {
@@ -40,6 +41,7 @@ const App: React.FC = () => {
 						<Route path="scales/:scaleId" element={<DashboardNavigationLayout />}>
 							<Route index element={<ScaleDetails />} />
 						</Route>
+						<Route path="movies" element={<MovieDatabase />} />
 						<Route path="profile" element={<Profile />} />
 					</Route>
 				</Routes>
