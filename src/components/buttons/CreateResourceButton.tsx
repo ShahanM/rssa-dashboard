@@ -35,7 +35,7 @@ export const CreateResourceButton = <
 	const { api } = useApi();
 	
 	const mutation = useMutation({
-		mutationFn: async (formData: T) => api.post<T>(`${apiResourceTag}`, formData),
+		mutationFn: async (formData: T) => api.post<T>(`${apiResourceTag}/`, formData),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: invalidateQueryKey ? invalidateQueryKey : [apiResourceTag] });
 		}
