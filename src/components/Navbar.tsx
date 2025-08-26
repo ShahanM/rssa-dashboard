@@ -2,11 +2,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Disclosure, DisclosureButton, Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/16/solid";
 import clsx from "clsx";
+import type React from "react";
 import { Link } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
+import { usePermissions } from "../hooks/usePermissions";
 import LoginButton from "./buttons/auth/LoginButton";
 import LogoutButton from "./buttons/auth/LogoutButton";
-import { usePermissions } from "../hooks/usePermissions";
 
 interface NavBarProps {
 	headerLogo?: string;
@@ -18,7 +19,6 @@ const NavBar: React.FC<NavBarProps> = ({
 	headerTitle = "RSSA Dashboard",
 }) => {
 	const { user, isAuthenticated } = useAuth0();
-	const { hasPermission } = usePermissions();
 
 	return (
 		<Disclosure as="nav" className="bg-gray-800">
@@ -63,18 +63,15 @@ const NavBar: React.FC<NavBarProps> = ({
 							<NavLink destination="/studies">
 								Studies
 							</NavLink>
-							<NavLink destination="/constructs">
+							<NavLink destination="/constructs" permission="read:constructs">
 								Construct Library
 							</NavLink>
-							<NavLink destination="/scales">
+							<NavLink destination="/scales" permission="read:construct_scales">
 								Scales
 							</NavLink>
-							{
-							hasPermission("read:movies") &&
-								<NavLink destination="/movies">
-									Movies
-								</NavLink>
-							}
+							<NavLink destination="/movies" permission="read:movies">
+								Movies
+							</NavLink>
 							<div className={clsx(
 								"absolute", "inset-y-0 right-0 flex items-center pr-2",
 								"sm:static sm:inset-auto sm:ml-6 sm:pr-0")}>
@@ -149,7 +146,23 @@ const NavBar: React.FC<NavBarProps> = ({
 	);
 };
 
-const NavLink: React.FC<{ destination: string; children: React.ReactNode; }> = ({ destination, children }) => {
+interface NavLinkProps {
+	destination: string;
+	permission?: string;
+	children: React.ReactNode;
+}
+
+const NavLink: React.FC<NavLinkProps> = ({
+	destination,
+	permission,
+	children
+}) => {
+	const { hasPermission } = usePermissions();
+
+	if (permission && !hasPermission(permission)) {
+		return <></>;
+	}
+
 	return (
 		<div className={clsx(
 			"absolute", "inset-y-0 right-0 flex items-center pr-2",
