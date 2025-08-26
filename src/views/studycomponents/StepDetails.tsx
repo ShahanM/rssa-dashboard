@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import type { NewPage } from '../../api/api.types';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
 import type { FormField } from '../../components/forms/DynamicFormField';
 import StudyComponentList from '../../components/StudyComponentList';
@@ -9,6 +8,15 @@ import ResourceViewer from '../../components/views/ResourceViewer';
 import { useAppDispatch } from '../../store/hooks';
 import { setStep } from '../../store/studycomponents/selectionSlice';
 import type { StudyStep } from '../../utils/generics.types';
+
+
+type NewPage = {
+	study_id: string;
+	step_id: string;
+	name: string;
+	description: string;
+	order_position: number;
+}
 
 const StepDetails: React.FC = () => {
 	const { studyId, stepId } = useParams<{ studyId: string; stepId: string }>();

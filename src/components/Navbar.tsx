@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
 import LoginButton from "./buttons/auth/LoginButton";
 import LogoutButton from "./buttons/auth/LogoutButton";
+import { usePermissions } from "../hooks/usePermissions";
 
 interface NavBarProps {
 	headerLogo?: string;
@@ -17,6 +18,7 @@ const NavBar: React.FC<NavBarProps> = ({
 	headerTitle = "RSSA Dashboard",
 }) => {
 	const { user, isAuthenticated } = useAuth0();
+	const { hasPermission } = usePermissions();
 
 	return (
 		<Disclosure as="nav" className="bg-gray-800">
@@ -67,6 +69,12 @@ const NavBar: React.FC<NavBarProps> = ({
 							<NavLink destination="/scales">
 								Scales
 							</NavLink>
+							{
+							hasPermission("read:movies") &&
+								<NavLink destination="/movies">
+									Movies
+								</NavLink>
+							}
 							<div className={clsx(
 								"absolute", "inset-y-0 right-0 flex items-center pr-2",
 								"sm:static sm:inset-auto sm:ml-6 sm:pr-0")}>

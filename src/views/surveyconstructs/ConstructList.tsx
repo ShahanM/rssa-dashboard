@@ -1,7 +1,6 @@
 import {
 	type ColumnDef
 } from '@tanstack/react-table';
-import type { NewSurveyConstruct } from '../../api/api.types';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
 import type { FormField } from '../../components/forms/DynamicFormField';
 import ResourceListViewer from '../../components/views/ResourceListViewer';
@@ -10,6 +9,13 @@ import { setConstruct } from '../../store/constructlibrary/selectionSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import type { SurveyConstruct } from '../../utils/generics.types';
 
+
+type NewSurveyConstruct = {
+	name: string;
+	desc: string;
+	type_id?: string;
+	scale_id?: string;	
+}
 
 const ConstructList: React.FC = () => {
 	const dispatch = useAppDispatch();

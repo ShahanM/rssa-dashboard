@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import type { NewConstructItem } from "../../api/api.types";
 import CreateResourceButton from "../../components/buttons/CreateResourceButton";
 import DeleteResourceButton from "../../components/buttons/DeleteResourceButton";
 import type { FormField } from "../../components/forms/DynamicFormField";
@@ -10,6 +9,15 @@ import ResourceViewer from "../../components/views/ResourceViewer";
 import { clearSelectedConstruct, setConstruct } from "../../store/constructlibrary/selectionSlice";
 import { useAppDispatch } from "../../store/hooks";
 import type { SurveyConstructDetails } from "../../utils/generics.types";
+
+
+type NewConstructItem = {
+	construct_id: string;
+	text: string;
+	order_position: number;
+	item_type: string;
+}
+
 
 const ConstructDetails: React.FC = () => {
 	const { constructId } = useParams<{ constructId: string }>();

@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
-import type { NewStudyStep } from "../../api/api.types";
 import { CopyToClipboardButton } from "../../components/buttons/CopyToClipboardButton";
 import CreateResourceButton from "../../components/buttons/CreateResourceButton";
+import ExportStudyConfigButton from "../../components/buttons/ExportStudyConfigButton";
+import GenerateStudyEnvFileButton from "../../components/buttons/GenerateStudyEnvFileButton";
 import type { FormField } from "../../components/forms/DynamicFormField";
 import StudyComponentList from "../../components/StudyComponentList";
 import ResourceMetaInfo from "../../components/views/ResourceMetaInfo";
@@ -11,7 +12,14 @@ import { useAppDispatch } from "../../store/hooks";
 import { setStudy } from "../../store/studycomponents/selectionSlice";
 import type { Study, StudyDetail } from "../../utils/generics.types";
 import UserCard from "../profile/UserCard";
-import ExportStudyConfigButton from "../../components/buttons/ExportStudyConfigButton";
+
+
+type NewStudyStep = {
+	study_id: string;
+	step_type: string;
+	name: string;
+	description: string;
+}
 
 const StudyDetails: React.FC = () => {
 	const { studyId } = useParams<{ studyId: string }>();
@@ -100,6 +108,7 @@ const StudyDetails: React.FC = () => {
 								{ label: 'Description', value: study.description, wide: true },
 							]} />
 							<ExportStudyConfigButton studyId={study.id} studyName={study.name} />
+							<GenerateStudyEnvFileButton studyId={study.id} studyName={study.name} />
 							<div className="flex space-x-2 justify-between gap-4">
 								<div>
 									<div className="flex justify-between items-center p-0 min-w-100 my-3">

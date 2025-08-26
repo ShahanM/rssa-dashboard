@@ -1,7 +1,6 @@
 import {
 	type ColumnDef
 } from '@tanstack/react-table';
-import type { NewStudy } from '../../api/api.types';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
 import type { FormField } from '../../components/forms/DynamicFormField';
 import ResourceListViewer from '../../components/views/ResourceListViewer';
@@ -9,6 +8,13 @@ import ResourceTable from '../../components/views/ResourceTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setStudy } from '../../store/studycomponents/selectionSlice';
 import type { Study } from '../../utils/generics.types';
+
+
+type NewStudy = {
+	name: string;
+	description: string;
+}
+
 
 const StudyPanel: React.FC = () => {
 	const dispatch = useAppDispatch();

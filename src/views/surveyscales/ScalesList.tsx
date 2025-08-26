@@ -1,14 +1,21 @@
 import {
 	type ColumnDef
 } from '@tanstack/react-table';
-import type { NewConstructScale } from '../../api/api.types';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
 import type { FormField } from '../../components/forms/DynamicFormField';
 import ResourceListViewer from '../../components/views/ResourceListViewer';
 import ResourceTable from '../../components/views/ResourceTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setScale } from '../../store/surveyscales/selectionSlice';
-import type { ConstructScale } from '../../utils/generics.types';
+import type { ConstructScale, ScaleLevel } from '../../utils/generics.types';
+
+
+type NewConstructScale = {
+	name: string;
+	levels: number;
+	scale_levels: ScaleLevel[];	
+}
+
 
 const ScalesList: React.FC = () => {
 	const dispatch = useAppDispatch();
