@@ -8,6 +8,7 @@ export default defineConfig({
 		react(),
 		tailwindcss(),
 	],
+	base: '/rssa-dashboard/',
 	server: {
 		port: 3339,
 		open: '/rssa-dashboard/',
