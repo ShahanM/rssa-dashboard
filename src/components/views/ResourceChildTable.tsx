@@ -1,6 +1,4 @@
 import clsx from 'clsx';
-import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
 import { usePermissions } from '../../hooks/usePermissions';
 import { type DependentResourceClient } from '../../types/resourceClient.types';
 import type { BaseResourceType } from '../../types/sharedBase.types';
@@ -17,11 +15,11 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
     className?: string;
 }) => {
     const { hasPermission } = usePermissions();
-    const location = useLocation();
-    const childNavPath = useMemo(
-        () => location.pathname + '/' + resourceClient.config.apiResourceTag,
-        [resourceClient, location]
-    );
+    // const location = useLocation();
+    // const childNavPath = useMemo(
+    //     () => location.pathname + '/' + resourceClient.config.apiResourceTag,
+    //     [resourceClient, location]
+    // );
     return (
         <div className={clsx(className)}>
             <div className="flex justify-between items-center p-0 min-w-100 my-3">
