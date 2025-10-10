@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
 import ResourceChildList from '../../components/views/ResourceChildList';
 import ResourceInfoPanel from '../../components/views/ResourceInfoPanel';

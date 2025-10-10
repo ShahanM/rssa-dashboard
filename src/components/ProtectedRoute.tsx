@@ -17,7 +17,7 @@ const ProtectedRoute: React.FC = () => {
     }
 
     // If the user is authenticated, render the child route via the Outlet.
-    // Otherwise, redirect them to your custom unauthorized page.
+    // Otherwise, redirect them to the custom unauthorized page.
     return isAuthenticated ? <Outlet /> : <Navigate to="/unauthorized" />;
 };
 
