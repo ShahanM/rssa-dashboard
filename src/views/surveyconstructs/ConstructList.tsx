@@ -1,70 +1,44 @@
-import {
-	type ColumnDef
-} from '@tanstack/react-table';
+import { useApiClients } from '../../api/ApiContext';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
-import type { FormField } from '../../components/forms/DynamicFormField';
-import ResourceListViewer from '../../components/views/ResourceListViewer';
 import ResourceTable from '../../components/views/ResourceTable';
+import { usePermissions } from '../../hooks/usePermissions';
 import { setConstruct } from '../../store/constructlibrary/selectionSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import type { SurveyConstruct } from '../../utils/generics.types';
-
-
-type NewSurveyConstruct = {
-	name: string;
-	desc: string;
-	type_id?: string;
-	scale_id?: string;	
-}
+import type { SurveyConstruct } from '../../types/surveyconstructs.types';
 
 const ConstructList: React.FC = () => {
-	const dispatch = useAppDispatch();
-	const selectedConstruct = useAppSelector(state => state.constructSelection.construct);
+    const selectedObject = useAppSelector((state) => state.constructSelection.construct);
+    const { constructClient: apiClient } = useApiClients();
+    const dispatch = useAppDispatch();
+    const { hasPermission } = usePermissions();
 
-	const constructColumns: ColumnDef<SurveyConstruct>[] = [
-		{ accessorKey: 'name', header: 'Construct Name' }
-	]
+    type T = SurveyConstruct;
 
-	const createConstructFormFields: FormField[] = [
-		{
-			name: 'name',
-			label: 'Study Name',
-			type: 'text',
-			required: true,
-		},
-		{
-			name: 'desc',
-			label: 'Description',
-			type: 'textarea',
-			required: false,
-		}
-	];
+    const handleRowClick = (resourceInstance: T) => dispatch(setConstruct(resourceInstance));
 
-	const handleRowClick = (construct: SurveyConstruct) => {
-		dispatch(setConstruct(construct));
-	};
-
-	return (
-		<div className="container mx-auto p-3 bg-gray-50 rounded-lg me-2">
-			<div className="flex justify-between items-center mb-4">
-				<h2 className="text-2xl font-bold mb-4">Your Studies</h2>
-				<CreateResourceButton<NewSurveyConstruct>
-					apiResourceTag="constructs"
-					objectName="construct"
-					formFields={createConstructFormFields}
-				/>
-			</div>
-			<ResourceListViewer<SurveyConstruct> apiResourceTag='constructs'>
-				{(surveyConstructs) => (
-					<ResourceTable
-						data={surveyConstructs}
-						columns={constructColumns}
-						onRowClick={handleRowClick}
-						selectedRowId={selectedConstruct?.id} />
-				)}
-			</ResourceListViewer>
-		</div>
-	)
-}
+    return (
+        <>
+            <div className="flex justify-between items-center p-0 min-w-100 my-3">
+                <h2 className="text-2xl font-bold mb-4">{apiClient.config.viewTitle}</h2>
+                {hasPermission(`create:${apiClient.config.apiResourceTag}`) && (
+                    <CreateResourceButton<T>
+                        createFn={apiClient.create}
+                        resourceName={apiClient.config.resourceName}
+                        formFields={apiClient.config.formFields}
+                        invalidateQueryKeys={[apiClient.queryKeys.all()]}
+                    />
+                )}
+            </div>
+            <ResourceTable<T>
+                resourceTag={apiClient.config.apiResourceTag}
+                queryFn={apiClient.getPaginated}
+                columns={apiClient.config.tableColumns!}
+                onRowClick={handleRowClick}
+                selectedRowId={selectedObject?.id}
+                isSearchable={true}
+            />
+        </>
+    );
+};
 
 export default ConstructList;

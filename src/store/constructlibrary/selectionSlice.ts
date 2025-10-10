@@ -1,28 +1,26 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { SurveyConstruct, SurveyConstructDetails } from "../../utils/generics.types";
-
-
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { SurveyConstruct } from '../../types/surveyconstructs.types';
 
 export interface SelectionState {
-	construct: SurveyConstruct | SurveyConstructDetails | null;
+    construct: SurveyConstruct | null;
 }
 
 const initialState: SelectionState = {
-	construct: null,
+    construct: null,
 };
 
 const constructSelectionSlice = createSlice({
-	name: 'constructSelection',
-	initialState,
-	reducers: {
-		setConstruct: (state, action: PayloadAction<SurveyConstruct | SurveyConstructDetails | null>) => {
-			state.construct = action.payload;
-		},
-		clearSelectedConstruct: (state) => {
-			state.construct = null;
-		}
-	}
-})
+    name: 'constructSelection',
+    initialState,
+    reducers: {
+        setConstruct: (state, action: PayloadAction<SurveyConstruct | null>) => {
+            state.construct = action.payload;
+        },
+        clearSelectedConstruct: (state) => {
+            state.construct = null;
+        },
+    },
+});
 
 export const { setConstruct, clearSelectedConstruct } = constructSelectionSlice.actions;
 export default constructSelectionSlice.reducer;

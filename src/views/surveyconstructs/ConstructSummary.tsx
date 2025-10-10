@@ -1,59 +1,51 @@
-import clsx from "clsx";
-import { Link } from "react-router-dom";
-import ResourceMetaInfo from "../../components/views/ResourceMetaInfo";
-import ResourceViewer from "../../components/views/ResourceViewer";
-import { useAppSelector } from "../../store/hooks";
-
-
-interface ConstructSummary {
-	id: string;
-	name: string;
-	desc: string;
-	construct_type: string;
-	scale_name: string;
-}
+import clsx from 'clsx';
+import { Link } from 'react-router-dom';
+import { useApiClients } from '../../api/ApiContext';
+import ResourceMetaInfo from '../../components/views/ResourceMetaInfo';
+import ResourceViewer from '../../components/views/ResourceViewer';
+import { useAppSelector } from '../../store/hooks';
+import type { SurveyConstruct } from '../../types/surveyconstructs.types';
 
 const ConstructSummaryView: React.FC = () => {
-	const selectedObject = useAppSelector((state) => state.constructSelection["construct"]);
+    const selectedObject = useAppSelector((state) => state.constructSelection['construct']);
+    const { constructClient: apiClient } = useApiClients();
+    type T = SurveyConstruct;
 
-	return (
-		<div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
-			<ResourceViewer
-				apiResourceTag="constructs"
-				resourceId={selectedObject?.id}
-				resourceKey="construct"
-				summary
-			>
-				{(construct: ConstructSummary) => (
-					<>
-						<div className="flex items-center justify-between mb-4">
-							<h3 className="text-xl font-bold mb-4">{construct.name}</h3>
-							<Link to={`/constructs/${construct.id}`}>
-								<button
-									className={clsx(
-										"btn btn-primary rounded bg-yellow-500",
-										"hover:bg-yellow-600 text-purple px-4 py-2",
-										"cursor-pointer",
-									)}
-								>
-									<span>Show details &gt;</span>
-								</button>
-							</Link>
-						</div>
-						<ResourceMetaInfo metaInfo={[
-							{ label: 'Name', value: construct.name },
-							{ label: 'ID', value: construct.id },
-							{ label: 'Scale Type', value: construct.construct_type },
-							{ label: 'Scale Name', value: construct.scale_name },
-							{ label: 'Description', value: construct.desc, wide: true },
-						]} />
-					</>
-				)}
-
-			</ResourceViewer>
-		</div>
-	)
-
-}
+    if (!selectedObject) {
+        return <p>{`No selected ${apiClient.config.resourceName}.`}</p>;
+    }
+    return (
+        <div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
+            <ResourceViewer<T>
+                queryKey={apiClient.queryKeys.summary(selectedObject.id!)}
+                queryFn={() => apiClient.getOnePreview(selectedObject.id!)}
+                resourceName={apiClient.config.resourceName}
+            >
+                {(resourceInstance: T) => (
+                    <>
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold mb-4">{resourceInstance.display_name}</h3>
+                            <Link to={`/${apiClient.config.apiResourceTag}/${resourceInstance.id}`}>
+                                <button
+                                    className={clsx(
+                                        'btn btn-primary rounded bg-yellow-500',
+                                        'hover:bg-yellow-600 text-purple px-4 py-2',
+                                        'cursor-pointer'
+                                    )}
+                                >
+                                    <span>Show details &gt;</span>
+                                </button>
+                            </Link>
+                        </div>
+                        <ResourceMetaInfo<T>
+                            resourceInstance={resourceInstance}
+                            metaInfo={apiClient.config.editableFields}
+                        />
+                    </>
+                )}
+            </ResourceViewer>
+        </div>
+    );
+};
 
 export default ConstructSummaryView;

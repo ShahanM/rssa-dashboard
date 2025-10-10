@@ -1,0 +1,8 @@
+{
+	"ruff.codeAction.disableRuleComment": {
+		"enable": false
+	},
+	"ruff.codeAction.fixViolation": {
+		"enable": false
+	}
+}

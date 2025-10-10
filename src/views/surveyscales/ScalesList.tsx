@@ -1,74 +1,43 @@
-import {
-	type ColumnDef
-} from '@tanstack/react-table';
+import { useApiClients } from '../../api/ApiContext';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
-import type { FormField } from '../../components/forms/DynamicFormField';
-import ResourceListViewer from '../../components/views/ResourceListViewer';
 import ResourceTable from '../../components/views/ResourceTable';
+import { usePermissions } from '../../hooks/usePermissions';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setScale } from '../../store/surveyscales/selectionSlice';
-import type { ConstructScale, ScaleLevel } from '../../utils/generics.types';
-
-
-type NewConstructScale = {
-	name: string;
-	levels: number;
-	scale_levels: ScaleLevel[];	
-}
-
+import type { Scale } from '../../types/surveyconstructs.types';
 
 const ScalesList: React.FC = () => {
-	const dispatch = useAppDispatch();
-	const selectedScale = useAppSelector(state => state.scaleSelection.scale);
+    const selectedObject = useAppSelector((state) => state.scaleSelection.scale);
+    const { scaleClient: apiClient } = useApiClients();
+    const dispatch = useAppDispatch();
+    const { hasPermission } = usePermissions();
 
-	const scaleColumns: ColumnDef<ConstructScale>[] = [
-		{ accessorKey: 'name', header: 'Scale Name' },
-		// { accessorKey: 'created_by', header: 'Created By' }, // TODO: Add this back with condition for admin users
-	]
+    type T = Scale;
 
-	const createScaleFormFields: FormField[] = [
-		{
-			name: 'name',
-			label: 'Scale Name',
-			type: 'text',
-			required: false,
-			placeholder: 'Enter a scale name [optional]'
-		},
-		{
-			name: 'description',
-			label: 'Description',
-			type: 'textarea',
-			required: false,
-			placeholder: 'Enter a description for the scale [optional].' +
-				'The name and description can help us mitigate duplicates.'
-		}
-	];
+    const handleRowClick = (resourceInstance: T) => dispatch(setScale(resourceInstance));
 
-	const handleRowClick = (scale: ConstructScale) => {
-		dispatch(setScale(scale));
-	};
-
-	return (
-		<div className="container mx-auto p-3 bg-gray-50 rounded-lg me-2">
-			<div className="flex justify-between items-center mb-4">
-				<h2 className="text-2xl font-bold mb-4">Your Studies</h2>
-				<CreateResourceButton<NewConstructScale>
-					apiResourceTag="construct-scales"
-					objectName="construct-scale"
-					formFields={createScaleFormFields}
-				/>
-			</div>
-			<ResourceListViewer<ConstructScale> apiResourceTag='construct-scales'>
-				{(constructScales) => (
-					<ResourceTable
-						data={constructScales}
-						columns={scaleColumns}
-						onRowClick={handleRowClick}
-						selectedRowId={selectedScale?.id} />
-				)}
-			</ResourceListViewer>
-		</div>
-	)
-}
+    return (
+        <>
+            <div className="flex justify-between items-center p-0 min-w-100 my-3">
+                <h2 className="text-2xl font-bold mb-4">{apiClient.config.viewTitle}</h2>
+                {hasPermission(`create:${apiClient.config.apiResourceTag}`) && (
+                    <CreateResourceButton<T>
+                        createFn={apiClient.create}
+                        resourceName={apiClient.config.resourceName}
+                        formFields={apiClient.config.formFields}
+                        invalidateQueryKeys={[apiClient.queryKeys.all()]}
+                    />
+                )}
+            </div>
+            <ResourceTable<T>
+                resourceTag={apiClient.config.apiResourceTag}
+                queryFn={apiClient.getPaginated}
+                columns={apiClient.config.tableColumns!}
+                onRowClick={handleRowClick}
+                selectedRowId={selectedObject?.id}
+            />
+        </>
+    );
+};
 
 export default ScalesList;

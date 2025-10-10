@@ -15,7 +15,7 @@ const GenerateStudyEnvFileButton: React.FC<{ studyId: string; studyName: string;
 				onClose={() => setIsModalOpen(false)}
 				studyId={studyId} studyName={studyName} />
 			<button className={clsx(
-				"m-3 p-3 border rounded-lg bg-yellow-300",
+				"me-3 p-3 border rounded-lg bg-yellow-300",
 				"cursor-pointer text-yellow-800",
 				"hover:bg-yellow-500 hover:text-white"
 			)}
