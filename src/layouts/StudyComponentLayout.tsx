@@ -1,26 +1,45 @@
 import React from 'react';
-import { Row } from 'react-bootstrap';
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAppSelector } from '../store/hooks';
 
 const StudyNavigationLayout: React.FC = () => {
-    const { studyId, stepId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
+    const { studyId, stepId, pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
     const location = useLocation();
-    const { study, step } = useAppSelector((state) => state.studyComponentSelection);
+    const { study, step, page } = useAppSelector((state) => state.studyComponentSelection);
 
-    const studyRootPath = `/studies/${studyId}`;
-    const relativePathSegments = location.pathname
-        .substring(location.pathname.indexOf(studyRootPath) + studyRootPath.length)
-        .split('/')
-        .filter((segment) => segment !== '');
+    const pathSegments = location.pathname.split('/').filter((s) => s !== '');
+    const rootResource = pathSegments[0];
+    const rootId = pathSegments[1];
+
+    // Determine the segments that come after the root resource and ID
+    // If rootId is present, we start after it. If not, we start after rootResource.
+    let relativePathSegments: string[] = [];
+    if (rootId) {
+        const rootIndex = pathSegments.indexOf(rootId);
+        if (rootIndex !== -1) {
+            relativePathSegments = pathSegments.slice(rootIndex + 1);
+        }
+    } else if (rootResource) {
+        const rootIndex = pathSegments.indexOf(rootResource);
+        if (rootIndex !== -1) {
+            relativePathSegments = pathSegments.slice(rootIndex + 1);
+        }
+    }
 
     const isStudyRoot = relativePathSegments.length === 0;
     const breadcrumbItems = [];
 
+    let rootLabel = 'Studies';
+    if (rootResource === 'survey-constructs') {
+        rootLabel = 'Survey Instruments';
+    } else if (rootResource === 'survey-scales') {
+        rootLabel = 'Scale Library';
+    }
+
     breadcrumbItems.push(
         <span key="dashboard-root">
-            <Link to={`/studies`} className="text-purple-600 hover:underline">
-                Studies
+            <Link to={`/${rootResource}`} className="text-purple-600 hover:underline">
+                {rootLabel}
             </Link>
             <span className="mx-2 text-gray-500">&gt;</span>
         </span>
@@ -33,21 +52,22 @@ const StudyNavigationLayout: React.FC = () => {
                     {study.display_name}
                 </span>
             ) : (
-                <Link key="study-link" to={studyRootPath} className="text-purple-600 hover:underline">
+                <Link key="study-link" to={`/${rootResource}/${rootId}`} className="text-purple-600 hover:underline">
                     {study.display_name}
                 </Link>
             )
         );
-    } else if (studyId) {
+    } else if (rootId) {
         breadcrumbItems.push(
-            <Link key="study-link" to={studyRootPath} className="text-purple-600 hover:underline">
+            <Link key="study-link" to={`/${rootResource}/${rootId}`} className="text-purple-600 hover:underline">
                 <span key="study-loading" className="text-gray-500">
-                    {studyId.substring(0, 8)}
+                    {rootId.substring(0, 8)}
                 </span>
             </Link>
         );
     }
-    let currentPathAccumulator = studyRootPath;
+
+    let currentPathAccumulator = `/${rootResource}/${rootId}`;
     relativePathSegments.forEach((segment, index) => {
         currentPathAccumulator += `/${segment}`;
         const isLast = index === relativePathSegments.length - 1;
@@ -58,6 +78,8 @@ const StudyNavigationLayout: React.FC = () => {
 
         if (segment === stepId && step) {
             displayName = step.display_name;
+        } else if (segment === pageId && page) {
+            displayName = page.display_name;
         }
 
         breadcrumbItems.push(
@@ -76,11 +98,11 @@ const StudyNavigationLayout: React.FC = () => {
 
     return (
         <div className="container mx-auto p-3 bg-gray-50 rounded-lg">
-            <Row className="box-outline">
-                <div aria-label="breadcrumb" className="p-3">
+            <div className="border border-gray-200 rounded p-3 bg-white shadow-sm mb-4">
+                <div aria-label="breadcrumb">
                     {breadcrumbItems}
                 </div>
-            </Row>
+            </div>
             <Outlet />
         </div>
     );

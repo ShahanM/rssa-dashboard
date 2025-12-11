@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { SurveyConstruct } from '../../types/surveyconstructs.types';
+import type { SurveyConstruct } from '../../types/surveyComponents.types';
 
 export interface SelectionState {
     construct: SurveyConstruct | null;

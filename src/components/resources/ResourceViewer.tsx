@@ -36,8 +36,8 @@ const ResourceViewer = <T,>({
     }, [resourceObject, onResourceLoaded]);
 
     if (isLoading) return <p>Loading {resourceName} details...</p>;
-    if (!resourceObject) return <p>No details found for the select {resourceName}.</p>;
     if (error) return <p>Error: {error.message}</p>;
+    if (!resourceObject) return <p>No details found for the select {resourceName}.</p>;
 
     return <>{children(resourceObject)}</>;
 };

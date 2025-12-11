@@ -1,5 +1,5 @@
 import type { BaseResourceType, OrderedComponent } from './sharedBase.types';
-import type { ConstructItem, ScaleLevel } from './surveyconstructs.types';
+import type { ConstructItem, ScaleLevel } from './surveyComponents.types';
 
 export interface StudyCondition extends BaseResourceType {
     resource_type: 'condition';

@@ -40,4 +40,5 @@ export type EditableField<T> = MetaInfoField<T> & {
     // TODO: Need editable select types
     type?: 'text' | 'textarea' | 'static' | 'select'; // To render different input types
     options?: { value: string; label: string }[]; // For static select fields
+    required?: boolean;
 };

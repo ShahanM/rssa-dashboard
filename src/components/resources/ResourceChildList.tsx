@@ -1,11 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo } from 'react';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useState } from 'react';
 import { usePermissions } from '../../hooks/usePermissions';
 import { createValidators, type DependentResourceClient } from '../../types/resourceClient.types';
 import type { OrderedComponent } from '../../types/sharedBase.types';
 import CreateResourceButton from '../buttons/CreateResourceButton';
 import SortableResourceList from '../SortableResourceList';
 import { useLocation } from 'react-router-dom';
+import EditResourceModal from '../dialogs/EditResourceModal';
 
 const ResourceChildList = <TChild extends OrderedComponent>({
     resourceClient,
@@ -45,6 +46,51 @@ const ResourceChildList = <TChild extends OrderedComponent>({
         }
     }, [resourceList, isLoading, dataCallback]);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedResource, setSelectedResource] = useState<TChild | null>(null);
+    const queryClient = useQueryClient();
+
+    const updateMutation = useMutation<TChild | null, Error, Partial<TChild>, { previousData: TChild[] | undefined }>({
+        mutationFn: (formData: Partial<TChild>) => {
+            if (!selectedResource) throw new Error("No resource selected");
+            return resourceClient.update(selectedResource.id, formData);
+        },
+        onMutate: async (formData: Partial<TChild>) => {
+            if (!selectedResource) return { previousData: undefined };
+            await queryClient.cancelQueries({
+                queryKey: resourceClient.queryKeys.lists(),
+            });
+            const previousData = queryClient.getQueryData<TChild[]>(resourceClient.queryKeys.lists());
+
+            queryClient.setQueryData<TChild[]>(resourceClient.queryKeys.lists(), (oldData) => {
+                if (!oldData) return [];
+                return oldData.map((item) =>
+                    item.id === selectedResource.id ? { ...item, ...formData } : item
+                );
+            });
+            return { previousData };
+        },
+        onError: (err) => {
+            console.error(err.message);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: resourceClient.queryKeys.lists(),
+            });
+            setIsModalOpen(false);
+            setSelectedResource(null);
+        },
+    });
+
+    const isModalResource = resourceClient.config.apiResourceTag === 'items' || resourceClient.config.apiResourceTag === 'levels';
+
+    const handleItemClick = (resource: TChild) => {
+        if (isModalResource) {
+            setSelectedResource(resource);
+            setIsModalOpen(true);
+        }
+    };
+
     return (
         <div>
             <div className="flex justify-between items-center p-0 min-w-100 my-3">
@@ -66,8 +112,19 @@ const ResourceChildList = <TChild extends OrderedComponent>({
                 resourceClient={resourceClient}
                 parentId={parentId}
                 studyComponents={resourceList ? resourceList : []}
-                urlPathPrefix={childNavPath}
+                urlPathPrefix={isModalResource ? undefined : childNavPath}
+                onItemClick={isModalResource ? handleItemClick : undefined}
             />
+            {selectedResource && (
+                <EditResourceModal<TChild>
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    resource={selectedResource}
+                    resourceClient={resourceClient}
+                    onSave={(formData) => updateMutation.mutate(formData)}
+                    isSaving={updateMutation.isPending}
+                />
+            )}
         </div>
     );
 };

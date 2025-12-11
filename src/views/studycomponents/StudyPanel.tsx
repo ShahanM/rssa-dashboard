@@ -1,6 +1,6 @@
 import { useApiClients } from '../../api/ApiContext';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
-import ResourceTable from '../../components/views/ResourceTable';
+import ResourceTable from '../../components/resources/ResourceTable';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setStudy } from '../../store/studycomponents/selectionSlice';
 import type { Study } from '../../types/studyComponents.types';

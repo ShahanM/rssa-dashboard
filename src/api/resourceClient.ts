@@ -39,7 +39,6 @@ export const createResourceClient = <T extends BaseResourceType>(
         return api.get<PaginatedResourceList<T>>(`${apiResourceTag}/?${params.toString()}`);
     };
 
-    const getOnePreview = (id: string) => api.get<T>(`${apiResourceTag}/${id}/summary`);
     const update = (id: string, data: Partial<T>) => api.patch<T>(`${apiResourceTag}/${id}`, data);
     const create = (data: Omit<T, ServerGeneratedKeys>) => api.post<T>(`${apiResourceTag}/`, data);
     const del = (id: string) => api.del(`${apiResourceTag}/${id}`);
@@ -50,7 +49,6 @@ export const createResourceClient = <T extends BaseResourceType>(
         queryKeys,
         getOne,
         getPaginated,
-        getOnePreview,
         update,
         create,
         del,

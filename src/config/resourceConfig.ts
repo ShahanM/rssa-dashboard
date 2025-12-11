@@ -151,6 +151,7 @@ export const resourceConfig: DashBoardResourceConfig = {
         formFields: [
             { name: 'name', label: 'Condition Name', type: 'text', required: true },
             { name: 'description', label: 'Description', type: 'textarea', required: false },
+            { name: 'recommendation_count', label: 'Number of items in recommondation', type: 'text', required: true },
         ],
         tableColumns: [
             {
@@ -176,7 +177,7 @@ export const resourceConfig: DashBoardResourceConfig = {
                 type: 'text',
             },
             {
-                name: 'construct_id',
+                name: 'survey_construct_id',
                 label: 'Survey construct',
                 type: 'modal-select',
                 required: true,
@@ -186,7 +187,7 @@ export const resourceConfig: DashBoardResourceConfig = {
                 optionsLabelKey: 'name',
             },
             {
-                name: 'scale_id',
+                name: 'survey_scale_id',
                 label: 'Measurement scale',
                 type: 'modal-select',
                 required: true,
@@ -265,17 +266,24 @@ export const resourceConfig: DashBoardResourceConfig = {
         apiResourceTag: 'items',
         resourceName: 'Construct item',
         viewTitle: 'Construct items',
-        editableFields: [],
-        formFields: [],
+        editableFields: [
+            { key: 'text', label: 'Item Text', type: 'textarea', wide: true, required: true },
+        ],
+        formFields: [
+            { name: 'text', label: 'Item Text', type: 'textarea', required: true },
+        ],
     },
     level: {
         apiResourceTag: 'levels',
         resourceName: 'Scale level',
         viewTitle: 'Scale levels',
-        editableFields: [],
+        editableFields: [
+            { key: 'label', label: 'Label Text', type: 'text', required: true },
+            { key: 'value', label: 'Value', type: 'text', required: true },
+        ],
         formFields: [
             {
-                name: 'scale_id',
+                name: 'survey_scale_id',
                 label: 'Scale ID',
                 type: 'static',
                 required: true,

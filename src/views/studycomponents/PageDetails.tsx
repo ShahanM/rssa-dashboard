@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
-import ResourceChildList from '../../components/views/ResourceChildList';
-import ResourceInfoPanel from '../../components/views/ResourceInfoPanel';
+import ResourceChildList from '../../components/resources/ResourceChildList';
+import ResourceInfoPanel from '../../components/resources/ResourceInfoPanel';
 import { clearSelectedPage, setPage } from '../../store/studycomponents/selectionSlice';
 import type { Page, PageContent } from '../../types/studyComponents.types';
 

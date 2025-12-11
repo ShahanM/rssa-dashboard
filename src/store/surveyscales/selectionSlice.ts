@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Scale } from '../../types/surveyconstructs.types';
+import type { Scale } from '../../types/surveyComponents.types';
 
 export interface SelectionState {
     scale: Scale | null;

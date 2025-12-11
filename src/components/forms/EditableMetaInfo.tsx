@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 import { useDynamicForm } from '../../hooks/useDynamicForm';
 import type { BaseResourceType } from '../../types/sharedBase.types';
-import ResourceMetaInfo, { RenderStaticInfo } from '../views/ResourceMetaInfo';
+import ResourceMetaInfo, { RenderStaticInfo } from '../resources/ResourceMetaInfo';
 import type { EditableField, FieldValidator } from './forms.typs';
 import { DynamicSelect } from './DynamicSelect';
 

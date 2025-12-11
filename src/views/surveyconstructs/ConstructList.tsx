@@ -1,10 +1,10 @@
 import { useApiClients } from '../../api/ApiContext';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
-import ResourceTable from '../../components/views/ResourceTable';
+import ResourceTable from '../../components/resources/ResourceTable';
 import { usePermissions } from '../../hooks/usePermissions';
 import { setConstruct } from '../../store/constructlibrary/selectionSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import type { SurveyConstruct } from '../../types/surveyconstructs.types';
+import type { SurveyConstruct } from '../../types/surveyComponents.types';
 
 const ConstructList: React.FC = () => {
     const selectedObject = useAppSelector((state) => state.constructSelection.construct);

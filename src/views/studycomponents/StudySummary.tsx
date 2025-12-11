@@ -2,8 +2,8 @@ import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
-import ResourceMetaInfo from '../../components/views/ResourceMetaInfo';
-import ResourceViewer from '../../components/views/ResourceViewer';
+import ResourceMetaInfo from '../../components/resources/ResourceMetaInfo';
+import ResourceViewer from '../../components/resources/ResourceViewer';
 import { useAppSelector } from '../../store/hooks';
 import type { Study } from '../../types/studyComponents.types';
 
@@ -19,7 +19,7 @@ const StudySummaryView: React.FC = () => {
     return (
         <ResourceViewer<T>
             queryKey={apiClient.queryKeys.summary(selectedObject.id!)}
-            queryFn={() => apiClient.getOnePreview(selectedObject.id!)}
+            queryFn={() => apiClient.getOne(selectedObject.id!)}
             resourceName={apiClient.config.resourceName}
         >
             {(resourceInstance: T) => {

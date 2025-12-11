@@ -1,10 +1,10 @@
 import { useApiClients } from '../../api/ApiContext';
 import CreateResourceButton from '../../components/buttons/CreateResourceButton';
-import ResourceTable from '../../components/views/ResourceTable';
+import ResourceTable from '../../components/resources/ResourceTable';
 import { usePermissions } from '../../hooks/usePermissions';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setScale } from '../../store/surveyscales/selectionSlice';
-import type { Scale } from '../../types/surveyconstructs.types';
+import type { Scale } from '../../types/surveyComponents.types';
 
 const ScalesList: React.FC = () => {
     const selectedObject = useAppSelector((state) => state.scaleSelection.scale);

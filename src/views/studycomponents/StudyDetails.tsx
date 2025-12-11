@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
-import ResourceChildList from '../../components/views/ResourceChildList';
-import ResourceChildTable from '../../components/views/ResourceChildTable';
-import ResourceInfoPanel from '../../components/views/ResourceInfoPanel';
+import ResourceChildList from '../../components/resources/ResourceChildList';
+import ResourceChildTable from '../../components/resources/ResourceChildTable';
+import ResourceInfoPanel from '../../components/resources/ResourceInfoPanel';
 import { useAppDispatch } from '../../store/hooks';
-import { clearSelectedStudy } from '../../store/studycomponents/selectionSlice';
+import { clearSelectedStudy, setStudy } from '../../store/studycomponents/selectionSlice';
 import type { ApiKey, Study, StudyCondition, StudyStep } from '../../types/studyComponents.types';
 
 const StudyDetails: React.FC = () => {
@@ -23,6 +23,7 @@ const StudyDetails: React.FC = () => {
                 resourceClient={studyClient}
                 resourceId={studyId}
                 onDelete={() => dispatch(clearSelectedStudy())}
+                onLoad={(studyData: Study) => dispatch(setStudy(studyData))}
             />
             {/* <ExportStudyConfigButton studyId={studyId} studyName="does it matter?" /> */}
             <div className="flex space-x-2 justify-between gap-4">

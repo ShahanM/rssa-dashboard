@@ -1,4 +1,3 @@
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -22,7 +21,7 @@ import SurveyScales from './views/surveyscales/SurveyScales';
 const App: React.FC = () => {
     return (
         <BrowserRouter basename="/rssa-dashboard/">
-            <div id="RSSA-App" className="d-flex flex-column h-100">
+            <div id="RSSA-App" className="flex flex-col h-full">
                 <Routes>
                     <Route path="/unauthorized" element={<Landing />} />
                     <Route element={<ProtectedRoute />}>

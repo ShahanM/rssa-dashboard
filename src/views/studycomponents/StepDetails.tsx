@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
-import ResourceChildList from '../../components/views/ResourceChildList';
-import ResourceInfoPanel from '../../components/views/ResourceInfoPanel';
+import ResourceChildList from '../../components/resources/ResourceChildList';
+import ResourceInfoPanel from '../../components/resources/ResourceInfoPanel';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearSelectedStep, setStep } from '../../store/studycomponents/selectionSlice';
 import type { Page, StudyStep } from '../../types/studyComponents.types';
