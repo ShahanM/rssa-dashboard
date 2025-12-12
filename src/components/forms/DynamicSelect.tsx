@@ -32,9 +32,22 @@ export const DynamicSelect = <TOption extends BaseOption>({
         enabled: !!optionsEndpoint,
     });
 
-    const options = optionsEndpoint
-        ? fetchedOptions?.map((item) => ({ value: item[optionsValueKey], label: item[optionsLabelKey] })) || []
-        : staticOptions;
+    const options = React.useMemo(() => {
+        if (!optionsEndpoint) return staticOptions;
+        if (!fetchedOptions) return [];
+
+        let dataToMap: any[] = [];
+        if (Array.isArray(fetchedOptions)) {
+            dataToMap = fetchedOptions;
+        } else if ('rows' in (fetchedOptions as any) && Array.isArray((fetchedOptions as any).rows)) {
+            dataToMap = (fetchedOptions as any).rows;
+        }
+
+        return dataToMap.map((item) => ({
+            value: item[optionsValueKey],
+            label: item[optionsLabelKey],
+        }));
+    }, [fetchedOptions, optionsEndpoint, optionsValueKey, optionsLabelKey, staticOptions]);
 
     return (
         <select {...rest}>

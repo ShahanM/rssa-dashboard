@@ -12,6 +12,7 @@ import Profile from './views/profile/Profile';
 import PageDetails from './views/studycomponents/PageDetails';
 import StepDetails from './views/studycomponents/StepDetails';
 import StudyDetails from './views/studycomponents/StudyDetails';
+import StudyCondition from './views/studycomponents/StudyCondition';
 import StudyExplorer from './views/studycomponents/StudyExplorer';
 import ConstructDetails from './views/surveyconstructs/ConstructDetails';
 import ConstructLibrary from './views/surveyconstructs/ConstructLibrary';
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                                 <Route index element={<StudyDetails />} />
                                 <Route path="steps/:stepId" element={<StepDetails />} />
                                 <Route path="steps/:stepId/pages/:pageId" element={<PageDetails />} />
+                                <Route path="conditions/:conditionId" element={<StudyCondition />} />
                                 <Route path="data-dashboard" element={<h1>Data Dashboard</h1>} />
                             </Route>
                             <Route path="constructs" element={<ConstructLibrary />} />

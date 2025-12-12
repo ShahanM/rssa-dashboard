@@ -64,13 +64,25 @@ export const CreateResourceButton = <T extends BaseResourceType>({
         [parentId, mutation, createFn]
     );
 
+    const effectiveFormFields = formFields.map((field) => {
+        if (
+            field.type === 'static' &&
+            !field.value &&
+            parentId &&
+            (field.name.endsWith('_id') || field.name === 'parentId')
+        ) {
+            return { ...field, value: parentId };
+        }
+        return field;
+    });
+
     return (
         <>
             <DynamicFormModal<T>
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={`Create New ${resourceName}`}
-                fields={formFields}
+                fields={effectiveFormFields}
                 onSubmit={handleCreate}
                 isSubmitting={mutation.isPending}
                 submitButtonText="Create"

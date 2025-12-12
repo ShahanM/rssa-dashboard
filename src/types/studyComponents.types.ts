@@ -3,6 +3,11 @@ import type { ConstructItem, ScaleLevel } from './surveyComponents.types';
 
 export interface StudyCondition extends BaseResourceType {
     resource_type: 'condition';
+
+    name?: string;
+    description?: string;
+    recommender_key?: string;
+    recommendation_count?: number;
 }
 
 export type ConditionStats = {
@@ -13,6 +18,9 @@ export type ConditionStats = {
 
 export interface Study extends BaseResourceType {
     resource_type: 'study';
+
+    name?: string;
+    description?: string;
 
     // Nullable properties FIXME: these will become non-nullable after migration
     owner?: string;
@@ -30,6 +38,9 @@ export interface Study extends BaseResourceType {
 export interface Page extends OrderedComponent {
     resource_type: 'page';
 
+    name?: string;
+    description?: string;
+
     study_id: string;
     step_id: string;
 
@@ -43,6 +54,9 @@ export interface Page extends OrderedComponent {
 
 export interface StudyStep extends OrderedComponent {
     resource_type: 'step';
+
+    name?: string;
+    description?: string;
 
     study_id: string;
 
@@ -65,6 +79,11 @@ export interface PageContent extends OrderedComponent {
     page_id: string;
     construct_id: string;
     scale_id: string;
+
+    // Formatting match for form fields
+    preamble?: string;
+    survey_construct_id?: string;
+    survey_scale_id?: string;
 
     items?: ConstructItem[];
     scale_name?: string;

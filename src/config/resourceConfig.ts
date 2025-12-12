@@ -11,8 +11,8 @@ export const resourceConfig: DashBoardResourceConfig = {
         viewTitle: 'Studies',
         editableFields: [
             { key: 'id', label: 'ID' },
-            { key: 'display_name', label: 'Name', type: 'text' },
-            { key: 'display_info', label: 'Description', wide: true, type: 'textarea' },
+            { key: 'name', label: 'Name', type: 'text' },
+            { key: 'description', label: 'Description', wide: true, type: 'textarea' },
             {
                 key: 'owner',
                 label: 'Owner',
@@ -67,8 +67,8 @@ export const resourceConfig: DashBoardResourceConfig = {
         viewTitle: 'Study steps',
         editableFields: [
             { key: 'id', label: 'ID' },
-            { key: 'display_name', label: 'Name', type: 'text' },
-            { key: 'display_info', label: 'Description', type: 'textarea' },
+            { key: 'name', label: 'Name', type: 'text' },
+            { key: 'description', label: 'Description', type: 'textarea' },
             {
                 key: 'created_at',
                 label: 'Date Created',
@@ -126,9 +126,9 @@ export const resourceConfig: DashBoardResourceConfig = {
         resourceName: 'Page',
         viewTitle: 'Survey pages',
         editableFields: [
-            { key: 'display_name', label: 'Name', type: 'text' },
+            { key: 'name', label: 'Name', type: 'text' },
             { key: 'id', label: 'ID' },
-            { key: 'display_info', label: 'Description', type: 'textarea' },
+            { key: 'description', label: 'Description', type: 'textarea' },
             {
                 key: 'created_at',
                 label: 'Date Created',
@@ -147,7 +147,21 @@ export const resourceConfig: DashBoardResourceConfig = {
         apiResourceTag: 'conditions',
         resourceName: 'Condition',
         viewTitle: 'Study conditions',
-        editableFields: [],
+        editableFields: [
+            { key: 'id', label: 'ID' },
+            { key: 'name', label: 'Name', type: 'text' },
+            { key: 'description', label: 'Description', type: 'textarea', wide: true },
+            {
+                key: 'recommender_key',
+                label: 'Recommender Key',
+                type: 'select',
+                wide: true,
+                optionsEndpoint: 'conditions/recommender-keys',
+                optionsValueKey: 'id',
+                optionsLabelKey: 'name',
+            },
+            { key: 'recommendation_count', label: 'Recommendation Count', type: 'text' },
+        ],
         formFields: [
             { name: 'name', label: 'Condition Name', type: 'text', required: true },
             { name: 'description', label: 'Description', type: 'textarea', required: false },
@@ -166,10 +180,35 @@ export const resourceConfig: DashBoardResourceConfig = {
         ],
     },
     content: {
-        apiResourceTag: 'content',
+        apiResourceTag: 'contents',
         resourceName: 'Page content',
         viewTitle: 'Page content',
-        editableFields: [],
+        editableFields: [
+            {
+                key: 'preamble',
+                label: 'Construct preamble',
+                type: 'text',
+                wide: true,
+            },
+            {
+                key: 'survey_construct_id',
+                label: 'Survey construct',
+                type: 'select',
+                required: true,
+                optionsEndpoint: 'constructs',
+                optionsValueKey: 'id',
+                optionsLabelKey: 'name',
+            },
+            {
+                key: 'survey_scale_id',
+                label: 'Measurement scale',
+                type: 'select',
+                required: true,
+                optionsEndpoint: 'scales',
+                optionsValueKey: 'id',
+                optionsLabelKey: 'name',
+            },
+        ],
         formFields: [
             {
                 name: 'preamble',
@@ -223,7 +262,7 @@ export const resourceConfig: DashBoardResourceConfig = {
         resourceName: 'Survey construct',
         viewTitle: 'Survey constructs',
         editableFields: [
-            { key: 'display_name', label: 'Name', type: 'text' },
+            { key: 'name', label: 'Name', type: 'text' },
             { key: 'id', label: 'ID' },
             { key: 'description', label: 'Description', type: 'textarea', wide: true },
         ],
@@ -238,9 +277,9 @@ export const resourceConfig: DashBoardResourceConfig = {
         resourceName: 'Scales',
         viewTitle: 'Measurement scales',
         editableFields: [
-            { key: 'display_name', label: 'Name' },
+            { key: 'name', label: 'Name', type: 'text' },
             { key: 'id', label: 'ID' },
-            { key: 'description', label: 'Description', wide: true },
+            { key: 'description', label: 'Description', wide: true, type: 'textarea' },
         ],
         formFields: [
             {
@@ -270,6 +309,12 @@ export const resourceConfig: DashBoardResourceConfig = {
             { key: 'text', label: 'Item Text', type: 'textarea', wide: true, required: true },
         ],
         formFields: [
+            {
+                name: 'survey_construct_id',
+                label: 'Construct ID',
+                type: 'static',
+                required: true,
+            },
             { name: 'text', label: 'Item Text', type: 'textarea', required: true },
         ],
     },

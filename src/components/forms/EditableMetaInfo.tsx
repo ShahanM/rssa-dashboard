@@ -88,10 +88,18 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
                     </>
                 );
             case 'select':
-                if (!field.options || field.options.length === 0) {
+                if ((!field.options || field.options.length === 0) && !field.optionsEndpoint) {
                     return <RenderStaticInfo resourceInstance={resourceInstance} field={field} />;
                 }
-                return <DynamicSelect {...commonProps} staticOptions={field.options} />;
+                return (
+                    <DynamicSelect
+                        {...commonProps}
+                        staticOptions={field.options}
+                        optionsEndpoint={field.optionsEndpoint}
+                        optionsValueKey={field.optionsValueKey}
+                        optionsLabelKey={field.optionsLabelKey}
+                    />
+                );
             case 'static':
             default:
                 return <RenderStaticInfo resourceInstance={resourceInstance} field={field} />;

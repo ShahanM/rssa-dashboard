@@ -32,7 +32,7 @@ export const usePermissions = () => {
     });
 
     const hasPermission = (permission: string): boolean => {
-        return permissions.includes(permission);
+        return permissions.includes(permission) || permissions.includes('admin:all');
     };
 
     return {

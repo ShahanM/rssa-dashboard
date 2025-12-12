@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { usePermissions } from '../../hooks/usePermissions';
 import { type DependentResourceClient } from '../../types/resourceClient.types';
 import type { BaseResourceType } from '../../types/sharedBase.types';
@@ -18,6 +19,7 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
     className?: string;
 }) => {
     const { hasPermission } = usePermissions();
+    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedResource, setSelectedResource] = useState<TChild | null>(null);
     const queryClient = useQueryClient();
@@ -59,6 +61,8 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
         if (resourceClient.config.apiResourceTag === 'items' || resourceClient.config.apiResourceTag === 'levels') {
             setSelectedResource(resource);
             setIsModalOpen(true);
+        } else if (resourceClient.config.apiResourceTag === 'conditions') {
+            navigate(`conditions/${resource.id}`);
         }
     };
 

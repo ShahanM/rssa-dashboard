@@ -66,7 +66,7 @@ const NavBar: React.FC<NavBarProps> = ({
 							<NavLink destination="/constructs" permission="read:constructs">
 								Construct Library
 							</NavLink>
-							<NavLink destination="/scales" permission="read:construct_scales">
+							<NavLink destination="/scales" permission="read:scales">
 								Scales
 							</NavLink>
 							<NavLink destination="/movies" permission="read:movies">

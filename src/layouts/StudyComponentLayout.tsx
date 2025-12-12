@@ -3,9 +3,9 @@ import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAppSelector } from '../store/hooks';
 
 const StudyNavigationLayout: React.FC = () => {
-    const { studyId, stepId, pageId } = useParams<{ studyId: string; stepId: string; pageId: string }>();
+    const { stepId, pageId, conditionId } = useParams<{ studyId: string; stepId: string; pageId: string; conditionId: string }>();
     const location = useLocation();
-    const { study, step, page } = useAppSelector((state) => state.studyComponentSelection);
+    const { study, step, page, condition } = useAppSelector((state) => state.studyComponentSelection);
 
     const pathSegments = location.pathname.split('/').filter((s) => s !== '');
     const rootResource = pathSegments[0];
@@ -72,7 +72,7 @@ const StudyNavigationLayout: React.FC = () => {
         currentPathAccumulator += `/${segment}`;
         const isLast = index === relativePathSegments.length - 1;
 
-        if (segment === 'steps' || segment === 'pages') return;
+        if (segment === 'steps' || segment === 'pages' || segment === 'conditions') return;
 
         let displayName = segment.substring(0, 8); // Default to truncated ID
 
@@ -80,6 +80,8 @@ const StudyNavigationLayout: React.FC = () => {
             displayName = step.display_name;
         } else if (segment === pageId && page) {
             displayName = page.display_name;
+        } else if (segment === conditionId && condition) {
+            displayName = condition.display_name;
         }
 
         breadcrumbItems.push(

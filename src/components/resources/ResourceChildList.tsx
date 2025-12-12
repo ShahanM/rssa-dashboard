@@ -82,7 +82,7 @@ const ResourceChildList = <TChild extends OrderedComponent>({
         },
     });
 
-    const isModalResource = resourceClient.config.apiResourceTag === 'items' || resourceClient.config.apiResourceTag === 'levels';
+    const isModalResource = resourceClient.config.apiResourceTag === 'items' || resourceClient.config.apiResourceTag === 'levels' || resourceClient.config.apiResourceTag === 'contents';
 
     const handleItemClick = (resource: TChild) => {
         if (isModalResource) {
