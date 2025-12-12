@@ -232,6 +232,7 @@ const TableNavButton: React.FC<{ label: string; onClick: () => void; disabled: b
 }) => {
     return (
         <button
+            type="button"
             className={clsx('me-1 cursor-pointer text-xl', 'hover:bg-yellow-500 w-15', 'rounded-lg')}
             onClick={onClick}
             disabled={disabled}

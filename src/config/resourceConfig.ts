@@ -160,12 +160,12 @@ export const resourceConfig: DashBoardResourceConfig = {
                 optionsValueKey: 'id',
                 optionsLabelKey: 'name',
             },
-            { key: 'recommendation_count', label: 'Recommendation Count', type: 'text' },
+            { key: 'recommendation_count', label: 'Recommendation Count', type: 'number' },
         ],
         formFields: [
             { name: 'name', label: 'Condition Name', type: 'text', required: true },
             { name: 'description', label: 'Description', type: 'textarea', required: false },
-            { name: 'recommendation_count', label: 'Number of items in recommondation', type: 'text', required: true },
+            { name: 'recommendation_count', label: 'Number of items in recommondation', type: 'number', required: true },
         ],
         tableColumns: [
             {
