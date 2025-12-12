@@ -28,7 +28,7 @@ export const DynamicSelect = <TOption extends BaseOption>({
 
     const { data: fetchedOptions, isLoading } = useQuery({
         queryKey: ['form-options', optionsEndpoint],
-        queryFn: () => api.get<TOption[]>(`${optionsEndpoint}/`),
+        queryFn: () => api.get<TOption[]>(`${optionsEndpoint}`),
         enabled: !!optionsEndpoint,
     });
 
