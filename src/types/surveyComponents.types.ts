@@ -6,7 +6,7 @@ export interface SurveyConstruct extends BaseResourceType {
     name: string;
     description: string;
 
-    items: ConstructItem[] | null;
+    survey_items: ConstructItem[] | null;
 }
 
 export interface ConstructItem extends OrderedComponent {
@@ -25,7 +25,7 @@ export interface Scale extends BaseResourceType {
 
 export interface ScaleLevel extends OrderedComponent {
     resource_type: 'level';
-    scale_id: string;
+    survey_scale_id: string;
 
     label: string;
     value: number;

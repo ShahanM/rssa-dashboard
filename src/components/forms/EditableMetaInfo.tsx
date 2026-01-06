@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 import { useDynamicForm } from '../../hooks/useDynamicForm';
 import type { BaseResourceType } from '../../types/sharedBase.types';
-import ResourceMetaInfo, { RenderStaticInfo } from '../views/ResourceMetaInfo';
+import ResourceMetaInfo, { RenderStaticInfo } from '../resources/ResourceMetaInfo';
 import type { EditableField, FieldValidator } from './forms.typs';
 import { DynamicSelect } from './DynamicSelect';
 
@@ -33,7 +33,7 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
         ) as FormDataType;
     }, [editableFields, resourceInstance]);
 
-    const { formData, handleChange, validationStates, validationErrors, resetForm, isFormInvalid } = useDynamicForm({
+    const { formData, handleChange, validationStates, validationErrors, resetForm, isFormInvalid, setFieldValue } = useDynamicForm({
         initialValues: isEditing ? initialFormValues : ({} as FormDataType),
         validators: validators,
     });
@@ -88,15 +88,40 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
                     </>
                 );
             case 'select':
-                if (!field.options || field.options.length === 0) {
+                if ((!field.options || field.options.length === 0) && !field.optionsEndpoint) {
                     return <RenderStaticInfo resourceInstance={resourceInstance} field={field} />;
                 }
-                return <DynamicSelect {...commonProps} staticOptions={field.options} />;
+                return (
+                    <DynamicSelect
+                        {...commonProps}
+                        staticOptions={field.options}
+                        optionsEndpoint={field.optionsEndpoint}
+                        optionsValueKey={field.optionsValueKey}
+                        optionsLabelKey={field.optionsLabelKey}
+                    />
+                );
+            case 'number':
+                return (
+                    <>
+                        <label htmlFor={field.key as string} className="block text-sm font-medium text-gray-700">
+                            {field.label}
+                        </label>
+                        <input
+                            {...commonProps}
+                            type="number"
+                            onChange={(e) => {
+                                const val = e.target.value === '' ? '' : Number(e.target.value);
+                                setFieldValue(field.key as string, val);
+                            }}
+                        />
+                    </>
+                );
             case 'static':
             default:
                 return <RenderStaticInfo resourceInstance={resourceInstance} field={field} />;
         }
     };
+
 
     if (isEditing) {
         console.log(resourceInstance);

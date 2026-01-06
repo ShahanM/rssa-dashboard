@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
-import ResourceChildList from '../../components/views/ResourceChildList';
-import ResourceInfoPanel from '../../components/views/ResourceInfoPanel';
+import ResourceChildList from '../../components/resources/ResourceChildList';
+import ResourceInfoPanel from '../../components/resources/ResourceInfoPanel';
 import { clearSelectedConstruct } from '../../store/constructlibrary/selectionSlice';
 import { useAppDispatch } from '../../store/hooks';
-import type { ConstructItem, SurveyConstruct } from '../../types/surveyconstructs.types';
+import type { ConstructItem, SurveyConstruct } from '../../types/surveyComponents.types';
 
 const ConstructDetails: React.FC = () => {
     const { constructId } = useParams<{ constructId: string }>();

@@ -9,14 +9,16 @@ import type { OrderedComponent } from '../types/sharedBase.types';
 
 interface SortableItemProps<T extends OrderedComponent> {
     resourceClient: ResourceClient<T> | DependentResourceClient<T>;
-    studyComponent: OrderedComponent;
+    studyComponent: T;
     urlPathPrefix?: string;
+    onItemClick?: (item: T) => void;
 }
 
 export const SortableItem = <T extends OrderedComponent>({
     resourceClient,
     studyComponent,
     urlPathPrefix,
+    onItemClick,
 }: SortableItemProps<T>) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: studyComponent.id,
@@ -40,7 +42,10 @@ export const SortableItem = <T extends OrderedComponent>({
                     'hover:-translate-y-px hover:shadow-md'
                 )}
             >
-                <SortableItemContent urlPath={urlPathPrefix ? `${urlPathPrefix}/${studyComponent.id}` : undefined}>
+                <SortableItemContent
+                    urlPath={urlPathPrefix ? `${urlPathPrefix}/${studyComponent.id}` : undefined}
+                    onClick={onItemClick ? () => onItemClick(studyComponent) : undefined}
+                >
                     <div className="flex-1 text-gray-800 break-words truncate">{studyComponent.display_name}</div>
                     <div
                         className={clsx(
@@ -63,13 +68,25 @@ export const SortableItem = <T extends OrderedComponent>({
     );
 };
 
-const SortableItemContent: React.FC<{ urlPath?: string; children: React.ReactNode }> = ({ urlPath, children }) => {
-    const classString = 'flex items-center justify-between w-full min-w-0 gap-4 no-underline text-inherit';
+const SortableItemContent: React.FC<{ urlPath?: string; onClick?: () => void; children: React.ReactNode }> = ({
+    urlPath,
+    onClick,
+    children,
+}) => {
+    const classString = 'flex items-center justify-between w-full min-w-0 gap-4 no-underline text-inherit cursor-pointer';
     if (urlPath !== undefined) {
         return (
             <Link to={urlPath} className={classString}>
                 {children}
             </Link>
+        );
+    }
+
+    if (onClick) {
+        return (
+            <div onClick={onClick} className={classString}>
+                {children}
+            </div>
         );
     }
 

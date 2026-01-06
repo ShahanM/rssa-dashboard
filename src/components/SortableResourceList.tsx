@@ -18,6 +18,7 @@ interface SortableResourceListProps<T extends OrderedComponent> {
     parentId: string;
     studyComponents: T[];
     urlPathPrefix?: string;
+    onItemClick?: (item: T) => void;
 }
 
 interface ReorderVariables {
@@ -31,6 +32,7 @@ const SortableResourceList = <T extends OrderedComponent>({
     parentId,
     studyComponents,
     urlPathPrefix,
+    onItemClick,
 }: SortableResourceListProps<T>) => {
     const [components, setComponents] = useState<OrderedComponent[]>(studyComponents);
 
@@ -119,7 +121,8 @@ const SortableResourceList = <T extends OrderedComponent>({
                             resourceClient={resourceClient}
                             key={component.id}
                             urlPathPrefix={urlPathPrefix}
-                            studyComponent={component}
+                            studyComponent={component as T}
+                            onItemClick={onItemClick}
                         />
                     ))}
                 </ul>

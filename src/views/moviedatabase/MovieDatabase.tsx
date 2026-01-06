@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import PaginatedResourceViewer from "../../components/views/PaginatedResourceViewer";
+import PaginatedResourceViewer from "../../components/resources/PaginatedResourceViewer";
 import type { MovieDetails } from "../../types/movies.types";
 import MovieDetailsPanel from "./MovieDetailsPanel";
 import MovieCard from "./MovieCard";

@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
-import ResourceMetaInfo from '../../components/views/ResourceMetaInfo';
-import ResourceViewer from '../../components/views/ResourceViewer';
+import ResourceMetaInfo from '../../components/resources/ResourceMetaInfo';
+import ResourceViewer from '../../components/resources/ResourceViewer';
 import { useAppSelector } from '../../store/hooks';
-import type { Scale } from '../../types/surveyconstructs.types';
+import type { Scale } from '../../types/surveyComponents.types';
 
 const ScaleSummaryView: React.FC = () => {
     const selectedObject = useAppSelector((state) => state.scaleSelection['scale']);
@@ -18,7 +18,7 @@ const ScaleSummaryView: React.FC = () => {
         <div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
             <ResourceViewer<T>
                 queryKey={apiClient.queryKeys.summary(selectedObject.id!)}
-                queryFn={() => apiClient.getOnePreview(selectedObject.id!)}
+                queryFn={() => apiClient.getOne(selectedObject.id!)}
                 resourceName={apiClient.config.resourceName}
             >
                 {(resourceInstance: T) => (

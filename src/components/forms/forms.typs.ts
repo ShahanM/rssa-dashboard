@@ -10,7 +10,7 @@ export type ValidatorFactory<T extends BaseResourceType> = (
 export interface FormField {
     name: string;
     label: string;
-    type: 'text' | 'textarea' | 'select' | 'static' | 'modal-select';
+    type?: 'text' | 'textarea' | 'select' | 'static' | 'modal-select' | 'number';
     value?: string; // Only applies for static fields
     required?: boolean;
     placeholder?: string;
@@ -38,6 +38,10 @@ export type EditableField<T> = MetaInfoField<T> & {
     label: string;
     wide?: boolean;
     // TODO: Need editable select types
-    type?: 'text' | 'textarea' | 'static' | 'select'; // To render different input types
+    type?: 'text' | 'textarea' | 'static' | 'select' | 'number'; // To render different input types
     options?: { value: string; label: string }[]; // For static select fields
+    optionsEndpoint?: string; // For dynamic select fields
+    optionsValueKey?: string; // Key for value in dynamic select options
+    optionsLabelKey?: string; // Key for label in dynamic select options
+    required?: boolean;
 };

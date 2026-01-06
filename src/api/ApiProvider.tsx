@@ -8,7 +8,7 @@ import {
     type StudyCondition,
     type StudyStep,
 } from '../types/studyComponents.types';
-import { type ConstructItem, type Scale, type ScaleLevel, type SurveyConstruct } from '../types/surveyconstructs.types';
+import { type ConstructItem, type Scale, type ScaleLevel, type SurveyConstruct } from '../types/surveyComponents.types';
 import { ApiContext } from './ApiContext';
 import { createDependentResourceClient, createResourceClient } from './resourceClient';
 

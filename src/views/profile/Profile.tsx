@@ -1,8 +1,5 @@
 
 import { useAuth0 } from "@auth0/auth0-react";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
 import Highlight from "../../components/Highlight";
 
@@ -16,24 +13,24 @@ const Profile = () => {
 	}
 
 	return (
-		<Container className="mb-5">
-			<Row className="align-items-center profile-header mb-5 text-center text-md-left">
-				<Col md={2}>
+		<div className="container mx-auto mb-5">
+			<div className="flex flex-col md:flex-row items-center mb-5 text-center md:text-left">
+				<div className="md:w-2/12">
 					<img
 						src={user.picture}
 						alt="Profile"
-						className="rounded-circle img-fluid profile-picture mb-3 mb-md-0"
+						className="rounded-full w-full mb-3 md:mb-0"
 					/>
-				</Col>
-				<Col md>
-					<h2>{user.name}</h2>
-					<p className="lead text-muted">{user.email}</p>
-				</Col>
-			</Row>
-			<Row>
+				</div>
+				<div className="md:w-full md:ml-6">
+					<h2 className="text-2xl font-bold">{user.name}</h2>
+					<p className="text-lg text-gray-500">{user.email}</p>
+				</div>
+			</div>
+			<div className="w-full">
 				<Highlight>{JSON.stringify(user, null, 2)}</Highlight>
-			</Row>
-		</Container>
+			</div>
+		</div>
 	);
 };
 

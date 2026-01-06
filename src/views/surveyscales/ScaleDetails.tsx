@@ -2,11 +2,11 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
-import ResourceChildList from '../../components/views/ResourceChildList';
-import ResourceInfoPanel from '../../components/views/ResourceInfoPanel';
+import ResourceChildList from '../../components/resources/ResourceChildList';
+import ResourceInfoPanel from '../../components/resources/ResourceInfoPanel';
 import { useAppDispatch } from '../../store/hooks';
 import { clearSelectedScale, setScale } from '../../store/surveyscales/selectionSlice';
-import type { Scale, ScaleLevel } from '../../types/surveyconstructs.types';
+import type { Scale, ScaleLevel } from '../../types/surveyComponents.types';
 
 const ScaleDetails: React.FC = () => {
     const { scaleId } = useParams<{ scaleId: string }>();

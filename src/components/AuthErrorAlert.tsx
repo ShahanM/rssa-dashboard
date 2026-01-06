@@ -1,7 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect, useState } from "react";
-import { Alert, Row } from "react-bootstrap";
-
 
 const AuthErrorAlert: React.FC<{ error: string }> = ({ error }) => {
 	const [authError, setAuthError] = useState<string>("");
@@ -37,27 +35,41 @@ const AuthErrorAlert: React.FC<{ error: string }> = ({ error }) => {
 		fn();
 	};
 
+	if (!authError) return null;
+
 	return (
-		<Row>
+		<div className="flex w-full">
 			{authError === "consent_required" && (
-				<Alert color="warning">
-					You need to{" "}
-					<a href="#/" className="alert-link"
-						onClick={(e) => handle(e, handleConsent)}>
-						consent to get access to users api
-					</a>
-				</Alert>
+				<div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 w-full">
+					<div className="flex">
+						<div className="ml-3">
+							<p className="text-sm text-yellow-700">
+								You need to{" "}
+								<a href="#/" className="font-medium underline text-yellow-700 hover:text-yellow-600"
+									onClick={(e) => handle(e, handleConsent)}>
+									consent to get access to users api
+								</a>
+							</p>
+						</div>
+					</div>
+				</div>
 			)}
 			{authError === "login_required" && (
-				<Alert color="warning">
-					You need to{" "}
-					<a href="#/" className="alert-link"
-						onClick={(e) => handle(e, handleLoginAgain)}>
-						log in again
-					</a>
-				</Alert>
+				<div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 w-full">
+					<div className="flex">
+						<div className="ml-3">
+							<p className="text-sm text-yellow-700">
+								You need to{" "}
+								<a href="#/" className="font-medium underline text-yellow-700 hover:text-yellow-600"
+									onClick={(e) => handle(e, handleLoginAgain)}>
+									log in again
+								</a>
+							</p>
+						</div>
+					</div>
+				</div>
 			)}
-		</Row>
+		</div>
 	)
 }
 

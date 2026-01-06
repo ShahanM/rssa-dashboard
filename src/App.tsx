@@ -1,4 +1,3 @@
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -13,6 +12,7 @@ import Profile from './views/profile/Profile';
 import PageDetails from './views/studycomponents/PageDetails';
 import StepDetails from './views/studycomponents/StepDetails';
 import StudyDetails from './views/studycomponents/StudyDetails';
+import StudyCondition from './views/studycomponents/StudyCondition';
 import StudyExplorer from './views/studycomponents/StudyExplorer';
 import ConstructDetails from './views/surveyconstructs/ConstructDetails';
 import ConstructLibrary from './views/surveyconstructs/ConstructLibrary';
@@ -22,7 +22,7 @@ import SurveyScales from './views/surveyscales/SurveyScales';
 const App: React.FC = () => {
     return (
         <BrowserRouter basename="/rssa-dashboard/">
-            <div id="RSSA-App" className="d-flex flex-column h-100">
+            <div id="RSSA-App" className="flex flex-col h-full">
                 <Routes>
                     <Route path="/unauthorized" element={<Landing />} />
                     <Route element={<ProtectedRoute />}>
@@ -33,6 +33,7 @@ const App: React.FC = () => {
                                 <Route index element={<StudyDetails />} />
                                 <Route path="steps/:stepId" element={<StepDetails />} />
                                 <Route path="steps/:stepId/pages/:pageId" element={<PageDetails />} />
+                                <Route path="conditions/:conditionId" element={<StudyCondition />} />
                                 <Route path="data-dashboard" element={<h1>Data Dashboard</h1>} />
                             </Route>
                             <Route path="constructs" element={<ConstructLibrary />} />

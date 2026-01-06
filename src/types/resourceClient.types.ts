@@ -11,7 +11,7 @@ import type {
     StudyCondition,
     StudyStep,
 } from './studyComponents.types';
-import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from './surveyconstructs.types';
+import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from './surveyComponents.types';
 
 export interface ResourceConfig<T extends BaseResourceType> {
     apiResourceTag: string;
@@ -65,7 +65,6 @@ export interface ResourceClient<T extends BaseResourceType> {
     };
     getOne: (id: string) => Promise<T | null>;
     getPaginated: (queryParams: PaginatedResourceQuery) => Promise<PaginatedResourceList<T> | null>;
-    getOnePreview: (id: string) => Promise<T | null>;
     update: (id: string, data: Partial<T>) => Promise<T | null>;
     create: (data: Omit<T, ServerGeneratedKeys>) => Promise<T | null>;
     del: (id: string) => Promise<unknown>;

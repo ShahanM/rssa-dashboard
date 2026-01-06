@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useSelectableClient } from '../../api/useSelectableClient';
 import type { BaseResourceType } from '../../types/sharedBase.types';
 import type { PaginatedResourceList } from '../../types/studyComponents.types';
-import ResourceTable from '../views/ResourceTable';
+import ResourceTable from '../resources/ResourceTable';
 import type { FormField } from './forms.typs';
 
 interface ModalSelectProps {
