@@ -26,7 +26,7 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
 
     const updateMutation = useMutation<TChild | null, Error, Partial<TChild>, { previousData: TChild[] | undefined }>({
         mutationFn: (formData: Partial<TChild>) => {
-            if (!selectedResource) throw new Error("No resource selected");
+            if (!selectedResource) throw new Error('No resource selected');
             return resourceClient.update(selectedResource.id, formData);
         },
         onMutate: async (formData) => {
@@ -38,14 +38,11 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
 
             queryClient.setQueryData<TChild[]>(resourceClient.queryKeys.lists(), (oldData) => {
                 if (!oldData) return [];
-                return oldData.map((item) =>
-                    item.id === selectedResource.id ? { ...item, ...formData } : item
-                );
+                return oldData.map((item) => (item.id === selectedResource.id ? { ...item, ...formData } : item));
             });
             return { previousData };
         },
         onError: (err) => {
-            // Rollback logic could go here
             console.error(err.message);
         },
         onSettled: () => {
@@ -76,7 +73,7 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
                         parentId={parentId}
                         resourceName={resourceClient.config.resourceName}
                         formFields={resourceClient.config.formFields}
-                        invalidateQueryKeys={[resourceClient.queryKeys.lists()]}
+                        invalidateQueryKeys={[resourceClient.queryKeys.all()]}
                     />
                 )}
             </div>

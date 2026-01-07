@@ -25,7 +25,6 @@ const StudyDetails: React.FC = () => {
                 onDelete={() => dispatch(clearSelectedStudy())}
                 onLoad={(studyData: Study) => dispatch(setStudy(studyData))}
             />
-            {/* <ExportStudyConfigButton studyId={studyId} studyName="does it matter?" /> */}
             <div className="flex space-x-2 justify-between gap-4">
                 <ResourceChildList<StudyStep> resourceClient={stepClient} parentId={studyId} />
                 <div>

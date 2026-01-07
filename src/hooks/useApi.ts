@@ -117,7 +117,6 @@ export const useApi = (): ApiResponse => {
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('application/json')) {
                     const responseData: RT = await response.json();
-                    console.log(responseData);
                     setData(responseData);
                     return responseData;
                 } else {
