@@ -1,6 +1,7 @@
 import React from 'react';
 import { CopyToClipboardButton } from '../components/buttons/CopyToClipboardButton';
 import ConditionStatsView from '../components/ConditionStatsView';
+import StudyConditionCheckbox from '../components/resources/StudyConditionCheckbox';
 import type { DashBoardResourceConfig } from '../types/resourceClient.types';
 import UserCard from '../views/profile/UserCard';
 
@@ -168,15 +169,18 @@ export const resourceConfig: DashBoardResourceConfig = {
             { name: 'recommendation_count', label: 'Number of items in recommondation', type: 'number', required: true },
         ],
         tableColumns: [
-            {
-                id: 'copy-id-action',
-                cell: ({ row }) => {
-                    return React.createElement(CopyToClipboardButton, { textToCopy: row.original.id });
-                },
-            },
             { accessorKey: 'id', header: 'Condition ID' },
             { accessorKey: 'name', header: 'Condition Name' },
-            { accessorKey: 'description', header: 'Description' },
+            {
+                id: 'include',
+                header: 'Include',
+                cell: ({ row }) => {
+                    return React.createElement(StudyConditionCheckbox, {
+                        conditionId: row.original.id,
+                        initialEnabled: row.original.enabled || false,
+                    });
+                },
+            },
         ],
     },
     content: {

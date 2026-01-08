@@ -8,6 +8,7 @@ export interface StudyCondition extends BaseResourceType {
     description?: string;
     recommender_key?: string;
     recommendation_count?: number;
+    enabled?: boolean;
 }
 
 export type ConditionStats = {
