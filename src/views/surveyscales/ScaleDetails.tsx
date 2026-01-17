@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
 import ResourceChildList from '../../components/resources/ResourceChildList';
@@ -15,6 +15,9 @@ const ScaleDetails: React.FC = () => {
 
     const [levels, setLevels] = useState<ScaleLevel[]>();
 
+    const handleLoad = useCallback((scaleData: Scale) => dispatch(setScale(scaleData)), [dispatch]);
+    const handleDelete = useCallback(() => dispatch(clearSelectedScale()), [dispatch]);
+
     if (!scaleId) {
         console.warn('Construct ID is missing from URL. Redirecting to constructs listings.');
         return null;
@@ -25,8 +28,8 @@ const ScaleDetails: React.FC = () => {
             <ResourceInfoPanel<Scale>
                 resourceClient={scaleClient}
                 resourceId={scaleId}
-                onDelete={() => dispatch(clearSelectedScale())}
-                onLoad={(scaleData: Scale) => dispatch(setScale(scaleData))}
+                onDelete={handleDelete}
+                onLoad={handleLoad}
             />
             <div className="flex space-x-2 justify-between gap-4">
                 <ResourceChildList<ScaleLevel>

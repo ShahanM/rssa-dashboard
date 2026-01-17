@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useToast } from '../toast/ToastProvider';
 import { usePermissions } from '../../hooks/usePermissions';
 import {
     createValidators,
@@ -69,6 +70,8 @@ const ResourceInfoPanel = <T extends BaseResourceType>({
 
     const queryClient = useQueryClient();
 
+    const { showToast } = useToast();
+
     const updateMutation = useMutation<T | null, Error, Partial<T>, { previousData: T | undefined }>({
         mutationFn: (formData: Partial<T>) => resourceClient.update(resourceId, formData),
         onMutate: async (formData: Partial<T>): Promise<{ previousData: T | undefined }> => {
@@ -84,14 +87,14 @@ const ResourceInfoPanel = <T extends BaseResourceType>({
                     ...formData,
                 };
             });
-            // TODO: add a showToast here that data is saved
+            showToast('Saving changes...', 'info');
             return { previousData };
         },
         onError: (err, _FormData, context) => {
             if (context?.previousData) {
                 queryClient.setQueryData<T>(resourceClient.queryKeys.detail(resourceId), context.previousData);
             }
-            // TODO: add a showToast with the err.message
+            showToast(`Error saving: ${err.message}`, 'error');
             console.error(err.message);
         },
         onSettled: () => {

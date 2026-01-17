@@ -1,18 +1,26 @@
-import ConstructList from './ConstructList';
+import { useApiClients } from '../../api/ApiContext';
+import ResourceExplorer from '../../components/resources/ResourceExplorer';
+import { selectConstruct, setConstruct } from '../../store/constructlibrary/selectionSlice';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import type { SurveyConstruct } from '../../types/surveyComponents.types';
 import ConstructSummaryView from './ConstructSummary';
 
 const ConstructLibrary = () => {
+    const selectedObject = useAppSelector(selectConstruct);
+    const dispatch = useAppDispatch();
+    const { constructClient } = useApiClients();
+
+    const handleSelect = (construct: SurveyConstruct) => {
+        dispatch(setConstruct(construct));
+    };
+
     return (
-        <div className="container mx-auto p-3">
-            <div className="flex space-x-2 justify-between mb-2 p-3">
-                <div className="container mx-auto p-3 bg-gray-50 rounded-lg me-2">
-                    <ConstructList />
-                </div>
-                <div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
-                    <ConstructSummaryView />
-                </div>
-            </div>
-        </div>
+        <ResourceExplorer<SurveyConstruct>
+            resourceClient={constructClient}
+            selectedId={selectedObject?.id ?? null}
+            onSelect={handleSelect}
+            SummaryComponent={ConstructSummaryView}
+        />
     );
 };
 

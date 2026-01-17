@@ -4,10 +4,11 @@ import { useApiClients } from '../../api/ApiContext';
 import ResourceMetaInfo from '../../components/resources/ResourceMetaInfo';
 import ResourceViewer from '../../components/resources/ResourceViewer';
 import { useAppSelector } from '../../store/hooks';
+import { selectScale } from '../../store/surveyscales/selectionSlice';
 import type { Scale } from '../../types/surveyComponents.types';
 
 const ScaleSummaryView: React.FC = () => {
-    const selectedObject = useAppSelector((state) => state.scaleSelection['scale']);
+    const selectedObject = useAppSelector(selectScale);
     const { scaleClient: apiClient } = useApiClients();
     type T = Scale;
 

@@ -5,10 +5,11 @@ import { useApiClients } from '../../api/ApiContext';
 import ResourceMetaInfo from '../../components/resources/ResourceMetaInfo';
 import ResourceViewer from '../../components/resources/ResourceViewer';
 import { useAppSelector } from '../../store/hooks';
+import { selectStudy } from '../../store/studycomponents/selectionSlice';
 import type { Study } from '../../types/studyComponents.types';
 
 const StudySummaryView: React.FC = () => {
-    const selectedObject = useAppSelector((state) => state.studyComponentSelection['study']);
+    const selectedObject = useAppSelector(selectStudy);
     const { studyClient: apiClient } = useApiClients();
     type T = Study;
 

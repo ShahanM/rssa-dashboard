@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
@@ -11,6 +12,9 @@ const PageDetails: React.FC = () => {
     const dispatch = useDispatch();
     const { pageClient, contentClient } = useApiClients();
 
+    const handleLoad = useCallback((pageData: Page) => dispatch(setPage(pageData)), [dispatch]);
+    const handleDelete = useCallback(() => dispatch(clearSelectedPage()), [dispatch]);
+
     if (!pageId) {
         console.warn('Study ID or Step ID is missing from URL. Redirecting to studies listings.');
         return null;
@@ -20,8 +24,8 @@ const PageDetails: React.FC = () => {
             <ResourceInfoPanel<Page>
                 resourceClient={pageClient}
                 resourceId={pageId}
-                onDelete={() => dispatch(clearSelectedPage())}
-                onLoad={(pageData: Page) => dispatch(setPage(pageData))}
+                onDelete={handleDelete}
+                onLoad={handleLoad}
             />
             <div className="flex space-x-2 justify-between gap-4">
                 <ResourceChildList<PageContent> resourceClient={contentClient} parentId={pageId} />

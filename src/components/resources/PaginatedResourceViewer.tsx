@@ -13,12 +13,14 @@ interface PaginatedResourceViewerProps<T> {
     apiResourceTag: string;
     limit?: number;
     children: (data: T[], selectedItem: T | null, handleItemClick: (item: T) => void) => React.ReactNode;
+    queryParams?: Record<string, string | number | undefined | null>;
 }
 
 const PaginatedResourceViewer = <T extends { id: string }>({
     apiResourceTag,
     limit = 10,
     children,
+    queryParams,
 }: PaginatedResourceViewerProps<T>) => {
     const [page, setPage] = useState(0);
     const [selectedItem, setSelectedItem] = useState<T | null>(null);
@@ -26,11 +28,24 @@ const PaginatedResourceViewer = <T extends { id: string }>({
 
     const fetchResources = async (page: number) => {
         const offset = page * limit;
-        return api.get<PaginatedDataList<T>>(`${apiResourceTag}/?offset=${offset}&limit=${limit}`);
+        const params = new URLSearchParams({
+            offset: offset.toString(),
+            limit: limit.toString(),
+        });
+
+        if (queryParams) {
+            Object.entries(queryParams).forEach(([key, value]) => {
+                if (value !== undefined && value !== null && value !== '') {
+                    params.append(key, value.toString());
+                }
+            });
+        }
+
+        return api.get<PaginatedDataList<T>>(`${apiResourceTag}/?${params.toString()}`);
     };
 
     const { data, isLoading, error, isFetching } = useQuery({
-        queryKey: [apiResourceTag, page],
+        queryKey: [apiResourceTag, page, queryParams],
         queryFn: () => fetchResources(page),
         enabled: !!api,
         placeholderData: keepPreviousData,

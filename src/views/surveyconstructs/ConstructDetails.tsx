@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
 import ResourceChildList from '../../components/resources/ResourceChildList';
@@ -12,6 +13,8 @@ const ConstructDetails: React.FC = () => {
 
     const { constructClient, itemClient } = useApiClients();
 
+    const handleDelete = useCallback(() => dispatch(clearSelectedConstruct()), [dispatch]);
+
     if (!constructId) {
         console.warn('Construct ID is missing from URL. Redirecting to constructs listings.');
         return null;
@@ -22,7 +25,7 @@ const ConstructDetails: React.FC = () => {
             <ResourceInfoPanel<SurveyConstruct>
                 resourceClient={constructClient}
                 resourceId={constructId}
-                onDelete={() => dispatch(clearSelectedConstruct())}
+                onDelete={handleDelete}
             />
             <div className="flex space-x-2 justify-between gap-4">
                 <ResourceChildList<ConstructItem> resourceClient={itemClient} parentId={constructId} />

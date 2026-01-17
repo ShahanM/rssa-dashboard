@@ -1,18 +1,27 @@
-import StudyPanel from '../studycomponents/StudyPanel';
-import StudySummaryView from '../studycomponents/StudySummary';
+import { useApiClients } from '../../api/ApiContext';
+import ResourceExplorer from '../../components/resources/ResourceExplorer';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { selectStudy, setStudy } from '../../store/studycomponents/selectionSlice';
+import type { Study } from '../../types/studyComponents.types';
+import StudySummaryView from './StudySummary';
 
 export const StudyExplorer = () => {
+    const selectedObject = useAppSelector(selectStudy);
+    const dispatch = useAppDispatch();
+    const { studyClient } = useApiClients();
+
+    const handleSelect = (study: Study) => {
+        dispatch(setStudy(study));
+    };
+
     return (
-        <div className="container mx-auto p-3">
-            <div className="flex space-x-2 justify-between mb-2 p-3">
-                <div className="container mx-auto p-3 bg-gray-50 rounded-lg me-2">
-                    <StudyPanel />
-                </div>
-                <div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">
-                    <StudySummaryView />
-                </div>
-            </div>
-        </div>
+        <ResourceExplorer<Study>
+            resourceClient={studyClient}
+            selectedId={selectedObject?.id ?? null}
+            onSelect={handleSelect}
+            SummaryComponent={StudySummaryView}
+            requireCreatePermission={false} // StudyPanel didn't check permission in original code
+        />
     );
 };
 

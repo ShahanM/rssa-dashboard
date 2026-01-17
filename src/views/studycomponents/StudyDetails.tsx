@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
 import ResourceChildList from '../../components/resources/ResourceChildList';
@@ -12,6 +13,9 @@ const StudyDetails: React.FC = () => {
     const dispatch = useAppDispatch();
     const { studyClient, stepClient, conditionClient, keyClient } = useApiClients();
 
+    const handleLoad = useCallback((studyData: Study) => dispatch(setStudy(studyData)), [dispatch]);
+    const handleDelete = useCallback(() => dispatch(clearSelectedStudy()), [dispatch]);
+
     if (!studyId) {
         console.warn('Study ID is missing from URL. Redirecting to studies listings.');
         return <>Invalid url</>;
@@ -22,8 +26,8 @@ const StudyDetails: React.FC = () => {
             <ResourceInfoPanel<Study>
                 resourceClient={studyClient}
                 resourceId={studyId}
-                onDelete={() => dispatch(clearSelectedStudy())}
-                onLoad={(studyData: Study) => dispatch(setStudy(studyData))}
+                onDelete={handleDelete}
+                onLoad={handleLoad}
             />
             <div className="flex space-x-2 justify-between gap-4">
                 <ResourceChildList<StudyStep> resourceClient={stepClient} parentId={studyId} />

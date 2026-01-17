@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { useApiClients } from '../../api/ApiContext';
 import ResourceMetaInfo from '../../components/resources/ResourceMetaInfo';
 import ResourceViewer from '../../components/resources/ResourceViewer';
+import { selectConstruct } from '../../store/constructlibrary/selectionSlice';
 import { useAppSelector } from '../../store/hooks';
 import type { SurveyConstruct } from '../../types/surveyComponents.types';
 
 const ConstructSummaryView: React.FC = () => {
-    const selectedObject = useAppSelector((state) => state.constructSelection['construct']);
+    const selectedObject = useAppSelector(selectConstruct);
     const { constructClient: apiClient } = useApiClients();
     type T = SurveyConstruct;
 
