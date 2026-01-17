@@ -23,4 +23,7 @@ const constructSelectionSlice = createSlice({
 });
 
 export const { setConstruct, clearSelectedConstruct } = constructSelectionSlice.actions;
+
+export const selectConstruct = (state: { constructSelection: SelectionState }) => state.constructSelection.construct;
+
 export default constructSelectionSlice.reducer;

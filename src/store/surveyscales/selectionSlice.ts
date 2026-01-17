@@ -23,4 +23,7 @@ const scaleSelectionSlice = createSlice({
 });
 
 export const { setScale, clearSelectedScale } = scaleSelectionSlice.actions;
+
+export const selectScale = (state: { scaleSelection: SelectionState }) => state.scaleSelection.scale;
+
 export default scaleSelectionSlice.reducer;
