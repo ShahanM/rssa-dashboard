@@ -3,13 +3,36 @@ import PaginatedResourceViewer from "../../components/resources/PaginatedResourc
 import type { MovieDetails } from "../../types/movies.types";
 import MovieDetailsPanel from "./MovieDetailsPanel";
 import MovieCard from "./MovieCard";
-
+import { useState } from "react";
+import MovieFilters, { type MovieFilterState } from "./MovieFilters";
 
 const MovieDatabase: React.FC = () => {
+    const [filters, setFilters] = useState<MovieFilterState>({
+        title: '',
+        yearMin: '',
+        yearMax: '',
+        genre: '',
+        sortBy: '',
+    });
+
+    // Convert filter state to API usable query params
+    const queryParams = {
+        title: filters.title || undefined,
+        year_min: filters.yearMin || undefined,
+        year_max: filters.yearMax || undefined,
+        genre: filters.genre || undefined,
+        sort_by: filters.sortBy || undefined,
+    };
+
     return (
         <div className="bg-gray-100 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100">
             <main className="container mx-auto p-4">
-                <PaginatedResourceViewer<MovieDetails> apiResourceTag="movies" limit={15}>
+                <MovieFilters filters={filters} onFilterChange={setFilters} />
+                <PaginatedResourceViewer<MovieDetails> 
+                    apiResourceTag="movies" 
+                    limit={15}
+                    queryParams={queryParams}
+                >
                     {(movies, selectedItem, handleItemClick) => (
                         <div className="flex gap-6">
                             <div className={clsx(
@@ -18,7 +41,7 @@ const MovieDatabase: React.FC = () => {
                                 { "w-full": !selectedItem, "w-3/5": selectedItem }
                             )}>
                                 {movies.length > 0 ? movies.map((movie) => {
-                                    console.log("MOVIE", movie);
+                                    // console.log("MOVIE", movie);
                                     return (
                                         <MovieCard
                                             key={movie.id}

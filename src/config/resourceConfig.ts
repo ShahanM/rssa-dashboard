@@ -169,7 +169,11 @@ export const resourceConfig: DashBoardResourceConfig = {
             { name: 'recommendation_count', label: 'Number of items in recommondation', type: 'number', required: true },
         ],
         tableColumns: [
-            { accessorKey: 'id', header: 'Condition ID' },
+            {
+                accessorKey: 'short_code',
+                header: 'Identifier',
+                cell: (info) => (info.getValue() as string).toLowerCase(),
+            },
             { accessorKey: 'name', header: 'Condition Name' },
             {
                 id: 'include',
