@@ -161,18 +161,35 @@ export const resourceConfig: DashBoardResourceConfig = {
                 optionsValueKey: 'id',
                 optionsLabelKey: 'name',
             },
+            {
+                key: 'view_link_key',
+                label: 'View Link Key',
+                type: 'text',
+                wide: true,
+            },
             { key: 'recommendation_count', label: 'Recommendation Count', type: 'number' },
         ],
         formFields: [
             { name: 'name', label: 'Condition Name', type: 'text', required: true },
+            { name: 'view_link_key', label: 'View Link Key', type: 'text', required: false },
             { name: 'description', label: 'Description', type: 'textarea', required: false },
-            { name: 'recommendation_count', label: 'Number of items in recommondation', type: 'number', required: true },
+            {
+                name: 'recommendation_count',
+                label: 'Number of items in recommondation',
+                type: 'number',
+                required: true,
+            },
         ],
         tableColumns: [
             {
                 accessorKey: 'short_code',
                 header: 'Identifier',
                 cell: (info) => (info.getValue() as string).toLowerCase(),
+            },
+            {
+                accessorKey: 'view_link_key',
+                header: 'View Link',
+                cell: (info) => (info.getValue() as string) || '-',
             },
             { accessorKey: 'name', header: 'Condition Name' },
             {
@@ -313,9 +330,7 @@ export const resourceConfig: DashBoardResourceConfig = {
         apiResourceTag: 'items',
         resourceName: 'Construct item',
         viewTitle: 'Construct items',
-        editableFields: [
-            { key: 'text', label: 'Item Text', type: 'textarea', wide: true, required: true },
-        ],
+        editableFields: [{ key: 'text', label: 'Item Text', type: 'textarea', wide: true, required: true }],
         formFields: [
             {
                 name: 'survey_construct_id',
