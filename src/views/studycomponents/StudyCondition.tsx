@@ -11,9 +11,12 @@ const StudyCondition: React.FC = () => {
     const dispatch = useAppDispatch();
     const { conditionClient } = useApiClients();
 
-    const handleLoad = useCallback((conditionData: StudyConditionType) => {
-        dispatch(setCondition(conditionData));
-    }, [dispatch]);
+    const handleLoad = useCallback(
+        (conditionData: StudyConditionType) => {
+            dispatch(setCondition(conditionData));
+        },
+        [dispatch]
+    );
 
     if (!studyId || !conditionId) {
         console.warn('Study ID or Condition ID is missing from URL.');

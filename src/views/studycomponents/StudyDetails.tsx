@@ -5,13 +5,15 @@ import ResourceChildList from '../../components/resources/ResourceChildList';
 import ResourceChildTable from '../../components/resources/ResourceChildTable';
 import ResourceInfoPanel from '../../components/resources/ResourceInfoPanel';
 import { useAppDispatch } from '../../store/hooks';
+import { usePermissions } from '../../hooks/usePermissions';
 import { clearSelectedStudy, setStudy } from '../../store/studycomponents/selectionSlice';
-import type { ApiKey, Study, StudyCondition, StudyStep } from '../../types/studyComponents.types';
+import type { ApiKey, Study, StudyAuthorization, StudyCondition, StudyStep } from '../../types/studyComponents.types';
 
 const StudyDetails: React.FC = () => {
     const { studyId } = useParams<{ studyId: string }>();
     const dispatch = useAppDispatch();
-    const { studyClient, stepClient, conditionClient, keyClient } = useApiClients();
+    const { studyClient, stepClient, conditionClient, keyClient, authorizationClient } = useApiClients();
+    const { hasPermission } = usePermissions();
 
     const handleLoad = useCallback((studyData: Study) => dispatch(setStudy(studyData)), [dispatch]);
     const handleDelete = useCallback(() => dispatch(clearSelectedStudy()), [dispatch]);
@@ -34,6 +36,13 @@ const StudyDetails: React.FC = () => {
                 <div>
                     <ResourceChildTable<ApiKey> resourceClient={keyClient} parentId={studyId} className="mb-5" />
                     <ResourceChildTable<StudyCondition> resourceClient={conditionClient} parentId={studyId} />
+                    {hasPermission('admin:all') && (
+                        <ResourceChildTable<StudyAuthorization>
+                            resourceClient={authorizationClient}
+                            parentId={studyId}
+                            className="mt-5"
+                        />
+                    )}
                 </div>
             </div>
         </div>

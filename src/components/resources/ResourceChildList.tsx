@@ -25,6 +25,8 @@ const ResourceChildList = <TChild extends OrderedComponent>({
         [resourceClient, location]
     );
 
+    const canRead = hasPermission('admin:all') || hasPermission(`read:${resourceClient.config.apiResourceTag}`);
+
     const {
         data: resourceList,
         isLoading,
@@ -37,7 +39,7 @@ const ResourceChildList = <TChild extends OrderedComponent>({
             if (failureCount === 0) return 5000;
             return Math.min(1000 * 2 ** failureCount, 30000);
         },
-        enabled: !!resourceClient,
+        enabled: !!resourceClient && canRead,
     });
 
     useEffect(() => {
@@ -52,7 +54,7 @@ const ResourceChildList = <TChild extends OrderedComponent>({
 
     const updateMutation = useMutation<TChild | null, Error, Partial<TChild>, { previousData: TChild[] | undefined }>({
         mutationFn: (formData: Partial<TChild>) => {
-            if (!selectedResource) throw new Error("No resource selected");
+            if (!selectedResource) throw new Error('No resource selected');
             return resourceClient.update(selectedResource.id, formData);
         },
         onMutate: async (formData: Partial<TChild>) => {
@@ -64,9 +66,7 @@ const ResourceChildList = <TChild extends OrderedComponent>({
 
             queryClient.setQueryData<TChild[]>(resourceClient.queryKeys.lists(), (oldData) => {
                 if (!oldData) return [];
-                return oldData.map((item) =>
-                    item.id === selectedResource.id ? { ...item, ...formData } : item
-                );
+                return oldData.map((item) => (item.id === selectedResource.id ? { ...item, ...formData } : item));
             });
             return { previousData };
         },
@@ -82,7 +82,10 @@ const ResourceChildList = <TChild extends OrderedComponent>({
         },
     });
 
-    const isModalResource = resourceClient.config.apiResourceTag === 'items' || resourceClient.config.apiResourceTag === 'levels' || resourceClient.config.apiResourceTag === 'contents';
+    const isModalResource =
+        resourceClient.config.apiResourceTag === 'items' ||
+        resourceClient.config.apiResourceTag === 'levels' ||
+        resourceClient.config.apiResourceTag === 'contents';
 
     const handleItemClick = (resource: TChild) => {
         if (isModalResource) {
@@ -107,14 +110,17 @@ const ResourceChildList = <TChild extends OrderedComponent>({
                 )}
             </div>
             {isLoading && <p>Loading...</p>}
-            {error && <p>There was an error!</p>}
-            <SortableResourceList<TChild>
-                resourceClient={resourceClient}
-                parentId={parentId}
-                studyComponents={resourceList ? resourceList : []}
-                urlPathPrefix={isModalResource ? undefined : childNavPath}
-                onItemClick={isModalResource ? handleItemClick : undefined}
-            />
+            {error && <p className="text-red-500">Error: {error.message}</p>}
+            {!canRead && <p className="text-gray-500 italic">You do not have permission to view these contents.</p>}
+            {canRead && (
+                <SortableResourceList<TChild>
+                    resourceClient={resourceClient}
+                    parentId={parentId}
+                    studyComponents={resourceList ? resourceList : []}
+                    urlPathPrefix={isModalResource ? undefined : childNavPath}
+                    onItemClick={isModalResource ? handleItemClick : undefined}
+                />
+            )}
             {selectedResource && (
                 <EditResourceModal<TChild>
                     isOpen={isModalOpen}

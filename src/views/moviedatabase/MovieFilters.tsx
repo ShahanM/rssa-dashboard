@@ -8,6 +8,8 @@ export interface MovieFilterState {
     yearMax: number | '';
     genre: string;
     sortBy: string;
+    excludeNoEmotions: boolean;
+    excludeNoRecommendations: boolean;
 }
 
 interface MovieFiltersProps {
@@ -16,27 +18,29 @@ interface MovieFiltersProps {
 }
 
 const MovieFilters: React.FC<MovieFiltersProps> = ({ filters, onFilterChange }) => {
-    // Local state for debouncing
     const [localFilters, setLocalFilters] = useState<MovieFilterState>(filters);
     const [isExpanded, setIsExpanded] = useState(false);
 
     useEffect(() => {
         const handler = setTimeout(() => {
             onFilterChange(localFilters);
-        }, 500); // 500ms debounce
+        }, 500);
 
         return () => {
             clearTimeout(handler);
         };
     }, [localFilters, onFilterChange]);
 
-    const handleChange = (field: keyof MovieFilterState, value: string | number) => {
+    const handleChange = (field: keyof MovieFilterState, value: string | number | boolean) => {
         setLocalFilters((prev) => ({ ...prev, [field]: value }));
     };
 
     return (
         <div className="bg-white dark:bg-gray-800 p-4 rounded shadow mb-6 transition-all duration-300">
-            <div className="flex justify-between items-center mb-4 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+            <div
+                className="flex justify-between items-center mb-4 cursor-pointer"
+                onClick={() => setIsExpanded(!isExpanded)}
+            >
                 <h2 className="text-lg font-semibold flex items-center">
                     <FunnelIcon className="h-5 w-5 mr-2" />
                     Filters & Search
@@ -45,14 +49,27 @@ const MovieFilters: React.FC<MovieFiltersProps> = ({ filters, onFilterChange }) 
                     className="text-sm text-blue-500 hover:underline focus:outline-none"
                     onClick={(e) => {
                         e.stopPropagation();
-                        setLocalFilters({ title: '', yearMin: '', yearMax: '', genre: '', sortBy: '' });
+                        setLocalFilters({
+                            title: '',
+                            yearMin: '',
+                            yearMax: '',
+                            genre: '',
+                            sortBy: '',
+                            excludeNoEmotions: false,
+                            excludeNoRecommendations: false,
+                        });
                     }}
                 >
                     Clear All
                 </button>
             </div>
 
-            <div className={clsx("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4", { "hidden": !isExpanded, "grid": isExpanded })}>
+            <div
+                className={clsx('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4', {
+                    hidden: !isExpanded,
+                    grid: isExpanded,
+                })}
+            >
                 {/* Title Search */}
                 <div className="flex flex-col">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
@@ -118,6 +135,33 @@ const MovieFilters: React.FC<MovieFiltersProps> = ({ filters, onFilterChange }) 
                         <option value="-imdb_avg_rating">Rating (Desc)</option>
                     </select>
                 </div>
+            </div>
+
+            {/* Content Availability Filters */}
+            <div
+                className={clsx('mt-4 grid grid-cols-1 md:grid-cols-2 gap-4', {
+                    hidden: !isExpanded,
+                    grid: isExpanded,
+                })}
+            >
+                <label className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        className="form-checkbox text-blue-500 rounded"
+                        checked={localFilters.excludeNoEmotions}
+                        onChange={(e) => handleChange('excludeNoEmotions', e.target.checked)}
+                    />
+                    <span>Exclude movies without emotions</span>
+                </label>
+                <label className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        className="form-checkbox text-blue-500 rounded"
+                        checked={localFilters.excludeNoRecommendations}
+                        onChange={(e) => handleChange('excludeNoRecommendations', e.target.checked)}
+                    />
+                    <span>Exclude movies without LLM recommendations</span>
+                </label>
             </div>
         </div>
     );

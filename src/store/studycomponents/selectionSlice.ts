@@ -64,6 +64,7 @@ export const {
 export const selectStudy = (state: { studyComponentSelection: SelectionState }) => state.studyComponentSelection.study;
 export const selectStep = (state: { studyComponentSelection: SelectionState }) => state.studyComponentSelection.step;
 export const selectPage = (state: { studyComponentSelection: SelectionState }) => state.studyComponentSelection.page;
-export const selectCondition = (state: { studyComponentSelection: SelectionState }) => state.studyComponentSelection.condition;
+export const selectCondition = (state: { studyComponentSelection: SelectionState }) =>
+    state.studyComponentSelection.condition;
 
 export default studyComponentSelection.reducer;

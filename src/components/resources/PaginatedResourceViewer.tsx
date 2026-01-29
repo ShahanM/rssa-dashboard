@@ -13,7 +13,7 @@ interface PaginatedResourceViewerProps<T> {
     apiResourceTag: string;
     limit?: number;
     children: (data: T[], selectedItem: T | null, handleItemClick: (item: T) => void) => React.ReactNode;
-    queryParams?: Record<string, string | number | undefined | null>;
+    queryParams?: Record<string, string | number | boolean | undefined | null>;
 }
 
 const PaginatedResourceViewer = <T extends { id: string }>({

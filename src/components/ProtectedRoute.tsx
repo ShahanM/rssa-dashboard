@@ -6,7 +6,6 @@ const ProtectedRoute: React.FC = () => {
     const { isAuthenticated, isLoading } = useAuth0();
 
     if (isLoading) {
-        // You can show a loading spinner here while the auth state is being determined
         return (
             <div className="flex items-center justify-center h-screen">
                 <div className="text-center">

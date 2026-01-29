@@ -10,7 +10,7 @@ export type ValidatorFactory<T extends BaseResourceType> = (
 export interface FormField {
     name: string;
     label: string;
-    type?: 'text' | 'textarea' | 'select' | 'static' | 'modal-select' | 'number';
+    type?: 'text' | 'textarea' | 'select' | 'static' | 'modal-select' | 'async-select' | 'number';
     value?: string; // Only applies for static fields
     required?: boolean;
     placeholder?: string;

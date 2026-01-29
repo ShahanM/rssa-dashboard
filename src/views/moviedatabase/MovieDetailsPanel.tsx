@@ -1,15 +1,19 @@
-import { XMarkIcon, PencilSquareIcon, CheckIcon } from "@heroicons/react/16/solid";
-import clsx from "clsx";
-import type { MovieDetails } from "../../types/movies.types";
-import { useState, useEffect, useMemo } from "react";
-import { useApi } from "../../hooks/useApi";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { XMarkIcon, PencilSquareIcon, CheckIcon } from '@heroicons/react/16/solid';
+import clsx from 'clsx';
+import type { MovieDetails } from '../../types/movies.types';
+import { useState, useEffect, useMemo } from 'react';
+import { useApi } from '../../hooks/useApi';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { usePermissions } from '../../hooks/usePermissions';
 
-const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: () => void; }) => {
+const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: () => void }) => {
     if (!movie) return null;
     const { api } = useApi();
     const queryClient = useQueryClient();
+    const { hasPermission } = usePermissions();
     const [isEditing, setIsEditing] = useState(false);
+
+    const canEdit = hasPermission('admin:all') || hasPermission('update:movies');
     const [editForm, setEditForm] = useState({
         title: movie.title,
         year: movie.year,
@@ -86,9 +90,9 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
             // For now, let's rely on invalidating 'movies' query.
         },
         onError: (err) => {
-            console.error("Failed to update movie", err);
-            alert("Failed to update movie.");
-        }
+            console.error('Failed to update movie', err);
+            alert('Failed to update movie.');
+        },
     });
 
     const handleSave = () => {
@@ -113,51 +117,64 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
     };
 
     const ignoredEmotionKeys = new Set(['id', 'movie_id', 'movielens_id']);
-	return (
-		<div className={clsx(
-			"bg-white dark:bg-gray-800 p-6 rounded-lg",
-			"shadow-xl h-[75vh] overflow-y-auto relative",
-			"scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-700"
-		)}>
+    return (
+        <div
+            className={clsx(
+                'bg-white dark:bg-gray-800 p-6 rounded-lg',
+                'shadow-xl h-[75vh] overflow-y-auto relative',
+                'scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-700'
+            )}
+        >
             <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
                 <button onClick={onClose} className="text-gray-500 hover:text-gray-800 dark:hover:text-white">
                     <span className="sr-only">Close details panel</span>
                     <XMarkIcon className="h-6 w-6" />
                 </button>
                 {!isEditing ? (
-                    <button onClick={() => setIsEditing(true)} className="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400" title="Edit Movie">
-                        <PencilSquareIcon className="h-6 w-6" />
-                    </button>
+                    canEdit && (
+                        <button
+                            onClick={() => setIsEditing(true)}
+                            className="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400"
+                            title="Edit Movie"
+                        >
+                            <PencilSquareIcon className="h-6 w-6" />
+                        </button>
+                    )
                 ) : (
                     <div className="flex gap-2">
-                        <button 
-                            onClick={handleSave} 
+                        <button
+                            onClick={handleSave}
                             disabled={!hasChanges || isInvalid}
                             className={clsx(
-                                "text-green-500 hover:text-green-700 dark:hover:text-green-400",
-                                (!hasChanges || isInvalid) && "opacity-50 cursor-not-allowed text-gray-400 hover:text-gray-400 dark:text-gray-600 dark:hover:text-gray-600"
+                                'text-green-500 hover:text-green-700 dark:hover:text-green-400',
+                                (!hasChanges || isInvalid) &&
+                                    'opacity-50 cursor-not-allowed text-gray-400 hover:text-gray-400 dark:text-gray-600 dark:hover:text-gray-600'
                             )}
                             title={
-                                !hasChanges 
-                                    ? "No changes to save" 
-                                    : isInvalid 
-                                        ? "Ratings and counts must be updated together" 
-                                        : "Save Changes"
+                                !hasChanges
+                                    ? 'No changes to save'
+                                    : isInvalid
+                                      ? 'Ratings and counts must be updated together'
+                                      : 'Save Changes'
                             }
                         >
                             <CheckIcon className="h-6 w-6" />
                         </button>
-                        <button onClick={handleCancel} className="text-red-500 hover:text-red-700 dark:hover:text-red-400" title="Cancel">
+                        <button
+                            onClick={handleCancel}
+                            className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
+                            title="Cancel"
+                        >
                             <XMarkIcon className="h-6 w-6" />
                         </button>
                     </div>
                 )}
             </div>
-			
-			{/**
-			 * Left panel showing the movie ratings and meta information.
-			 */}
-			<div className="flex flex-col lg:flex-row gap-6">
+
+            {/**
+             * Left panel showing the movie ratings and meta information.
+             */}
+            <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex-shrink w-2/5">
                     <div className="relative group">
                         <img
@@ -179,15 +196,15 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                         )}
                     </div>
 
-					{/**
-					 * Movie ratings and rating counts
-					 */}
-					{/**
-					 * Movie ratings and rating counts
-					 */}
-					<dl>
-						<dt className="font-bold text-yellow-500 mt-3">Ratings</dt>
-						<dd className="text-yellow-400 flex items-center gap-2">
+                    {/**
+                     * Movie ratings and rating counts
+                     */}
+                    {/**
+                     * Movie ratings and rating counts
+                     */}
+                    <dl>
+                        <dt className="font-bold text-yellow-500 mt-3">Ratings</dt>
+                        <dd className="text-yellow-400 flex items-center gap-2">
                             <span>IMDB:</span>
                             {isEditing ? (
                                 <input
@@ -197,15 +214,17 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     max="10"
                                     className="w-16 text-sm p-1 border rounded bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     value={editForm.imdb_avg_rating || ''}
-                                    onChange={(e) => setEditForm({ ...editForm, imdb_avg_rating: parseFloat(e.target.value) || 0 })}
+                                    onChange={(e) =>
+                                        setEditForm({ ...editForm, imdb_avg_rating: parseFloat(e.target.value) || 0 })
+                                    }
                                 />
                             ) : (
                                 <span>{movie.imdb_avg_rating?.toFixed(1) ?? 'N/A'}</span>
                             )}
                             <span className="text-gray-500 text-sm">/ 10.0</span>
-						</dd>
-						<dd className="text-yellow-400 flex items-center gap-2 mt-1">
-							<span>TMDB:</span>
+                        </dd>
+                        <dd className="text-yellow-400 flex items-center gap-2 mt-1">
+                            <span>TMDB:</span>
                             {isEditing ? (
                                 <input
                                     type="number"
@@ -214,51 +233,56 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     max="10"
                                     className="w-16 text-sm p-1 border rounded bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     value={editForm.tmdb_avg_rating || ''}
-                                    onChange={(e) => setEditForm({ ...editForm, tmdb_avg_rating: parseFloat(e.target.value) || 0 })}
+                                    onChange={(e) =>
+                                        setEditForm({ ...editForm, tmdb_avg_rating: parseFloat(e.target.value) || 0 })
+                                    }
                                 />
                             ) : (
                                 <span>{movie.tmdb_avg_rating?.toFixed(1) ?? 'N/A'}</span>
                             )}
                             <span className="text-gray-500 text-sm">/ 10.0</span>
-						</dd>
+                        </dd>
 
-						<dt className="font-bold text-yellow-500 mt-3">Rating counts</dt>
-						<dd className="text-yellow-400 flex items-center gap-2">
+                        <dt className="font-bold text-yellow-500 mt-3">Rating counts</dt>
+                        <dd className="text-yellow-400 flex items-center gap-2">
                             <span>IMDB:</span>
                             {isEditing ? (
                                 <input
                                     type="number"
                                     className="w-24 text-sm p-1 border rounded bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     value={editForm.imdb_rate_count || ''}
-                                    onChange={(e) => setEditForm({ ...editForm, imdb_rate_count: parseInt(e.target.value) || 0 })}
+                                    onChange={(e) =>
+                                        setEditForm({ ...editForm, imdb_rate_count: parseInt(e.target.value) || 0 })
+                                    }
                                 />
                             ) : (
                                 <span>{movie.imdb_rate_count ?? 'N/A'}</span>
                             )}
                         </dd>
-						<dd className="text-yellow-400 flex items-center gap-2 mt-1">
+                        <dd className="text-yellow-400 flex items-center gap-2 mt-1">
                             <span>TMDB:</span>
                             {isEditing ? (
                                 <input
                                     type="number"
                                     className="w-24 text-sm p-1 border rounded bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     value={editForm.tmdb_rate_count || ''}
-                                    onChange={(e) => setEditForm({ ...editForm, tmdb_rate_count: parseInt(e.target.value) || 0 })}
+                                    onChange={(e) =>
+                                        setEditForm({ ...editForm, tmdb_rate_count: parseInt(e.target.value) || 0 })
+                                    }
                                 />
                             ) : (
                                 <span>{movie.tmdb_rate_count ?? 'N/A'}</span>
                             )}
                         </dd>
-					</dl>
-					
-					{/**
-					 * Director and Cast block
-					 */}
+                    </dl>
+
+                    {/**
+                     * Director and Cast block
+                     */}
                     <div className="mt-3">
-                        <dl className={clsx(
-                            "list-disc list-inside mt-2 space-y-1",
-                            "text-gray-700 dark:text-gray-300"
-                        )}>
+                        <dl
+                            className={clsx('list-disc list-inside mt-2 space-y-1', 'text-gray-700 dark:text-gray-300')}
+                        >
                             <dt className="mt-5 font-bold">Director</dt>
                             <dd>
                                 {isEditing ? (
@@ -267,7 +291,9 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                         value={editForm.director || ''}
                                         onChange={(e) => setEditForm({ ...editForm, director: e.target.value })}
                                     />
-                                ) : (movie.director)}
+                                ) : (
+                                    movie.director
+                                )}
                             </dd>
 
                             <dt className="mt-5 font-bold">Cast</dt>
@@ -279,15 +305,17 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                         value={editForm.cast}
                                         onChange={(e) => setEditForm({ ...editForm, cast: e.target.value })}
                                     />
-                                ) : (movie.cast)}
+                                ) : (
+                                    movie.cast
+                                )}
                             </dd>
                         </dl>
                     </div>
-				</div>
+                </div>
 
-				{/**
-				 * Right panel showing movie information 
-				 */}
+                {/**
+                 * Right panel showing movie information
+                 */}
                 <div className="flex-grow w-3/5 pr-14">
                     {isEditing ? (
                         <div className="flex gap-2 mb-2">
@@ -306,7 +334,9 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                             />
                         </div>
                     ) : (
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{movie.title} ({movie.year})</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                            {movie.title} ({movie.year})
+                        </h2>
                     )}
 
                     <div className="flex mt-1">
@@ -318,31 +348,33 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                 placeholder="Genres (pipe separated)"
                             />
                         ) : (
-                            movie.genre.split("|").map((genre: string) => {
+                            movie.genre.split('|').map((genre: string) => {
                                 return (
-                                    <p key={genre} className={clsx(
-                                        "m-1 ps-1 pe-1 border rounded-xl border-yellow-300",
-                                        "bg-yellow-500",
-                                        "text-sm text-gray-900 dark:text-black mt-1"
-                                    )}>
+                                    <p
+                                        key={genre}
+                                        className={clsx(
+                                            'm-1 ps-1 pe-1 border rounded-xl border-yellow-300',
+                                            'bg-yellow-500',
+                                            'text-sm text-gray-900 dark:text-black mt-1'
+                                        )}
+                                    >
                                         {genre}
                                     </p>
-                                )
+                                );
                             })
                         )}
                     </div>
 
-					<dl className="text-sm italic mt-5 border rounded-lg p-3 border-yellow-300">
-						<dt className="font-semibold">MovideID</dt>
-						<dd className="font-light">{movie.id}</dd>
+                    <dl className="text-sm italic mt-5 border rounded-lg p-3 border-yellow-300">
+                        <dt className="font-semibold">MovideID</dt>
+                        <dd className="font-light">{movie.id}</dd>
 
-						<dt className="font-semibold mt-1">IMDB ID</dt>
-						<dd className="font-light">{`tt${movie.imdb_id}`}</dd>
+                        <dt className="font-semibold mt-1">IMDB ID</dt>
+                        <dd className="font-light">{`tt${movie.imdb_id}`}</dd>
 
-						<dt className="font-semibold mt-1">TMDB ID</dt>
-						<dd className="font-light">{movie.tmdb_id}</dd>
-					</dl>
-
+                        <dt className="font-semibold mt-1">TMDB ID</dt>
+                        <dd className="font-light">{movie.tmdb_id}</dd>
+                    </dl>
 
                     <dl className="mt-5 border rounded-lg p-3 border-yellow-300">
                         <dt className="font-bold text-gray-800 dark:text-gray-200">Synopsis</dt>
@@ -354,54 +386,56 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     value={editForm.description}
                                     onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                                 />
-                            ) : (movie.description)}
+                            ) : (
+                                movie.description
+                            )}
                         </dd>
                     </dl>
-					
-					{/**
-					 * The movie emotions on Plutchick's 8 dimensions
-					 */}
-					{movie.emotions &&
-						<div className="mt-5 border rounded-lg p-3 border-yellow-300">
-							<h4 className="font-bold text-gray-800 dark:text-gray-200">Emotions</h4>
-							<dl className="grid grid-cols-[max-content_1fr]">
-								{Object.entries(movie.emotions)
-									.filter(([key]) => !ignoredEmotionKeys.has(key))
-									.map(([emotion, val]) =>
-										<>
-											<dt className="font-semibold">{emotion}</dt>
-											<dd className="text-gray-700 dark:text-gray-300 ms-3 font-mono">
-												{(val as number).toFixed(9)}
-											</dd>
-										</>)}
-							</dl>
-						</div>
-					}
 
-					{/**
-					 * The LLM generated text recommending the movie
-					 */}
-					{movie.recommendations_text &&
-						<div className="mt-5 border rounded-lg p-3 border-yellow-300">
-							<h4 className="font-bold text-gray-800 dark:text-gray-200">LLM Recommendation</h4>
-							<dl>
-								<dt className="font-semibold">Formal</dt>
-								<dd className="text-gray-700 dark:text-gray-300 mt-1">
-									{movie.recommendations_text.formal}
-								</dd>
+                    {/**
+                     * The movie emotions on Plutchick's 8 dimensions
+                     */}
+                    {movie.emotions && (
+                        <div className="mt-5 border rounded-lg p-3 border-yellow-300">
+                            <h4 className="font-bold text-gray-800 dark:text-gray-200">Emotions</h4>
+                            <dl className="grid grid-cols-[max-content_1fr]">
+                                {Object.entries(movie.emotions)
+                                    .filter(([key]) => !ignoredEmotionKeys.has(key))
+                                    .map(([emotion, val]) => (
+                                        <>
+                                            <dt className="font-semibold">{emotion}</dt>
+                                            <dd className="text-gray-700 dark:text-gray-300 ms-3 font-mono">
+                                                {(val as number).toFixed(9)}
+                                            </dd>
+                                        </>
+                                    ))}
+                            </dl>
+                        </div>
+                    )}
 
-								<dt className="font-semibold mt-1">Informal</dt>
-								<dd className="text-gray-700 dark:text-gray-300 mt-1">
-									{movie.recommendations_text.informal}
-								</dd>
-							</dl>
-						</div>
-					}
+                    {/**
+                     * The LLM generated text recommending the movie
+                     */}
+                    {movie.recommendations_text && (
+                        <div className="mt-5 border rounded-lg p-3 border-yellow-300">
+                            <h4 className="font-bold text-gray-800 dark:text-gray-200">LLM Recommendation</h4>
+                            <dl>
+                                <dt className="font-semibold">Formal</dt>
+                                <dd className="text-gray-700 dark:text-gray-300 mt-1">
+                                    {movie.recommendations_text.formal}
+                                </dd>
 
-				</div>
-			</div>
-		</div>
-	);
+                                <dt className="font-semibold mt-1">Informal</dt>
+                                <dd className="text-gray-700 dark:text-gray-300 mt-1">
+                                    {movie.recommendations_text.informal}
+                                </dd>
+                            </dl>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default MovieDetailsPanel;

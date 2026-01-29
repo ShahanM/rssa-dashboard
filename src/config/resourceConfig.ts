@@ -282,6 +282,43 @@ export const resourceConfig: DashBoardResourceConfig = {
             { accessorKey: 'display_info', header: 'Description' },
         ],
     },
+    authorization: {
+        apiResourceTag: 'authorizations',
+        resourceName: 'Authorization',
+        viewTitle: 'Authorized Users',
+        editableFields: [], // No editable fields for now, only create/delete
+        formFields: [
+            {
+                name: 'user_id',
+                label: 'User',
+                type: 'async-select',
+                required: true,
+                optionsEndpoint: 'users/search',
+                optionsLabelKey: 'name',
+                optionsValueKey: 'id',
+                placeholder: 'Search by name or email...',
+            },
+            {
+                name: 'role',
+                label: 'Role',
+                type: 'select',
+                required: true,
+                options: [
+                    { value: 'viewer', label: 'Viewer' },
+                    { value: 'editor', label: 'Editor' },
+                    { value: 'admin', label: 'Admin' },
+                ],
+            },
+        ],
+        tableColumns: [
+            {
+                accessorKey: 'user_id',
+                header: 'User',
+                cell: (info) => React.createElement(UserCard, { userId: info.getValue() as string }),
+            },
+            { accessorKey: 'role', header: 'Role' },
+        ],
+    },
     construct: {
         apiResourceTag: 'constructs',
         resourceName: 'Survey construct',

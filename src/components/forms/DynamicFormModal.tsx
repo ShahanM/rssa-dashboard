@@ -2,9 +2,11 @@ import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@
 import clsx from 'clsx';
 import { Fragment, useCallback, useMemo } from 'react';
 import { useDynamicForm } from '../../hooks/useDynamicForm';
+import { AsyncCombobox } from './AsyncCombobox';
 import { DynamicSelect } from './DynamicSelect';
 import type { FieldValidator, FormField } from './forms.typs';
 import { ModalSelect } from './ModalSelect';
+import { useToast } from '../../components/toast/ToastProvider';
 
 interface DynamicFormModalProps<T> {
     isOpen: boolean;
@@ -27,6 +29,7 @@ const DynamicFormModal = <T extends Record<string, unknown>>({
     isSubmitting = false,
     validators,
 }: DynamicFormModalProps<T>) => {
+    const { showToast } = useToast();
     const initialFormState = useMemo(
         () =>
             fields.reduce(
@@ -51,12 +54,14 @@ const DynamicFormModal = <T extends Record<string, unknown>>({
                 await onSubmit(formData as T);
             } catch (error) {
                 console.error('Submission failed:', error);
+                const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+                showToast(errorMessage, 'error');
             } finally {
                 onClose();
                 resetForm(initialFormState);
             }
         },
-        [formData, onSubmit, onClose, resetForm, initialFormState]
+        [formData, onSubmit, onClose, resetForm, initialFormState, showToast]
     );
 
     const renderField = (field: FormField) => {
@@ -108,6 +113,19 @@ const DynamicFormModal = <T extends Record<string, unknown>>({
                         disabled
                         readOnly
                         className={clsx(commonProps.className, 'bg-gray-600 text-gray-400 cursor-not-allowed')}
+                    />
+                );
+            case 'async-select':
+                return (
+                    <AsyncCombobox
+                        {...commonProps}
+                        placeholder={field.placeholder}
+                        optionsEndpoint={field.optionsEndpoint!}
+                        optionsValueKey={field.optionsValueKey}
+                        optionsLabelKey={field.optionsLabelKey}
+                        onChange={(val: string) => {
+                            setFieldValue(field.name, val);
+                        }}
                     />
                 );
             case 'text':

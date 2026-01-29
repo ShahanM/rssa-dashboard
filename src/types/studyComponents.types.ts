@@ -122,3 +122,11 @@ export interface ApiKey extends BaseResourceType {
     user_id: string;
     is_active: boolean;
 }
+
+export interface StudyAuthorization extends BaseResourceType {
+    resource_type: 'authorization';
+
+    study_id: string;
+    user_id: string;
+    role: string;
+}

@@ -52,10 +52,7 @@ const EditResourceModal = <T extends BaseResourceType>({
                             leaveTo="opacity-0 scale-95"
                         >
                             <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                <DialogTitle
-                                    as="h3"
-                                    className="text-lg font-medium leading-6 text-gray-900 mb-4"
-                                >
+                                <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900 mb-4">
                                     Edit {resourceClient.config.resourceName}
                                 </DialogTitle>
                                 <div className="mt-2">

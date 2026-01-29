@@ -73,7 +73,8 @@ const SortableItemContent: React.FC<{ urlPath?: string; onClick?: () => void; ch
     onClick,
     children,
 }) => {
-    const classString = 'flex items-center justify-between w-full min-w-0 gap-4 no-underline text-inherit cursor-pointer';
+    const classString =
+        'flex items-center justify-between w-full min-w-0 gap-4 no-underline text-inherit cursor-pointer';
     if (urlPath !== undefined) {
         return (
             <Link to={urlPath} className={classString}>

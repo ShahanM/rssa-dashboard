@@ -12,6 +12,7 @@ import type {
     StudyStep,
 } from './studyComponents.types';
 import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from './surveyComponents.types';
+import type { StudyAuthorization } from './studyComponents.types';
 
 export interface ResourceConfig<T extends BaseResourceType> {
     apiResourceTag: string;
@@ -41,6 +42,7 @@ export type DashBoardResourceConfig = {
     scale: ResourceConfig<Scale>;
     item: ResourceConfig<ConstructItem>;
     level: ResourceConfig<ScaleLevel>;
+    authorization: ResourceConfig<StudyAuthorization>;
 };
 
 export type ServerGeneratedKeys = 'id' | 'date_created' | 'resource_type';
@@ -69,8 +71,10 @@ export interface ResourceClient<T extends BaseResourceType> {
     create: (data: Omit<T, ServerGeneratedKeys>) => Promise<T | null>;
     del: (id: string) => Promise<unknown>;
 }
-export interface DependentResourceClient<T extends BaseResourceType>
-    extends Omit<ResourceClient<T>, 'create' | 'clientType'> {
+export interface DependentResourceClient<T extends BaseResourceType> extends Omit<
+    ResourceClient<T>,
+    'create' | 'clientType'
+> {
     clientType: 'dependent';
     parentResourceType: ResourceUnionType;
     create: (parentId: string, data: Omit<T, ServerGeneratedKeys>) => Promise<T | null>;

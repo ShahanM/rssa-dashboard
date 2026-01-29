@@ -33,10 +33,11 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
         ) as FormDataType;
     }, [editableFields, resourceInstance]);
 
-    const { formData, handleChange, validationStates, validationErrors, resetForm, isFormInvalid, setFieldValue } = useDynamicForm({
-        initialValues: isEditing ? initialFormValues : ({} as FormDataType),
-        validators: validators,
-    });
+    const { formData, handleChange, validationStates, validationErrors, resetForm, isFormInvalid, setFieldValue } =
+        useDynamicForm({
+            initialValues: isEditing ? initialFormValues : ({} as FormDataType),
+            validators: validators,
+        });
 
     const switchToEditingMode = useCallback(() => {
         resetForm(initialFormValues);
@@ -121,7 +122,6 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
                 return <RenderStaticInfo resourceInstance={resourceInstance} field={field} />;
         }
     };
-
 
     if (isEditing) {
         console.log(resourceInstance);

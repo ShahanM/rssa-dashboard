@@ -5,6 +5,7 @@ import {
     type Page,
     type PageContent,
     type Study,
+    type StudyAuthorization,
     type StudyCondition,
     type StudyStep,
 } from '../types/studyComponents.types';
@@ -29,6 +30,7 @@ export const ApiProvider = ({ children }: { children: React.ReactNode }) => {
             levelClient: createDependentResourceClient<ScaleLevel>(api, 'level', 'scale'),
             contentClient: createDependentResourceClient<PageContent>(api, 'content', 'page'),
             keyClient: createDependentResourceClient<ApiKey>(api, 'apikey', 'study'),
+            authorizationClient: createDependentResourceClient<StudyAuthorization>(api, 'authorization', 'study'),
         };
     }, [api]);
 

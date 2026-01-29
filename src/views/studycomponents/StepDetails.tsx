@@ -19,10 +19,7 @@ const StepDetails: React.FC = () => {
         return <>Invalid url</>;
     }
 
-    const handleLoad = React.useCallback(
-        (stepData: StudyStep) => dispatch(setStep(stepData)),
-        [dispatch]
-    );
+    const handleLoad = React.useCallback((stepData: StudyStep) => dispatch(setStep(stepData)), [dispatch]);
 
     const handleDelete = React.useCallback(() => dispatch(clearSelectedStep()), [dispatch]);
 

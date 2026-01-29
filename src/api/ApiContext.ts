@@ -1,5 +1,13 @@
 import { createContext, useContext } from 'react';
-import type { ApiKey, Page, PageContent, Study, StudyCondition, StudyStep } from '../types/studyComponents.types';
+import type {
+    ApiKey,
+    Page,
+    PageContent,
+    Study,
+    StudyAuthorization,
+    StudyCondition,
+    StudyStep,
+} from '../types/studyComponents.types';
 import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from '../types/surveyComponents.types';
 import type { createDependentResourceClient, createResourceClient } from './resourceClient';
 import type { ResourceClient } from '../types/resourceClient.types';
@@ -15,6 +23,7 @@ export interface ApiClients {
     levelClient: ReturnType<typeof createDependentResourceClient<ScaleLevel>>;
     contentClient: ReturnType<typeof createDependentResourceClient<PageContent>>;
     keyClient: ReturnType<typeof createDependentResourceClient<ApiKey>>;
+    authorizationClient: ReturnType<typeof createDependentResourceClient<StudyAuthorization>>;
 }
 
 export const ApiContext = createContext<ApiClients | null>(null);

@@ -3,7 +3,12 @@ import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAppSelector } from '../store/hooks';
 
 const StudyNavigationLayout: React.FC = () => {
-    const { stepId, pageId, conditionId } = useParams<{ studyId: string; stepId: string; pageId: string; conditionId: string }>();
+    const { stepId, pageId, conditionId } = useParams<{
+        studyId: string;
+        stepId: string;
+        pageId: string;
+        conditionId: string;
+    }>();
     const location = useLocation();
     const { study, step, page, condition } = useAppSelector((state) => state.studyComponentSelection);
 
@@ -101,9 +106,7 @@ const StudyNavigationLayout: React.FC = () => {
     return (
         <div className="container mx-auto p-3 bg-gray-50 rounded-lg">
             <div className="border border-gray-200 rounded p-3 bg-white shadow-sm mb-4">
-                <div aria-label="breadcrumb">
-                    {breadcrumbItems}
-                </div>
+                <div aria-label="breadcrumb">{breadcrumbItems}</div>
             </div>
             <Outlet />
         </div>
