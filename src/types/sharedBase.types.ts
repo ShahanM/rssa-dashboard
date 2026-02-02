@@ -1,4 +1,12 @@
-export type StudyComponentType = 'study' | 'step' | 'page' | 'condition' | 'content' | 'apikey' | 'authorization';
+export type StudyComponentType =
+    | 'study'
+    | 'step'
+    | 'page'
+    | 'condition'
+    | 'content'
+    | 'apikey'
+    | 'authorization'
+    | 'local_user';
 export type SurveyConstructType = 'construct' | 'item' | 'scale' | 'level';
 
 export type ResourceUnionType = StudyComponentType | SurveyConstructType;

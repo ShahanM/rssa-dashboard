@@ -8,6 +8,7 @@ import {
     type StudyAuthorization,
     type StudyCondition,
     type StudyStep,
+    type User,
 } from '../types/studyComponents.types';
 import { type ConstructItem, type Scale, type ScaleLevel, type SurveyConstruct } from '../types/surveyComponents.types';
 import { ApiContext } from './ApiContext';
@@ -31,6 +32,7 @@ export const ApiProvider = ({ children }: { children: React.ReactNode }) => {
             contentClient: createDependentResourceClient<PageContent>(api, 'content', 'page'),
             keyClient: createDependentResourceClient<ApiKey>(api, 'apikey', 'study'),
             authorizationClient: createDependentResourceClient<StudyAuthorization>(api, 'authorization', 'study'),
+            localUserClient: createResourceClient<User>(api, 'local_user'),
         };
     }, [api]);
 

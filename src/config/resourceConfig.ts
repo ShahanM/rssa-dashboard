@@ -407,4 +407,33 @@ export const resourceConfig: DashBoardResourceConfig = {
             },
         ],
     },
+    local_user: {
+        apiResourceTag: 'local-users',
+        resourceName: 'User',
+        viewTitle: 'Users',
+        editableFields: [],
+        formFields: [],
+        tableColumns: [
+            {
+                accessorKey: 'picture',
+                header: 'Picture',
+                cell: (info) =>
+                    info.getValue()
+                        ? React.createElement('img', {
+                              src: info.getValue() as string,
+                              className: 'w-10 h-10 rounded-full',
+                              alt: 'Profile',
+                          })
+                        : null,
+            },
+            { accessorKey: 'desc', header: 'Name' },
+            { accessorKey: 'email', header: 'Email' },
+            { accessorKey: 'auth0_sub', header: 'Auth0 ID' },
+            {
+                accessorKey: 'created_at',
+                header: 'Created At',
+                cell: (info) => (info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : 'N/A'),
+            },
+        ],
+    },
 };

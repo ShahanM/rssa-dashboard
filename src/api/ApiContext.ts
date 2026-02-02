@@ -7,6 +7,7 @@ import type {
     StudyAuthorization,
     StudyCondition,
     StudyStep,
+    User,
 } from '../types/studyComponents.types';
 import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from '../types/surveyComponents.types';
 import type { createDependentResourceClient, createResourceClient } from './resourceClient';
@@ -24,6 +25,7 @@ export interface ApiClients {
     contentClient: ReturnType<typeof createDependentResourceClient<PageContent>>;
     keyClient: ReturnType<typeof createDependentResourceClient<ApiKey>>;
     authorizationClient: ReturnType<typeof createDependentResourceClient<StudyAuthorization>>;
+    localUserClient: ReturnType<typeof createResourceClient<User>>;
 }
 
 export const ApiContext = createContext<ApiClients | null>(null);

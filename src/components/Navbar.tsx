@@ -68,6 +68,9 @@ const NavBar: React.FC<NavBarProps> = ({ headerLogo, headerTitle = 'RSSA Dashboa
                             <NavLink destination="/movies" permission="read:movies">
                                 Movies
                             </NavLink>
+                            <NavLink destination="/users" permission="admin:all">
+                                Users
+                            </NavLink>
                             <div
                                 className={clsx(
                                     'absolute',

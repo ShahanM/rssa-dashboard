@@ -130,3 +130,11 @@ export interface StudyAuthorization extends BaseResourceType {
     user_id: string;
     role: string;
 }
+
+export interface User extends BaseResourceType {
+    resource_type: 'local_user';
+    email: string;
+    desc?: string;
+    auth0_sub?: string;
+    picture?: string;
+}

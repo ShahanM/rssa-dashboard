@@ -10,6 +10,7 @@ import type {
     Study,
     StudyCondition,
     StudyStep,
+    User,
 } from './studyComponents.types';
 import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from './surveyComponents.types';
 import type { StudyAuthorization } from './studyComponents.types';
@@ -43,6 +44,7 @@ export type DashBoardResourceConfig = {
     item: ResourceConfig<ConstructItem>;
     level: ResourceConfig<ScaleLevel>;
     authorization: ResourceConfig<StudyAuthorization>;
+    local_user: ResourceConfig<User>;
 };
 
 export type ServerGeneratedKeys = 'id' | 'date_created' | 'resource_type';

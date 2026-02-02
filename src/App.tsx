@@ -20,6 +20,7 @@ import ConstructDetails from './views/surveyconstructs/ConstructDetails';
 import ConstructLibrary from './views/surveyconstructs/ConstructLibrary';
 import ScaleDetails from './views/surveyscales/ScaleDetails';
 import SurveyScales from './views/surveyscales/SurveyScales';
+import LocalUserList from './views/users/LocalUserList';
 
 const App: React.FC = () => {
     return (
@@ -32,6 +33,7 @@ const App: React.FC = () => {
                             <Route element={<ProtectedRoute />}>
                                 <Route path="/" element={<AuthorizedLayout />}>
                                     <Route index element={<DashboardHome />} />
+                                    <Route path="users" element={<LocalUserList />} />
                                     <Route path="studies" element={<StudyExplorer />} />
                                     <Route path="studies/:studyId" element={<StudyComponentLayout />}>
                                         <Route index element={<StudyDetails />} />
