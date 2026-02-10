@@ -165,6 +165,7 @@ export const resourceConfig: DashBoardResourceConfig = {
             },
         ],
         tableColumns: [
+            { accessorKey: 'name', header: 'Condition Name' },
             {
                 accessorKey: 'short_code',
                 header: 'Identifier',
@@ -175,7 +176,11 @@ export const resourceConfig: DashBoardResourceConfig = {
                 header: 'View Link',
                 cell: (info) => (info.getValue() as string) || '-',
             },
-            { accessorKey: 'name', header: 'Condition Name' },
+            {
+                accessorKey: 'authorized_test_code',
+                header: 'Test ID',
+                cell: (info) => (info.getValue() as string) || '-',
+            },
             {
                 id: 'include',
                 header: 'Include',
