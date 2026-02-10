@@ -15,17 +15,6 @@ export const resourceConfig: DashBoardResourceConfig = {
             { key: 'name', label: 'Name', type: 'text' },
             { key: 'description', label: 'Description', wide: true, type: 'textarea' },
             {
-                key: 'owner',
-                label: 'Owner',
-                render: (study) => (study.owner ? React.createElement(UserCard, { userId: study.owner }) : null),
-            },
-            {
-                key: 'created_by',
-                label: 'Created by',
-                render: (study) =>
-                    study.created_by ? React.createElement(UserCard, { userId: study.created_by }) : null,
-            },
-            {
                 key: 'created_at',
                 label: 'Date Created',
                 formatFn: (dateString) => new Date(dateString as string).toLocaleDateString(),
@@ -149,25 +138,20 @@ export const resourceConfig: DashBoardResourceConfig = {
         resourceName: 'Condition',
         viewTitle: 'Study conditions',
         editableFields: [
-            { key: 'id', label: 'ID' },
             { key: 'name', label: 'Name', type: 'text' },
+            { key: 'id', label: 'ID' },
             { key: 'description', label: 'Description', type: 'textarea', wide: true },
             {
                 key: 'recommender_key',
                 label: 'Recommender Key',
                 type: 'select',
-                wide: true,
                 optionsEndpoint: 'conditions/recommender-keys',
                 optionsValueKey: 'id',
                 optionsLabelKey: 'name',
             },
-            {
-                key: 'view_link_key',
-                label: 'View Link Key',
-                type: 'text',
-                wide: true,
-            },
+            { key: 'view_link_key', label: 'View Link Key', type: 'text' },
             { key: 'recommendation_count', label: 'Recommendation Count', type: 'number' },
+            { key: 'authorized_test_code', label: 'Testing Code', type: 'text' },
         ],
         formFields: [
             { name: 'name', label: 'Condition Name', type: 'text', required: true },

@@ -5,7 +5,7 @@ import { useApi } from '../../hooks/useApi';
 type BaseOption = {
     id: string;
     name: string;
-    [key: string]: any;
+    [key: string]: unknown;
 };
 
 interface DynamicSelectProps<TOption extends BaseOption> extends React.SelectHTMLAttributes<HTMLSelectElement> {

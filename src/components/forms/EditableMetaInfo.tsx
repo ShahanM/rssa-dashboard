@@ -3,8 +3,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { useDynamicForm } from '../../hooks/useDynamicForm';
 import type { BaseResourceType } from '../../types/sharedBase.types';
 import ResourceMetaInfo, { RenderStaticInfo } from '../resources/ResourceMetaInfo';
-import type { EditableField, FieldValidator } from './forms.typs';
 import { DynamicSelect } from './DynamicSelect';
+import type { EditableField, FieldValidator } from './forms.typs';
 
 interface EditableResourceMetaInfoProps<T> {
     resourceInstance: T;
@@ -28,7 +28,13 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
     const initialFormValues = useMemo(() => {
         return Object.fromEntries(
             editableFields
-                .filter((field) => field.type === 'text' || field.type === 'textarea')
+                .filter(
+                    (field) =>
+                        field.type === 'text' ||
+                        field.type === 'textarea' ||
+                        field.type === 'number' ||
+                        field.type === 'select'
+                )
                 .map((field) => [field.key, resourceInstance[field.key] ?? ''])
         ) as FormDataType;
     }, [editableFields, resourceInstance]);
@@ -93,13 +99,18 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
                     return <RenderStaticInfo resourceInstance={resourceInstance} field={field} />;
                 }
                 return (
-                    <DynamicSelect
-                        {...commonProps}
-                        staticOptions={field.options}
-                        optionsEndpoint={field.optionsEndpoint}
-                        optionsValueKey={field.optionsValueKey}
-                        optionsLabelKey={field.optionsLabelKey}
-                    />
+                    <>
+                        <label htmlFor={field.key as string} className="block text-sm font-medium text-gray-700">
+                            {field.label}
+                        </label>
+                        <DynamicSelect
+                            {...commonProps}
+                            staticOptions={field.options}
+                            optionsEndpoint={field.optionsEndpoint}
+                            optionsValueKey={field.optionsValueKey}
+                            optionsLabelKey={field.optionsLabelKey}
+                        />
+                    </>
                 );
             case 'number':
                 return (
@@ -124,7 +135,6 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
     };
 
     if (isEditing) {
-        console.log(resourceInstance);
         // --- EDIT MODE ---
         return (
             <div className="bg-white p-6 rounded-lg shadow mb-3">

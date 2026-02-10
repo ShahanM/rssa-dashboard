@@ -11,6 +11,7 @@ export interface StudyCondition extends BaseResourceType {
     enabled?: boolean;
     short_code?: string;
     view_link_key?: string;
+    authorized_test_code?: string;
 }
 
 export type ConditionStats = {

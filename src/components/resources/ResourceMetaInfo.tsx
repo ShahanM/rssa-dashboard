@@ -46,7 +46,7 @@ export const RenderStaticInfo = <T extends BaseResourceType>({
         <div className={clsx(field.wide ? 'sm:col-span-2' : 'sm:col-span-1')}>
             <dt className="text-sm font-medium text-gray-500">{field.label}</dt>
             <dd className="mt-1 text-sm text-gray-900 font-mono">
-                {processedValue === null ? '[NULL]' : processedValue}
+                {processedValue === null || processedValue === undefined ? '[NULL]' : processedValue}
             </dd>
         </div>
     );
