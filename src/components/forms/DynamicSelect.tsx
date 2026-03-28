@@ -13,7 +13,7 @@ interface DynamicSelectProps<TOption extends BaseOption> extends React.SelectHTM
     optionsEndpoint?: string;
     optionsValueKey?: keyof TOption;
     optionsLabelKey?: keyof TOption;
-    staticOptions?: { value: string; label: string }[];
+    staticOptions?: { value: string | boolean; label: string }[];
 }
 
 export const DynamicSelect = <TOption extends BaseOption>({

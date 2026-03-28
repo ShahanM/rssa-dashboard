@@ -8,7 +8,7 @@ const ShuffledMovieListSummary: React.FC = () => {
 };
 const ShuffledMovieLists: React.FC = () => {
     const { preShuffledMovieListClient } = useApiClients();
-    const [selectedList, setSelectedList] = useState<PreShuffledMovieList | null>(null);
+    const [selectedList] = useState<PreShuffledMovieList | null>(null);
 
     return (
         <ResourceExplorer<PreShuffledMovieList>
