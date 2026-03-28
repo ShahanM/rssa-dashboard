@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useApi } from '../hooks/useApi';
 import {
+    type PreShuffledMovieList,
     type ApiKey,
     type Page,
     type PageContent,
@@ -33,6 +34,7 @@ export const ApiProvider = ({ children }: { children: React.ReactNode }) => {
             keyClient: createDependentResourceClient<ApiKey>(api, 'apikey', 'study'),
             authorizationClient: createDependentResourceClient<StudyAuthorization>(api, 'authorization', 'study'),
             localUserClient: createResourceClient<User>(api, 'local_user'),
+            preShuffledMovieListClient: createResourceClient<PreShuffledMovieList>(api, 'preshuffled_movie_list'),
         };
     }, [api]);
 

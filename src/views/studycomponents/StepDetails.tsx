@@ -14,14 +14,13 @@ const StepDetails: React.FC = () => {
 
     const selectedStep = useAppSelector(selectStep);
 
+    const handleLoad = React.useCallback((stepData: StudyStep) => dispatch(setStep(stepData)), [dispatch]);
+    const handleDelete = React.useCallback(() => dispatch(clearSelectedStep()), [dispatch]);
+
     if (!stepId) {
         console.warn('Step ID is missing from URL. Redirecting to studies listings.');
         return <>Invalid url</>;
     }
-
-    const handleLoad = React.useCallback((stepData: StudyStep) => dispatch(setStep(stepData)), [dispatch]);
-
-    const handleDelete = React.useCallback(() => dispatch(clearSelectedStep()), [dispatch]);
 
     return (
         <div className="container mx-auto p-3 bg-gray-50 rounded-lg mb-2">

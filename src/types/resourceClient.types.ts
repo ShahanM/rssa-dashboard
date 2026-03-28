@@ -7,6 +7,7 @@ import type {
     PageContent,
     PaginatedResourceList,
     PaginatedResourceQuery,
+    PreShuffledMovieList,
     Study,
     StudyCondition,
     StudyStep,
@@ -45,6 +46,7 @@ export type DashBoardResourceConfig = {
     level: ResourceConfig<ScaleLevel>;
     authorization: ResourceConfig<StudyAuthorization>;
     local_user: ResourceConfig<User>;
+    preshuffled_movie_list: ResourceConfig<PreShuffledMovieList>;
 };
 
 export type ServerGeneratedKeys = 'id' | 'date_created' | 'resource_type';

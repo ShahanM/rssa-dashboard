@@ -21,6 +21,7 @@ import ConstructLibrary from './views/surveyconstructs/ConstructLibrary';
 import ScaleDetails from './views/surveyscales/ScaleDetails';
 import SurveyScales from './views/surveyscales/SurveyScales';
 import LocalUserList from './views/users/LocalUserList';
+import ShuffledMovieLists from './views/datasets/ShuffledMovieLists';
 
 const App: React.FC = () => {
     return (
@@ -51,6 +52,7 @@ const App: React.FC = () => {
                                         <Route index element={<ScaleDetails />} />
                                     </Route>
                                     <Route path="movies" element={<MovieDatabase />} />
+                                    <Route path="datasets" element={<ShuffledMovieLists />} />
                                     <Route path="profile" element={<Profile />} />
                                 </Route>
                             </Route>

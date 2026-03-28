@@ -6,7 +6,8 @@ export type StudyComponentType =
     | 'content'
     | 'apikey'
     | 'authorization'
-    | 'local_user';
+    | 'local_user'
+    | 'preshuffled_movie_list';
 export type SurveyConstructType = 'construct' | 'item' | 'scale' | 'level';
 
 export type ResourceUnionType = StudyComponentType | SurveyConstructType;

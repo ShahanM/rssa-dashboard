@@ -1,13 +1,12 @@
-import { XMarkIcon, PencilSquareIcon, CheckIcon } from '@heroicons/react/16/solid';
-import clsx from 'clsx';
-import type { MovieDetails } from '../../types/movies.types';
-import { useState, useEffect, useMemo } from 'react';
-import { useApi } from '../../hooks/useApi';
+import { CheckIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/react/16/solid';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import clsx from 'clsx';
+import { useEffect, useMemo, useState } from 'react';
+import { useApi } from '../../hooks/useApi';
 import { usePermissions } from '../../hooks/usePermissions';
+import type { MovieDetails } from '../../types/movies.types';
 
 const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: () => void }) => {
-    if (!movie) return null;
     const { api } = useApi();
     const queryClient = useQueryClient();
     const { hasPermission } = usePermissions();
@@ -81,13 +80,6 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
         onSuccess: () => {
             setIsEditing(false);
             queryClient.invalidateQueries({ queryKey: ['movies'] });
-            // Optionally update local movie object if needed, but invalidation should re-fetch parent list
-            // However, parent passes 'movie' prop. If parent re-fetches, it might update 'movie' prop?
-            // Actually PaginatedResourceViewer handles list. If list refreshes, parent re-renders.
-            // But 'selectedItem' in parent might be stale?
-            // PaginatedResourceViewer update:
-            // We might need to call a callback to update parent's selected item?
-            // For now, let's rely on invalidating 'movies' query.
         },
         onError: (err) => {
             console.error('Failed to update movie', err);

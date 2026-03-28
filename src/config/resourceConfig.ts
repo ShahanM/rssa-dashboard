@@ -11,14 +11,21 @@ export const resourceConfig: DashBoardResourceConfig = {
         resourceName: 'Study',
         viewTitle: 'Studies',
         editableFields: [
-            { key: 'id', label: 'ID' },
             { key: 'name', label: 'Name', type: 'text' },
-            { key: 'description', label: 'Description', wide: true, type: 'textarea' },
+            { key: 'id', label: 'ID' },
             {
                 key: 'created_at',
                 label: 'Date Created',
                 formatFn: (dateString) => new Date(dateString as string).toLocaleDateString(),
             },
+            {
+                key: 'updated_at',
+                label: 'Last Modified',
+                formatFn: (dateString) => new Date(dateString as string).toLocaleDateString(),
+            },
+            { key: 'description', label: 'Description', wide: true, type: 'textarea' },
+            { key: 'completion_code', label: 'Completion Code', type: 'text' },
+            { key: 'redirect_url', label: 'Redirect URL', type: 'text' },
             {
                 key: 'total_participants',
                 label: 'Total Participants',
@@ -174,11 +181,6 @@ export const resourceConfig: DashBoardResourceConfig = {
             {
                 accessorKey: 'view_link_key',
                 header: 'View Link',
-                cell: (info) => (info.getValue() as string) || '-',
-            },
-            {
-                accessorKey: 'authorized_test_code',
-                header: 'Test ID',
                 cell: (info) => (info.getValue() as string) || '-',
             },
             {
@@ -422,6 +424,49 @@ export const resourceConfig: DashBoardResourceConfig = {
                 accessorKey: 'created_at',
                 header: 'Created At',
                 cell: (info) => (info.getValue() ? new Date(info.getValue() as string).toLocaleDateString() : 'N/A'),
+            },
+        ],
+    },
+    preshuffled_movie_list: {
+        apiResourceTag: 'shuffled-lists',
+        resourceName: 'PreShuffledMovieList',
+        viewTitle: 'PreShuffled Movie List',
+        editableFields: [],
+        formFields: [
+            { name: 'subset_desc', label: 'Subset', type: 'text', required: true },
+            { name: 'seed', label: 'Seed', type: 'number', required: true },
+            // { name: 'year_min', label: 'Min Year', type: 'number', required: false },
+            // { name: 'year_max', label: 'Max Year', type: 'number', required: false },
+            // { name: 'genre', label: 'Genre', type: 'text', required: false },
+            {
+                name: 'exclude_no_emotions',
+                label: 'Exclude without emotions?',
+                type: 'select',
+                required: false,
+                options: [
+                    { value: false, label: 'No' },
+                    { value: true, label: 'Yes' },
+                ],
+            },
+            {
+                name: 'exclude_no_recommendations',
+                label: 'Exclude without recommendations?',
+                type: 'select',
+                required: false,
+                options: [
+                    { value: 'false', label: 'No' },
+                    { value: 'true', label: 'Yes' },
+                ],
+            },
+        ],
+        tableColumns: [
+            {
+                accessorKey: 'subset_desc',
+                header: 'Subset',
+            },
+            {
+                accessorKey: 'seed',
+                header: 'seed',
             },
         ],
     },

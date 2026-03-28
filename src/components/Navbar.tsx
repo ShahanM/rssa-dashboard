@@ -71,6 +71,9 @@ const NavBar: React.FC<NavBarProps> = ({ headerLogo, headerTitle = 'RSSA Dashboa
                             <NavLink destination="/users" permission="admin:all">
                                 Users
                             </NavLink>
+                            <NavLink destination="/datasets" permission="admin:all">
+                                Datasets
+                            </NavLink>
                             <div
                                 className={clsx(
                                     'absolute',
@@ -95,7 +98,7 @@ const NavBar: React.FC<NavBarProps> = ({ headerLogo, headerTitle = 'RSSA Dashboa
 														size-13 
 														rounded 
 														border border-gray-300 dark:border-gray-200 
-														border-solid border-2
+														border-solid
 													`}
                                                     src={user.picture}
                                                     alt="Profile picture"

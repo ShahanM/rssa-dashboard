@@ -3,6 +3,7 @@ import type {
     ApiKey,
     Page,
     PageContent,
+    PreShuffledMovieList,
     Study,
     StudyAuthorization,
     StudyCondition,
@@ -26,6 +27,7 @@ export interface ApiClients {
     keyClient: ReturnType<typeof createDependentResourceClient<ApiKey>>;
     authorizationClient: ReturnType<typeof createDependentResourceClient<StudyAuthorization>>;
     localUserClient: ReturnType<typeof createResourceClient<User>>;
+    preShuffledMovieListClient: ReturnType<typeof createResourceClient<PreShuffledMovieList>>;
 }
 
 export const ApiContext = createContext<ApiClients | null>(null);

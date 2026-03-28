@@ -11,12 +11,12 @@ export interface FormField {
     name: string;
     label: string;
     type?: 'text' | 'textarea' | 'select' | 'static' | 'modal-select' | 'async-select' | 'number';
-    value?: string; // Only applies for static fields
+    value?: string; // Only applies for static fields. Perhaps we can use this as default?
     required?: boolean;
     placeholder?: string;
     rows?: number;
     clientKey?: SelectableClientKey;
-    options?: { value: string; label: string }[]; // For static select fields
+    options?: { value: string | boolean; label: string }[]; // For static select fields
     optionsEndpoint?: string; // For dynamic select fields
     optionsValueKey?: string; // Key for value in dynamic select options
     optionsLabelKey?: string; // Key for label in dynamic select options

@@ -20,7 +20,7 @@ export const StudyExplorer = () => {
             selectedId={selectedObject?.id ?? null}
             onSelect={handleSelect}
             SummaryComponent={StudySummaryView}
-            requireCreatePermission={false} // StudyPanel didn't check permission in original code
+            requireCreatePermission={false}
         />
     );
 };

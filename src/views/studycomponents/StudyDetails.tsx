@@ -37,11 +37,14 @@ const StudyDetails: React.FC = () => {
                     <ResourceChildTable<ApiKey> resourceClient={keyClient} parentId={studyId} className="mb-5" />
                     <ResourceChildTable<StudyCondition> resourceClient={conditionClient} parentId={studyId} />
                     {hasPermission('admin:all') && (
-                        <ResourceChildTable<StudyAuthorization>
-                            resourceClient={authorizationClient}
-                            parentId={studyId}
-                            className="mt-5"
-                        />
+                        <>
+                            <ResourceChildTable<StudyAuthorization>
+                                resourceClient={authorizationClient}
+                                parentId={studyId}
+                                className="mt-5"
+                            />
+                            <div>Generate Shuffled List Button</div>
+                        </>
                     )}
                 </div>
             </div>

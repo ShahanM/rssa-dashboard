@@ -26,6 +26,9 @@ export interface Study extends BaseResourceType {
     name?: string;
     description?: string;
 
+    completion_code?: string;
+    redirect_url?: string;
+
     // Nullable properties FIXME: these will become non-nullable after migration
     owner?: string;
     created_by?: string;
@@ -138,4 +141,9 @@ export interface User extends BaseResourceType {
     desc?: string;
     auth0_sub?: string;
     picture?: string;
+}
+
+export interface PreShuffledMovieList extends BaseResourceType {
+    subset_desc: string;
+    seed: string;
 }

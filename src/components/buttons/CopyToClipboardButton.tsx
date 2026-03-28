@@ -22,7 +22,6 @@ export const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
         try {
             await navigator.clipboard.writeText(textToCopy);
             setIsCopied(true);
-            // Reset the "copied" state after a few seconds
             setTimeout(() => {
                 setIsCopied(false);
             }, 2000);
