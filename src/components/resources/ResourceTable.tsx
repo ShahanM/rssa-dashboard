@@ -75,7 +75,7 @@ export const ResourceTable = <T extends BaseResourceType>({
     });
 
     const table = useReactTable({
-        data: data?.rows ?? [],
+        data: data?.data ?? [],
         columns,
         state: {
             sorting,
@@ -130,7 +130,7 @@ export const ResourceTable = <T extends BaseResourceType>({
                 <tbody className="bg-white divide-y divide-gray-200 rounded-b-lg">
                     {table.getRowModel().rows.map((row, idx) => (
                         <tr
-                            key={row.original.id}
+                            key={row.id}
                             onClick={() => onRowClick?.(row.original)}
                             className={clsx(
                                 onRowClick && 'cursor-pointer',
@@ -190,13 +190,6 @@ const TableNavigationFooter = <T extends BaseResourceType>({ table, enablePageSi
                     onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                     disabled={!table.getCanNextPage()}
                 />
-
-                {/* <span className="w-full items-center content-center">
-                Page{' '}
-                <strong>
-                    {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                </strong>
-            </span> */}
 
                 {enablePageSizeEdit && (
                     <select

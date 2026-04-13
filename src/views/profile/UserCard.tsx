@@ -12,7 +12,7 @@ interface UserCardProps {
     userId: string;
 }
 
-const UserCard: React.FC<UserCardProps> = ({ userId }) => {
+const UserCard: React.FC<UserProfile> = ({ userId }) => {
     const { api } = useApi();
 
     const {

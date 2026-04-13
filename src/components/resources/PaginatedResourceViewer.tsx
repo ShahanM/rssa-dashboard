@@ -60,7 +60,7 @@ const PaginatedResourceViewer = <T extends { id: string }>({
     };
 
     const resourceList = data?.data || [];
-    const totalCount = data?.count || 0;
+    const totalCount = data?.total || 0;
     const totalPages = Math.ceil(totalCount / limit);
 
     if (isLoading && !data) {

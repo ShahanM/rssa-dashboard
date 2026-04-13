@@ -88,7 +88,7 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
                         return null;
                     }
                     return {
-                        rows: list,
+                        data: list,
                         page_count: 1,
                     };
                 }}

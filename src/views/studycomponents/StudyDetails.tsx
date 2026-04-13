@@ -34,20 +34,17 @@ const StudyDetails: React.FC = () => {
             <div className="flex space-x-2 justify-between gap-4">
                 <ResourceChildList<StudyStep> resourceClient={stepClient} parentId={studyId} />
                 <div>
-                    <ResourceChildTable<ApiKey> resourceClient={keyClient} parentId={studyId} className="mb-5" />
-                    <ResourceChildTable<StudyCondition> resourceClient={conditionClient} parentId={studyId} />
                     {hasPermission('admin:all') && (
-                        <>
-                            <ResourceChildTable<StudyAuthorization>
-                                resourceClient={authorizationClient}
-                                parentId={studyId}
-                                className="mt-5"
-                            />
-                            <div>Generate Shuffled List Button</div>
-                        </>
+                        <ResourceChildTable<StudyAuthorization>
+                            resourceClient={authorizationClient}
+                            parentId={studyId}
+                            className="mt-5"
+                        />
                     )}
                 </div>
             </div>
+            <ResourceChildTable<StudyCondition> resourceClient={conditionClient} parentId={studyId} />
+            <ResourceChildTable<ApiKey> resourceClient={keyClient} parentId={studyId} className="mb-5" />
         </div>
     );
 };

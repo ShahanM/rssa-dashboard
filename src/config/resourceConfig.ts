@@ -433,11 +433,23 @@ export const resourceConfig: DashBoardResourceConfig = {
         viewTitle: 'PreShuffled Movie List',
         editableFields: [],
         formFields: [
-            { name: 'subset_desc', label: 'Subset', type: 'text', required: true },
+            { name: 'subset_desc', label: 'Subset name', type: 'text', required: true },
             { name: 'seed', label: 'Seed', type: 'number', required: true },
-            // { name: 'year_min', label: 'Min Year', type: 'number', required: false },
-            // { name: 'year_max', label: 'Max Year', type: 'number', required: false },
-            // { name: 'genre', label: 'Genre', type: 'text', required: false },
+            { name: 'year_min', label: 'Min Year', type: 'number', required: false },
+            { name: 'year_max', label: 'Max Year', type: 'number', required: false },
+            { name: 'genre', label: 'Genre', type: 'text', required: false },
+            { name: 'min_rate_count', label: 'Minimum Ratings', type: 'number', required: true },
+            {
+                name: 'strategy',
+                label: 'Strategy (Applied to movielens_rate_count)',
+                type: 'select',
+                required: true,
+                options: [
+                    { value: 'Random', label: 'Random' },
+                    { value: 'A-Res', label: 'A-Res' },
+                    { value: 'Stratified Chunking', label: 'Stratified Chunking' },
+                ],
+            },
             {
                 name: 'exclude_no_emotions',
                 label: 'Exclude without emotions?',

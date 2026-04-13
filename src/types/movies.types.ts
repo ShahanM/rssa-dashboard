@@ -45,6 +45,7 @@ export type Movie = {
     description: string;
     poster: string;
     poster_identifier: string;
+    tmdb_poster: string;
 };
 
 export type MovieDetails = Movie & {

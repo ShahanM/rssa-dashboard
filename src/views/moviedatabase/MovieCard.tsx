@@ -20,7 +20,7 @@ const MovieCard = ({
     >
         <img
             className="w-full h-full object-cover"
-            src={movie.poster}
+            src={movie.poster || null}
             alt={`Poster for ${movie.title}`}
             onError={(e) => {
                 e.currentTarget.src = 'https://placehold.co/400x600/000000/FFFFFF?text=No+Image';

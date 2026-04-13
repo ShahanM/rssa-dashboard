@@ -125,6 +125,7 @@ const MovieFilters: React.FC<MovieFiltersProps> = ({ filters, onFilterChange }) 
                         className="p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         value={localFilters.sortBy}
                         onChange={(e) => handleChange('sortBy', e.target.value)}
+                        title="Sort by selection"
                     >
                         <option value="">None</option>
                         <option value="year">Year (Asc)</option>

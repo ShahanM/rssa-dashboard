@@ -11,19 +11,18 @@ import type { Study } from '../../types/studyComponents.types';
 const StudySummaryView: React.FC = () => {
     const selectedObject = useAppSelector(selectStudy);
     const { studyClient: apiClient } = useApiClients();
-    type T = Study;
 
     if (!selectedObject) {
         return <p>{`No selected ${apiClient.config.resourceName}.`}</p>;
     }
 
     return (
-        <ResourceViewer<T>
+        <ResourceViewer<Study>
             queryKey={apiClient.queryKeys.summary(selectedObject.id!)}
             queryFn={() => apiClient.getOne(selectedObject.id!)}
             resourceName={apiClient.config.resourceName}
         >
-            {(resourceInstance: T) => {
+            {(resourceInstance: Study) => {
                 return (
                     <>
                         <div className="flex items-center justify-between mb-4">
@@ -40,7 +39,7 @@ const StudySummaryView: React.FC = () => {
                                 </button>
                             </Link>
                         </div>
-                        <ResourceMetaInfo<T>
+                        <ResourceMetaInfo<Study>
                             resourceInstance={resourceInstance}
                             metaInfo={apiClient.config.editableFields}
                         />

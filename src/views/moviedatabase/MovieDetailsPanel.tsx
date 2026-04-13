@@ -2,30 +2,34 @@ import { CheckIcon, PencilSquareIcon, XMarkIcon } from '@heroicons/react/16/soli
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
+import ResourceViewer from '../../components/resources/ResourceViewer';
 import { useApi } from '../../hooks/useApi';
 import { usePermissions } from '../../hooks/usePermissions';
 import type { MovieDetails } from '../../types/movies.types';
 
 const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: () => void }) => {
     const { api } = useApi();
+
+    return (
+        <ResourceViewer<MovieDetails>
+            queryKey={['movie', movie.id]}
+            queryFn={() => api.get(`movies/${movie.id!}`)}
+            resourceName={'movies'}
+        >
+            {(resourceInstance: MovieDetails) => {
+                return <PanelView movie={resourceInstance} onClose={onClose} />;
+            }}
+        </ResourceViewer>
+    );
+};
+
+const PanelView = ({ movie, onClose }: { movie: MovieDetails; onClose: () => void }) => {
+    const { api } = useApi();
     const queryClient = useQueryClient();
     const { hasPermission } = usePermissions();
     const [isEditing, setIsEditing] = useState(false);
 
     const canEdit = hasPermission('admin:all') || hasPermission('update:movies');
-    const [editForm, setEditForm] = useState({
-        title: movie.title,
-        year: movie.year,
-        genre: movie.genre,
-        director: movie.director,
-        cast: movie.cast,
-        description: movie.description,
-        poster: movie.poster,
-        imdb_avg_rating: movie.imdb_avg_rating,
-        imdb_rate_count: movie.imdb_rate_count,
-        tmdb_avg_rating: movie.tmdb_avg_rating,
-        tmdb_rate_count: movie.tmdb_rate_count,
-    });
 
     useEffect(() => {
         setEditForm({
@@ -43,43 +47,13 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
         });
     }, [movie]);
 
-    const hasChanges = useMemo(() => {
-        return (
-            editForm.title !== movie.title ||
-            editForm.year !== movie.year ||
-            editForm.genre !== movie.genre ||
-            editForm.director !== movie.director ||
-            editForm.cast !== movie.cast ||
-            editForm.description !== movie.description ||
-            editForm.poster !== movie.poster ||
-            editForm.imdb_avg_rating !== movie.imdb_avg_rating ||
-            editForm.imdb_rate_count !== movie.imdb_rate_count ||
-            editForm.tmdb_avg_rating !== movie.tmdb_avg_rating ||
-            editForm.tmdb_rate_count !== movie.tmdb_rate_count
-        );
-    }, [editForm, movie]);
-
-    const isInvalid = useMemo(() => {
-        const imdbRatingChanged = editForm.imdb_avg_rating !== movie.imdb_avg_rating;
-        const imdbCountChanged = editForm.imdb_rate_count !== movie.imdb_rate_count;
-        const tmdbRatingChanged = editForm.tmdb_avg_rating !== movie.tmdb_avg_rating;
-        const tmdbCountChanged = editForm.tmdb_rate_count !== movie.tmdb_rate_count;
-
-        // If rating changed, count MUST also change. If count changed, rating MUST also change.
-        // Basically, change status for both must be equal.
-        const imdbInvalid = imdbRatingChanged !== imdbCountChanged;
-        const tmdbInvalid = tmdbRatingChanged !== tmdbCountChanged;
-
-        return imdbInvalid || tmdbInvalid;
-    }, [editForm, movie]);
-
     const updateMovieMutation = useMutation({
         mutationFn: async (updatedData: typeof editForm) => {
             return api.patch<MovieDetails>(`movies/${movie.id}`, updatedData);
         },
         onSuccess: () => {
             setIsEditing(false);
-            queryClient.invalidateQueries({ queryKey: ['movies'] });
+            queryClient.invalidateQueries({ queryKey: ['movie', movie.id] });
         },
         onError: (err) => {
             console.error('Failed to update movie', err);
@@ -107,6 +81,49 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
             tmdb_rate_count: movie.tmdb_rate_count,
         });
     };
+    const [editForm, setEditForm] = useState({
+        title: movie.title,
+        year: movie.year,
+        genre: movie.genre,
+        director: movie.director,
+        cast: movie.cast,
+        description: movie.description,
+        poster: movie.poster,
+        imdb_avg_rating: movie.imdb_avg_rating,
+        imdb_rate_count: movie.imdb_rate_count,
+        tmdb_avg_rating: movie.tmdb_avg_rating,
+        tmdb_rate_count: movie.tmdb_rate_count,
+    });
+
+    const isInvalid = useMemo(() => {
+        const imdbRatingChanged = editForm.imdb_avg_rating !== movie.imdb_avg_rating;
+        const imdbCountChanged = editForm.imdb_rate_count !== movie.imdb_rate_count;
+        const tmdbRatingChanged = editForm.tmdb_avg_rating !== movie.tmdb_avg_rating;
+        const tmdbCountChanged = editForm.tmdb_rate_count !== movie.tmdb_rate_count;
+
+        // If rating changed, count MUST also change. If count changed, rating MUST also change.
+        // Basically, change status for both must be equal.
+        const imdbInvalid = imdbRatingChanged !== imdbCountChanged;
+        const tmdbInvalid = tmdbRatingChanged !== tmdbCountChanged;
+
+        return imdbInvalid || tmdbInvalid;
+    }, [editForm, movie]);
+
+    const hasChanges = useMemo(() => {
+        return (
+            editForm.title !== movie.title ||
+            editForm.year !== movie.year ||
+            editForm.genre !== movie.genre ||
+            editForm.director !== movie.director ||
+            editForm.cast !== movie.cast ||
+            editForm.description !== movie.description ||
+            editForm.poster !== movie.poster ||
+            editForm.imdb_avg_rating !== movie.imdb_avg_rating ||
+            editForm.imdb_rate_count !== movie.imdb_rate_count ||
+            editForm.tmdb_avg_rating !== movie.tmdb_avg_rating ||
+            editForm.tmdb_rate_count !== movie.tmdb_rate_count
+        );
+    }, [editForm, movie]);
 
     const ignoredEmotionKeys = new Set(['id', 'movie_id', 'movielens_id']);
     return (
@@ -171,7 +188,7 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                     <div className="relative group">
                         <img
                             className="w-48 rounded-lg shadow-md border-4 border-gray-200 dark:border-gray-700"
-                            src={isEditing ? editForm.poster : movie.poster}
+                            src={isEditing ? editForm.tmdb_poster : movie.tmdb_poster}
                             alt={`Poster for ${movie.title}`}
                             onError={(e) => {
                                 e.currentTarget.src = 'https://placehold.co/400x600/000000/FFFFFF?text=No+Image';
@@ -182,15 +199,12 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                 type="text"
                                 className="mt-2 w-full text-sm p-1 border rounded dark:bg-gray-700 dark:text-white"
                                 placeholder="Poster URL"
-                                value={editForm.poster}
+                                value={editForm.tmdb_poster}
                                 onChange={(e) => setEditForm({ ...editForm, poster: e.target.value })}
                             />
                         )}
                     </div>
 
-                    {/**
-                     * Movie ratings and rating counts
-                     */}
                     {/**
                      * Movie ratings and rating counts
                      */}
@@ -206,6 +220,7 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     max="10"
                                     className="w-16 text-sm p-1 border rounded bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     value={editForm.imdb_avg_rating || ''}
+                                    placeholder={(movie.imdb_avg_rating?.toFixed(1) || 'N/A') as string}
                                     onChange={(e) =>
                                         setEditForm({ ...editForm, imdb_avg_rating: parseFloat(e.target.value) || 0 })
                                     }
@@ -225,6 +240,7 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     max="10"
                                     className="w-16 text-sm p-1 border rounded bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     value={editForm.tmdb_avg_rating || ''}
+                                    placeholder={(movie.tmdb_avg_rating?.toFixed || 'N/A') as string}
                                     onChange={(e) =>
                                         setEditForm({ ...editForm, tmdb_avg_rating: parseFloat(e.target.value) || 0 })
                                     }
@@ -243,6 +259,7 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     type="number"
                                     className="w-24 text-sm p-1 border rounded bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     value={editForm.imdb_rate_count || ''}
+                                    placeholder={(movie.imdb_rate_count || 'N/A') as string}
                                     onChange={(e) =>
                                         setEditForm({ ...editForm, imdb_rate_count: parseInt(e.target.value) || 0 })
                                     }
@@ -258,6 +275,7 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     type="number"
                                     className="w-24 text-sm p-1 border rounded bg-white text-gray-900 dark:bg-gray-700 dark:text-white"
                                     value={editForm.tmdb_rate_count || ''}
+                                    placeholder={(movie.tmdb_rate_count || 'N/A') as string}
                                     onChange={(e) =>
                                         setEditForm({ ...editForm, tmdb_rate_count: parseInt(e.target.value) || 0 })
                                     }
@@ -281,6 +299,7 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     <input
                                         className="w-full p-1 border rounded dark:bg-gray-700 dark:text-white"
                                         value={editForm.director || ''}
+                                        placeholder={movie.director || ''}
                                         onChange={(e) => setEditForm({ ...editForm, director: e.target.value })}
                                     />
                                 ) : (
@@ -294,6 +313,7 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     <textarea
                                         className="w-full p-1 border rounded dark:bg-gray-700 dark:text-white"
                                         rows={3}
+                                        placeholder={movie.cast}
                                         value={editForm.cast}
                                         onChange={(e) => setEditForm({ ...editForm, cast: e.target.value })}
                                     />
@@ -376,6 +396,7 @@ const MovieDetailsPanel = ({ movie, onClose }: { movie: MovieDetails; onClose: (
                                     className="w-full p-1 border rounded dark:bg-gray-700 dark:text-white"
                                     rows={5}
                                     value={editForm.description}
+                                    placeholder={movie.description}
                                     onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                                 />
                             ) : (

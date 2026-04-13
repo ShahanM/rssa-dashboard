@@ -146,4 +146,17 @@ export interface User extends BaseResourceType {
 export interface PreShuffledMovieList extends BaseResourceType {
     subset_desc: string;
     seed: string;
+
+    // NOTE: the strategy, other than Random, are applied to the movielens_rate_count field.
+    // We can make this a selectable field at some point.
+    strategy: 'A-Res' | 'Stratified Chunking' | 'Random';
+
+    year_min?: number;
+    year_max?: number;
+    genre?: number;
+
+    min_rating_count: number;
+
+    exclude_no_emotions: boolean;
+    exclude_no_recommendations: boolean;
 }
