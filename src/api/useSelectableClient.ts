@@ -1,14 +1,12 @@
-import type { ResourceClient, SelectableClientKey } from '../types/resourceClient.types';
+import type { DependentResourceClient } from '../types/resourceClient.types';
 import type { BaseResourceType } from '../types/sharedBase.types';
-import { useApiClients } from './ApiContext';
+import { useApiClients, type ApiClients } from './ApiContext';
 
-export const useSelectableClient = (clientKey: SelectableClientKey) => {
+export type BaseClientKeys<T extends BaseResourceType> = {
+    [K in keyof ApiClients]: ApiClients[K] extends DependentResourceClient<T> ? never : K;
+}[keyof ApiClients];
+
+export const useSelectableClient = (clientKey: BaseClientKeys<BaseResourceType>) => {
     const { getResourceClient } = useApiClients();
-    const client = getResourceClient(clientKey);
-
-    if (client.clientType !== 'base') {
-        throw new Error(`Client '${clientKey}' is not a valid non-dependent client.`);
-    }
-
-    return client as ResourceClient<BaseResourceType>;
+    return getResourceClient(clientKey);
 };

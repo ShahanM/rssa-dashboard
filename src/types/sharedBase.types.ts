@@ -1,3 +1,16 @@
+import type {
+    ApiKey,
+    Page,
+    PageContent,
+    PreShuffledMovieList,
+    Study,
+    StudyAuthorization,
+    StudyCondition,
+    StudyStep,
+    User,
+} from './studyComponents.types';
+import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from './surveyComponents.types';
+
 export type StudyComponentType =
     | 'study'
     | 'step'
@@ -10,7 +23,23 @@ export type StudyComponentType =
     | 'preshuffled_movie_list';
 export type SurveyConstructType = 'construct' | 'item' | 'scale' | 'level';
 
-export type ResourceUnionType = StudyComponentType | SurveyConstructType;
+export interface ResourceTypeRegistry {
+    study: Study;
+    step: StudyStep;
+    page: Page;
+    condition: StudyCondition;
+    content: PageContent;
+    apikey: ApiKey;
+    construct: SurveyConstruct;
+    scale: Scale;
+    item: ConstructItem;
+    level: ScaleLevel;
+    authorization: StudyAuthorization;
+    local_user: User;
+    preshuffled_movie_list: PreShuffledMovieList;
+}
+
+export type ResourceUnionType = keyof ResourceTypeRegistry;
 
 export type BaseResourceType = {
     resource_type: ResourceUnionType;
