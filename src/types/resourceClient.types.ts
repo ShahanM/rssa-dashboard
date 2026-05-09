@@ -35,6 +35,8 @@ export type SurveyResourceConfig = Pick<
 
 export type SystemResourceConfig = Pick<DashboardResourceConfig, 'apikey' | 'authorization' | 'local_user'>;
 
+export type ParticipantDataConfig = Pick<DashboardResourceConfig, 'participant'>;
+
 export type ServerGeneratedKeys = 'id' | 'date_created' | 'resource_type';
 
 export function isDependentClient<T extends BaseResourceType>(

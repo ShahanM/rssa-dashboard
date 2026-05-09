@@ -160,3 +160,26 @@ export interface PreShuffledMovieList extends BaseResourceType {
     exclude_no_emotions: boolean;
     exclude_no_recommendations: boolean;
 }
+
+export interface StudyAttentionCheckMinimal {
+    id: string;
+    expected_survey_scale_level_id: string;
+}
+
+export interface ParticipantAttentionCheckResponseAudit {
+    id: string;
+    study_attention_check_id: string;
+    responded_survey_scale_level_id: string | null;
+    study_attention_check: StudyAttentionCheckMinimal;
+    passed_attention: boolean;
+}
+
+export interface StudyParticipant extends BaseResourceType {
+    resource_type: 'participant';
+
+    external_id: string;
+    current_status: string;
+
+    attention_check_responses: ParticipantAttentionCheckResponseAudit[];
+    all_attention_checks_passed: boolean;
+}

@@ -7,6 +7,7 @@ import type {
     Study,
     StudyAuthorization,
     StudyCondition,
+    StudyParticipant,
     StudyStep,
     User,
 } from '../types/studyComponents.types';
@@ -28,6 +29,7 @@ export interface ApiClients {
     authorizationClient: ReturnType<typeof createDependentResourceClient<StudyAuthorization>>;
     localUserClient: ReturnType<typeof createResourceClient<User>>;
     preShuffledMovieListClient: ReturnType<typeof createResourceClient<PreShuffledMovieList>>;
+    participantClient: ReturnType<typeof createDependentResourceClient<StudyParticipant>>;
 }
 
 export const ApiContext = createContext<ApiClients | null>(null);

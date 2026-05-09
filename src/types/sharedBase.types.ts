@@ -6,6 +6,7 @@ import type {
     Study,
     StudyAuthorization,
     StudyCondition,
+    StudyParticipant,
     StudyStep,
     User,
 } from './studyComponents.types';
@@ -20,7 +21,8 @@ export type StudyComponentType =
     | 'apikey'
     | 'authorization'
     | 'local_user'
-    | 'preshuffled_movie_list';
+    | 'preshuffled_movie_list'
+    | 'participant';
 export type SurveyConstructType = 'construct' | 'item' | 'scale' | 'level';
 
 export interface ResourceTypeRegistry {
@@ -37,6 +39,7 @@ export interface ResourceTypeRegistry {
     authorization: StudyAuthorization;
     local_user: User;
     preshuffled_movie_list: PreShuffledMovieList;
+    participant: StudyParticipant;
 }
 
 export type ResourceUnionType = keyof ResourceTypeRegistry;

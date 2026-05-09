@@ -10,6 +10,7 @@ import {
     type StudyCondition,
     type StudyStep,
     type User,
+    type StudyParticipant,
 } from '../types/studyComponents.types';
 import { type ConstructItem, type Scale, type ScaleLevel, type SurveyConstruct } from '../types/surveyComponents.types';
 import { ApiContext } from './ApiContext';
@@ -35,6 +36,7 @@ export const ApiProvider = ({ children }: { children: React.ReactNode }) => {
             authorizationClient: createDependentResourceClient<StudyAuthorization>(api, 'authorization', 'study'),
             localUserClient: createResourceClient<User>(api, 'local_user'),
             preShuffledMovieListClient: createResourceClient<PreShuffledMovieList>(api, 'preshuffled_movie_list'),
+            participantClient: createDependentResourceClient<StudyParticipant>(api, 'participant', 'study'),
         };
     }, [api]);
 
