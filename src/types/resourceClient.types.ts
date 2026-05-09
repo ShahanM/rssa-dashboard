@@ -1,20 +1,7 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import type { EditableField, FieldValidator, FormField, ValidatorFactory } from '../components/forms/forms.typs';
-import type { BaseResourceType, ResourceUnionType } from './sharedBase.types';
-import type {
-    ApiKey,
-    Page,
-    PageContent,
-    PaginatedResourceList,
-    PaginatedResourceQuery,
-    PreShuffledMovieList,
-    Study,
-    StudyCondition,
-    StudyStep,
-    User,
-} from './studyComponents.types';
-import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from './surveyComponents.types';
-import type { StudyAuthorization } from './studyComponents.types';
+import type { BaseResourceType, ResourceTypeRegistry, ResourceUnionType } from './sharedBase.types';
+import type { PaginatedResourceList, PaginatedResourceQuery } from './studyComponents.types';
 
 export interface ResourceConfig<T extends BaseResourceType> {
     apiResourceTag: string;
@@ -33,21 +20,20 @@ export interface BasicResourceConfig {
     formFields: FormField[];
 }
 
-export type DashBoardResourceConfig = {
-    study: ResourceConfig<Study>;
-    step: ResourceConfig<StudyStep>;
-    page: ResourceConfig<Page>;
-    condition: ResourceConfig<StudyCondition>;
-    content: ResourceConfig<PageContent>;
-    apikey: ResourceConfig<ApiKey>;
-    construct: ResourceConfig<SurveyConstruct>;
-    scale: ResourceConfig<Scale>;
-    item: ResourceConfig<ConstructItem>;
-    level: ResourceConfig<ScaleLevel>;
-    authorization: ResourceConfig<StudyAuthorization>;
-    local_user: ResourceConfig<User>;
-    preshuffled_movie_list: ResourceConfig<PreShuffledMovieList>;
+export type DashboardResourceConfig = {
+    [K in keyof ResourceTypeRegistry]: ResourceConfig<ResourceTypeRegistry[K]>;
 };
+export type StudyResourceConfig = Pick<
+    DashboardResourceConfig,
+    'study' | 'step' | 'condition' | 'preshuffled_movie_list'
+>;
+
+export type SurveyResourceConfig = Pick<
+    DashboardResourceConfig,
+    'page' | 'content' | 'construct' | 'scale' | 'item' | 'level'
+>;
+
+export type SystemResourceConfig = Pick<DashboardResourceConfig, 'apikey' | 'authorization' | 'local_user'>;
 
 export type ServerGeneratedKeys = 'id' | 'date_created' | 'resource_type';
 

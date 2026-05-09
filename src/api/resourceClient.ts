@@ -1,4 +1,4 @@
-import { resourceConfig } from '../config/resourceConfig';
+import { resourceConfig } from '../config/resources';
 import type { ApiClient } from '../hooks/useApi';
 import type {
     DependentResourceClient,
