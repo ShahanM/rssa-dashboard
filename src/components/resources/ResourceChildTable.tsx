@@ -13,10 +13,12 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
     resourceClient,
     parentId,
     className = '',
+    allowCreate = true,
 }: {
     resourceClient: DependentResourceClient<TChild>;
     parentId: string;
     className?: string;
+    allowCreate?: boolean;
 }) => {
     const { hasPermission } = usePermissions();
     const navigate = useNavigate();
@@ -67,7 +69,7 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
         <div className={clsx(className)}>
             <div className="flex justify-between items-center p-0 min-w-100 my-3">
                 <h3 className="text-xl font-bold mb-3">{resourceClient.config.viewTitle}</h3>
-                {hasPermission(`create:${resourceClient.config.apiResourceTag}`) && (
+                {hasPermission(`create:${resourceClient.config.apiResourceTag}`) && allowCreate && (
                     <CreateResourceButton<TChild>
                         createFn={resourceClient.create}
                         parentId={parentId}

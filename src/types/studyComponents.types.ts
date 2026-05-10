@@ -15,8 +15,8 @@ export interface StudyCondition extends BaseResourceType {
 }
 
 export type ConditionStats = {
-    condition_id: string;
-    condition_name: string;
+    study_condition_id: string;
+    study_condition_name: string;
     participant_count: number;
 };
 
@@ -182,4 +182,6 @@ export interface StudyParticipant extends BaseResourceType {
 
     attention_check_responses: ParticipantAttentionCheckResponseAudit[];
     all_attention_checks_passed: boolean;
+    is_verified: boolean;
+    discarded: boolean;
 }

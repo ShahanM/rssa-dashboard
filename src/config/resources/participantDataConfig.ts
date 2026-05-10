@@ -1,3 +1,5 @@
+import React from 'react';
+import ResourceToggle from '../../components/ResourceToggle';
 import type { ParticipantDataConfig } from '../../types/resourceClient.types';
 
 export const participantDataConfig: ParticipantDataConfig = {
@@ -32,12 +34,31 @@ export const participantDataConfig: ParticipantDataConfig = {
             },
             {
                 accessorKey: 'all_attention_checks_passed',
-                header: 'Attention Check Response',
+                header: 'Attention Response',
             },
             {
-                accessorKey: 'external_id',
-                header: 'Verification Status',
-                cell: (info) => (info.getValue() === 'N/A' ? 'Unverified' : info.getValue()),
+                id: 'is_verified',
+                header: 'Verified',
+                cell: ({ row }) => {
+                    return React.createElement(ResourceToggle, {
+                        resourceId: row.original.id,
+                        initialValue: row.original.is_verified || false,
+                        fieldKey: 'is_verified',
+                        clientKey: 'participantClient',
+                    });
+                },
+            },
+            {
+                id: 'discard',
+                header: 'Discard',
+                cell: ({ row }) => {
+                    return React.createElement(ResourceToggle, {
+                        resourceId: row.original.id,
+                        initialValue: row.original.discarded || false,
+                        fieldKey: 'discarded',
+                        clientKey: 'participantClient',
+                    });
+                },
             },
         ],
     },

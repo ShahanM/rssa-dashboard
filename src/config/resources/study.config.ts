@@ -1,6 +1,6 @@
 import React from 'react';
 import ConditionStatsView from '../../components/ConditionStatsView';
-import StudyConditionCheckbox from '../../components/resources/StudyConditionCheckbox';
+import ResourceToggle from '../../components/ResourceToggle';
 import type { StudyResourceConfig } from '../../types/resourceClient.types';
 
 export const studyConfig: StudyResourceConfig = {
@@ -163,9 +163,11 @@ export const studyConfig: StudyResourceConfig = {
                 id: 'include',
                 header: 'Include',
                 cell: ({ row }) => {
-                    return React.createElement(StudyConditionCheckbox, {
-                        conditionId: row.original.id,
-                        initialEnabled: row.original.enabled || false,
+                    return React.createElement(ResourceToggle, {
+                        resourceId: row.original.id,
+                        initialValue: row.original.enabled || false,
+                        fieldKey: 'enabled',
+                        clientKey: 'conditionClient',
                     });
                 },
             },

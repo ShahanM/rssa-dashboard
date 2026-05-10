@@ -72,7 +72,7 @@ const StudyDetails: React.FC = () => {
             {activeTab === 'overview' ? (
                 <div className="flex flex-col gap-4">
                     <div className="flex space-x-2 justify-between gap-4">
-                        <div className="flex-grow">
+                        <div className="flex">
                             <ResourceChildList<StudyStep> resourceClient={stepClient} parentId={studyId} />
                         </div>
                         <div>
@@ -92,6 +92,7 @@ const StudyDetails: React.FC = () => {
                 <ResourceChildTable<StudyParticipant>
                     resourceClient={participantClient}
                     parentId={studyId}
+                    allowCreate={false}
                     className="mb-5"
                 />
             )}
