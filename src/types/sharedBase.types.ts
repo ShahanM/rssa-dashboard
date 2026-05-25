@@ -2,6 +2,7 @@ import type {
     ApiKey,
     Page,
     PageContent,
+    ParticipantAuditDetail,
     PreShuffledMovieList,
     Study,
     StudyAuthorization,
@@ -22,7 +23,8 @@ export type StudyComponentType =
     | 'authorization'
     | 'local_user'
     | 'preshuffled_movie_list'
-    | 'participant';
+    | 'participant'
+    | 'participant_audit';
 export type SurveyConstructType = 'construct' | 'item' | 'scale' | 'level';
 
 export interface ResourceTypeRegistry {
@@ -40,6 +42,7 @@ export interface ResourceTypeRegistry {
     local_user: User;
     preshuffled_movie_list: PreShuffledMovieList;
     participant: StudyParticipant;
+    participant_audit: ParticipantAuditDetail;
 }
 
 export type ResourceUnionType = keyof ResourceTypeRegistry;

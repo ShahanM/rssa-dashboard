@@ -10,7 +10,7 @@ export type ValidatorFactory<T extends BaseResourceType> = (
 export interface FormField {
     name: string;
     label: string;
-    type?: 'text' | 'textarea' | 'select' | 'static' | 'modal-select' | 'async-select' | 'number';
+    type?: 'text' | 'textarea' | 'select' | 'static' | 'modal-select' | 'async-select' | 'number' | 'number-list';
     value?: string; // Only applies for static fields. Perhaps we can use this as default?
     required?: boolean;
     placeholder?: string;
@@ -20,6 +20,9 @@ export interface FormField {
     optionsEndpoint?: string; // For dynamic select fields
     optionsValueKey?: string; // Key for value in dynamic select options
     optionsLabelKey?: string; // Key for label in dynamic select options
+    wide?: boolean;
+    showIf?: (formData: Record<string, unknown>) => boolean;
+    defaultValue?: string | number | boolean;
 }
 
 export type ValidationState = 'idle' | 'validating' | 'valid' | 'invalid';

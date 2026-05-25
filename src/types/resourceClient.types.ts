@@ -35,7 +35,7 @@ export type SurveyResourceConfig = Pick<
 
 export type SystemResourceConfig = Pick<DashboardResourceConfig, 'apikey' | 'authorization' | 'local_user'>;
 
-export type ParticipantDataConfig = Pick<DashboardResourceConfig, 'participant'>;
+export type ParticipantDataConfig = Pick<DashboardResourceConfig, 'participant' | 'participant_audit'>;
 
 export type ServerGeneratedKeys = 'id' | 'date_created' | 'resource_type';
 
@@ -58,7 +58,10 @@ export interface ResourceClient<T extends BaseResourceType> {
         summary: (id: string) => readonly [string, string, 'summary'];
     };
     getOne: (id: string) => Promise<T | null>;
-    getPaginated: (queryParams: PaginatedResourceQuery) => Promise<PaginatedResourceList<T> | null>;
+    getPaginated: (
+        queryParams: PaginatedResourceQuery,
+        customPath?: string
+    ) => Promise<PaginatedResourceList<T> | null>;
     update: (id: string, data: Partial<T>) => Promise<T | null>;
     create: (data: Omit<T, ServerGeneratedKeys>) => Promise<T | null>;
     del: (id: string) => Promise<unknown>;

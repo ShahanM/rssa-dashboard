@@ -1,6 +1,6 @@
 import React from 'react';
 import ConditionStatsView from '../../components/ConditionStatsView';
-import StudyConditionCheckbox from '../../components/resources/StudyConditionCheckbox';
+import ResourceToggle from '../../components/ResourceToggle';
 import type { StudyResourceConfig } from '../../types/resourceClient.types';
 
 export const studyConfig: StudyResourceConfig = {
@@ -37,9 +37,12 @@ export const studyConfig: StudyResourceConfig = {
                 label: 'Condition stats',
                 render: (study) =>
                     study.participants_by_condition
-                        ? React.createElement(ConditionStatsView, { conditionStats: study.participants_by_condition })
+                        ? React.createElement(ConditionStatsView, {
+                              conditionStats: study.participants_by_condition,
+                              showPctBars: false,
+                          })
                         : study.participants_by_condition,
-                wide: true,
+                wide: false,
                 optional: true,
             },
         ],
@@ -163,9 +166,11 @@ export const studyConfig: StudyResourceConfig = {
                 id: 'include',
                 header: 'Include',
                 cell: ({ row }) => {
-                    return React.createElement(StudyConditionCheckbox, {
-                        conditionId: row.original.id,
-                        initialEnabled: row.original.enabled || false,
+                    return React.createElement(ResourceToggle, {
+                        resourceId: row.original.id,
+                        initialValue: row.original.enabled || false,
+                        fieldKey: 'enabled',
+                        clientKey: 'conditionClient',
                     });
                 },
             },
@@ -178,16 +183,40 @@ export const studyConfig: StudyResourceConfig = {
         editableFields: [],
         formFields: [
             { name: 'subset_desc', label: 'Subset name', type: 'text', required: true },
-            { name: 'seed', label: 'Seed', type: 'number', required: true },
-            { name: 'year_min', label: 'Min Year', type: 'number', required: false },
-            { name: 'year_max', label: 'Max Year', type: 'number', required: false },
-            { name: 'genre', label: 'Genre', type: 'text', required: false },
+            { name: 'seeds', label: 'Seeds', type: 'number-list', required: true, defaultValue: '144' },
+            // { name: 'year_min', label: 'Min Year', type: 'number', required: false },
+            // { name: 'year_max', label: 'Max Year', type: 'number', required: false },
+            // { name: 'genre', label: 'Genre', type: 'text', required: false },
+            { name: 'page_size', label: 'Page Size', type: 'number', required: true, defaultValue: 18 },
             { name: 'min_rate_count', label: 'Minimum Ratings', type: 'number', required: true },
+            {
+                name: 'exclude_no_emotions',
+                label: 'Exclude without emotions?',
+                type: 'select',
+                required: false,
+                defaultValue: 'false',
+                options: [
+                    { value: false, label: 'No' },
+                    { value: true, label: 'Yes' },
+                ],
+            },
+            {
+                name: 'exclude_no_recommendations',
+                label: 'Exclude without recommendations?',
+                type: 'select',
+                required: false,
+                defaultValue: 'false',
+                options: [
+                    { value: 'false', label: 'No' },
+                    { value: 'true', label: 'Yes' },
+                ],
+            },
             {
                 name: 'strategy',
                 label: 'Strategy (Applied to movielens_rate_count)',
                 type: 'select',
                 required: true,
+                wide: true,
                 options: [
                     { value: 'Random', label: 'Random' },
                     { value: 'A-Res', label: 'A-Res' },
@@ -203,24 +232,76 @@ export const studyConfig: StudyResourceConfig = {
                 ],
             },
             {
-                name: 'exclude_no_emotions',
-                label: 'Exclude without emotions?',
+                name: 'include_genre_in_stratification',
+                label: 'Include genre in stratification?',
                 type: 'select',
                 required: false,
-                options: [
-                    { value: false, label: 'No' },
-                    { value: true, label: 'Yes' },
-                ],
-            },
-            {
-                name: 'exclude_no_recommendations',
-                label: 'Exclude without recommendations?',
-                type: 'select',
-                required: false,
+                defaultValue: 'false',
+                showIf: (data) => data.strategy === 'Stratified Chunking AvgRatingBA',
                 options: [
                     { value: 'false', label: 'No' },
                     { value: 'true', label: 'Yes' },
                 ],
+            },
+            {
+                name: 'genre_bucket_size',
+                label: 'Genre pool size',
+                type: 'number',
+                required: false,
+                defaultValue: 250,
+                showIf: (data) => data.include_genre_in_stratification === 'true',
+            },
+            {
+                name: 'active_anchor_limit',
+                label: 'Genere anchor limit',
+                type: 'number',
+                required: false,
+                defaultValue: 36,
+                showIf: (data) => data.include_genre_in_stratification === 'true',
+            },
+            {
+                name: 'genre_repr_per_page',
+                label: 'Number of genre anchors per page',
+                type: 'number',
+                required: false,
+                defaultValue: 0.1,
+                showIf: (data) => data.include_genre_in_stratification === 'true',
+            },
+            {
+                name: 'base_year',
+                label: 'Base Year (Temp. Discounting)',
+                type: 'number',
+                required: false,
+                showIf: (data) => data.temporal_discounting === 'true',
+            },
+            {
+                name: 'decay_rate',
+                label: 'Decay Rate',
+                type: 'number',
+                required: false,
+                showIf: (data) => data.temporal_discounting === 'true',
+            },
+            {
+                name: 'popular_threshold',
+                label: 'Popular Threshold',
+                type: 'number',
+                required: false,
+                defaultValue: 0.9,
+            },
+            {
+                name: 'popular_per_page',
+                label: 'Popular Per Page',
+                type: 'number',
+                required: false,
+                defaultValue: 0.65,
+            },
+            {
+                name: 'initial_popular_schedule',
+                label: 'Initial Popular Schedule',
+                type: 'number-list',
+                required: false,
+                placeholder: 'e.g. 0, 0, 5, 10',
+                showIf: (data) => data.strategy === 'Stratified Chunking AvgRatingLD',
             },
         ],
         tableColumns: [
@@ -234,4 +315,17 @@ export const studyConfig: StudyResourceConfig = {
             },
         ],
     },
+    // strategy: str,
+    // seed: int = 144,
+    // page_size: int = 18,
+    // temporal_discounting: bool = True,
+    // base_year: int = 1985,
+    // decay_rate: float = 0.90,
+    // include_genre_in_stratification: bool = True,
+    // popular_threshold: float = 0.15,  # Top 15%
+    // popular_per_page: float = 0.65,
+    // popular_growth_rate: float = 0.20,
+    // initial_popular_schedue: list[int] | None = None,
+    // genre_bucket_size: int = 36,
+    // genre_repr_per_page: float = 0.10,
 };

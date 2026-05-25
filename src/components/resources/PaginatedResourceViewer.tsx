@@ -1,12 +1,13 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/16/solid';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 
 type PaginatedDataList<T> = {
     data: T[];
     count: number;
+    total: number;
 };
 
 interface PaginatedResourceViewerProps<T> {
@@ -51,13 +52,11 @@ const PaginatedResourceViewer = <T extends { id: string }>({
         placeholderData: keepPreviousData,
     });
 
-    const handleItemClick = (item: T) => {
-        if (selectedItem?.id === item.id) {
-            setSelectedItem(null);
-        } else {
-            setSelectedItem(item);
-        }
-    };
+    const handleItemClick = useCallback((item: T) => {
+        if (selectedItem?.id === item.id) setSelectedItem(null);
+        else setSelectedItem(item);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const resourceList = data?.data || [];
     const totalCount = data?.total || 0;

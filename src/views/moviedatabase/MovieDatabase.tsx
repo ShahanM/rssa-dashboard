@@ -1,9 +1,9 @@
 import clsx from 'clsx';
+import { useState } from 'react';
 import PaginatedResourceViewer from '../../components/resources/PaginatedResourceViewer';
 import type { MovieDetails } from '../../types/movies.types';
-import MovieDetailsPanel from './MovieDetailsPanel';
 import MovieCard from './MovieCard';
-import { useState } from 'react';
+import MovieDetailsPanel from './MovieDetailsPanel';
 import MovieFilters, { type MovieFilterState } from './MovieFilters';
 
 const MovieDatabase: React.FC = () => {
@@ -17,7 +17,6 @@ const MovieDatabase: React.FC = () => {
         excludeNoRecommendations: false,
     });
 
-    // Convert filter state to API usable query params
     const queryParams = {
         title: filters.title || undefined,
         year_min: filters.yearMin || undefined,

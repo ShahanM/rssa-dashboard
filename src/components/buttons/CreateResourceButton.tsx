@@ -2,10 +2,10 @@ import { PlusIcon } from '@heroicons/react/16/solid';
 import { useMutation, useQueryClient, type QueryKey } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useCallback, useState } from 'react';
-import DynamicFormModal from '../forms/DynamicFormModal';
-import type { FieldValidator, FormField } from '../forms/forms.typs';
 import type { ServerGeneratedKeys } from '../../types/resourceClient.types';
 import type { BaseResourceType } from '../../types/sharedBase.types';
+import DynamicFormModal from '../forms/DynamicFormModal';
+import type { FieldValidator, FormField } from '../forms/forms.typs';
 
 type BaseCreateFn<T> = (formData: Omit<T, ServerGeneratedKeys>) => Promise<T | null>;
 type DependentCreateFn<T> = (parentId: string, formData: Omit<T, ServerGeneratedKeys>) => Promise<T | null>;
@@ -90,10 +90,10 @@ export const CreateResourceButton = <T extends BaseResourceType>({
             />
             <button
                 className={clsx(
-                    'flex flex-wrap items-center px-3 py-3 m-0 rounded-md space-x-2',
-                    'bg-yellow-500 hover:bg-yellow-600',
+                    'flex flex-wrap items-center px-3 py-2 m-0 rounded-md space-x-2',
+                    'bg-amber-400 hover:bg-amber-600',
                     'text-gray-700 text-sm font-medium cursor-pointer',
-                    'hover:bg-gray-700 hover:text-white',
+                    ' hover:text-white',
                     className
                 )}
                 onClick={() => setIsModalOpen(true)}

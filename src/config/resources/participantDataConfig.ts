@@ -1,3 +1,5 @@
+import React from 'react';
+import ResourceToggle from '../../components/ResourceToggle';
 import type { ParticipantDataConfig } from '../../types/resourceClient.types';
 
 export const participantDataConfig: ParticipantDataConfig = {
@@ -19,12 +21,18 @@ export const participantDataConfig: ParticipantDataConfig = {
             {
                 accessorKey: 'source_meta',
                 header: 'Prolific PID',
-                cell: (info) => JSON.parse(info.getValue() as string).PROLIFIC_PID,
+                cell: (info) => info.row.original.source_meta?.PROLIFIC_PID || '',
             },
             {
                 accessorKey: 'created_at',
-                header: 'Date Created',
-                cell: (info) => new Date(info.getValue() as string).toLocaleDateString(),
+                header: 'Created At',
+                cell: (info) => {
+                    const dateTime = new Date(info.getValue() as string);
+                    const dateStr = dateTime.toLocaleDateString();
+                    const timeStr = dateTime.toLocaleTimeString();
+                    return `${timeStr}, ${dateStr}`;
+                    // return dateTime.toLocaleString();
+                },
             },
             {
                 accessorKey: 'current_status',
@@ -32,13 +40,44 @@ export const participantDataConfig: ParticipantDataConfig = {
             },
             {
                 accessorKey: 'all_attention_checks_passed',
-                header: 'Attention Check Response',
+                header: 'Attention',
+                cell: (info) => (info.getValue() ? 'PASS' : 'FAIL'),
             },
             {
-                accessorKey: 'external_id',
-                header: 'Verification Status',
-                cell: (info) => (info.getValue() === 'N/A' ? 'Unverified' : info.getValue()),
+                id: 'is_verified',
+                header: 'Verified',
+                cell: ({ row }) => {
+                    return React.createElement(ResourceToggle, {
+                        resourceId: row.original.id,
+                        initialValue: row.original.is_verified || false,
+                        fieldKey: 'is_verified',
+                        clientKey: 'participantClient',
+                    });
+                },
             },
+            {
+                id: 'discard',
+                header: 'Discard',
+                cell: ({ row }) => {
+                    return React.createElement(ResourceToggle, {
+                        resourceId: row.original.id,
+                        initialValue: row.original.discarded || false,
+                        fieldKey: 'discarded',
+                        clientKey: 'participantClient',
+                    });
+                },
+            },
+        ],
+    },
+    participant_audit: {
+        apiResourceTag: 'participant-audits',
+        resourceName: 'StudyParticipant',
+        viewTitle: 'StudyParticipants',
+        editableFields: [
+            /* ... */
+        ],
+        formFields: [
+            /* ... */
         ],
     },
 };

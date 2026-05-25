@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import React from 'react';
 import type { MovieDetails } from '../../types/movies.types';
 
 const MovieCard = ({
@@ -20,7 +21,7 @@ const MovieCard = ({
     >
         <img
             className="w-full h-full object-cover"
-            src={movie.poster || null}
+            src={movie.tmdb_poster || undefined}
             alt={`Poster for ${movie.title}`}
             onError={(e) => {
                 e.currentTarget.src = 'https://placehold.co/400x600/000000/FFFFFF?text=No+Image';
@@ -35,4 +36,4 @@ const MovieCard = ({
     </div>
 );
 
-export default MovieCard;
+export default React.memo(MovieCard);

@@ -3,6 +3,7 @@ import type {
     ApiKey,
     Page,
     PageContent,
+    ParticipantAuditDetail,
     PreShuffledMovieList,
     Study,
     StudyAuthorization,
@@ -13,7 +14,6 @@ import type {
 } from '../types/studyComponents.types';
 import type { ConstructItem, Scale, ScaleLevel, SurveyConstruct } from '../types/surveyComponents.types';
 import type { createDependentResourceClient, createResourceClient } from './resourceClient';
-import type { ResourceClient } from '../types/resourceClient.types';
 
 export interface ApiClients {
     studyClient: ReturnType<typeof createResourceClient<Study>>;
@@ -30,6 +30,7 @@ export interface ApiClients {
     localUserClient: ReturnType<typeof createResourceClient<User>>;
     preShuffledMovieListClient: ReturnType<typeof createResourceClient<PreShuffledMovieList>>;
     participantClient: ReturnType<typeof createDependentResourceClient<StudyParticipant>>;
+    participantAuditClient: ReturnType<typeof createResourceClient<ParticipantAuditDetail>>;
 }
 
 export const ApiContext = createContext<ApiClients | null>(null);
@@ -41,9 +42,9 @@ export const useApiClients = () => {
     }
 
     function getResourceClient<K extends keyof ApiClients>(key: K): ApiClients[K];
-    function getResourceClient(key: 'studyClient'): ResourceClient<Study>;
-    function getResourceClient(key: 'constructClient'): ResourceClient<SurveyConstruct>;
-    function getResourceClient(key: 'scaleClient'): ResourceClient<Scale>;
+    // function getResourceClient(key: 'studyClient'): ResourceClient<Study>;
+    // function getResourceClient(key: 'constructClient'): ResourceClient<SurveyConstruct>;
+    // function getResourceClient(key: 'scaleClient'): ResourceClient<Scale>;
 
     function getResourceClient(key: keyof ApiClients) {
         if (clients) return clients[key];
