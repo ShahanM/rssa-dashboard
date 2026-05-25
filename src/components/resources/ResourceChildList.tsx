@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { usePermissions } from '../../hooks/usePermissions';
 import { createValidators, type DependentResourceClient } from '../../types/resourceClient.types';
 import type { OrderedComponent } from '../../types/sharedBase.types';
 import CreateResourceButton from '../buttons/CreateResourceButton';
-import SortableResourceList from '../SortableResourceList';
-import { useLocation } from 'react-router-dom';
 import EditResourceModal from '../dialogs/EditResourceModal';
+import SortableResourceList from '../SortableResourceList';
 
 const ResourceChildList = <TChild extends OrderedComponent>({
     resourceClient,
@@ -87,12 +87,15 @@ const ResourceChildList = <TChild extends OrderedComponent>({
         resourceClient.config.apiResourceTag === 'levels' ||
         resourceClient.config.apiResourceTag === 'contents';
 
-    const handleItemClick = (resource: TChild) => {
-        if (isModalResource) {
-            setSelectedResource(resource);
-            setIsModalOpen(true);
-        }
-    };
+    const handleItemClick = useCallback(
+        (resource: TChild) => {
+            if (isModalResource) {
+                setSelectedResource(resource);
+                setIsModalOpen(true);
+            }
+        },
+        [isModalResource]
+    );
 
     return (
         <div>

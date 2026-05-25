@@ -1,27 +1,37 @@
-import clsx from 'clsx';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import clsx from 'clsx';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { usePermissions } from '../../hooks/usePermissions';
 import { type DependentResourceClient } from '../../types/resourceClient.types';
 import type { BaseResourceType } from '../../types/sharedBase.types';
+import type { PaginatedResourceList } from '../../types/studyComponents.types';
 import CreateResourceButton from '../buttons/CreateResourceButton';
 import EditResourceModal from '../dialogs/EditResourceModal';
 import ResourceTable from './ResourceTable';
 
+interface ResourceChildTableProps<TChild extends BaseResourceType> {
+    resourceClient: DependentResourceClient<TChild>;
+    parentId: string;
+    className?: string;
+    allowCreate?: boolean;
+    onRowClick?: (resource: TChild) => void;
+    paginate?: boolean;
+    pageSize?: number;
+    filterFn?: (item: TChild) => boolean;
+    filterState?: unknown;
+}
 const ResourceChildTable = <TChild extends BaseResourceType>({
     resourceClient,
     parentId,
     className = '',
     allowCreate = true,
-}: {
-    resourceClient: DependentResourceClient<TChild>;
-    parentId: string;
-    className?: string;
-    allowCreate?: boolean;
-}) => {
+    onRowClick,
+    paginate = false,
+    pageSize = 10,
+    filterFn,
+    filterState,
+}: ResourceChildTableProps<TChild>) => {
     const { hasPermission } = usePermissions();
-    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedResource, setSelectedResource] = useState<TChild | null>(null);
     const queryClient = useQueryClient();
@@ -57,12 +67,13 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
     });
 
     const handleRowClick = (resource: TChild) => {
-        if (resourceClient.config.apiResourceTag === 'items' || resourceClient.config.apiResourceTag === 'levels') {
-            setSelectedResource(resource);
-            setIsModalOpen(true);
-        } else if (resourceClient.config.apiResourceTag === 'conditions') {
-            navigate(`conditions/${resource.id}`);
+        if (onRowClick) {
+            onRowClick(resource);
+            return;
         }
+
+        setSelectedResource(resource);
+        setIsModalOpen(true);
     };
 
     return (
@@ -81,24 +92,56 @@ const ResourceChildTable = <TChild extends BaseResourceType>({
             </div>
             <ResourceTable<TChild>
                 resourceTag={resourceClient.config.apiResourceTag}
-                queryFn={async (_queryParams, parentId) => {
-                    if (!parentId) {
-                        return null;
+                queryFn={async (queryParams, parentId) => {
+                    if (!parentId) return null;
+
+                    // Local Override Mode (Legacy / Custom JS Filters)
+                    if (filterFn) {
+                        let list = await resourceClient.getList(parentId);
+                        if (!list) return null;
+
+                        list = list.filter(filterFn);
+
+                        if (queryParams.search) {
+                            const lowerSearch = queryParams.search.toLowerCase();
+                            list = list.filter((item) => JSON.stringify(item).toLowerCase().includes(lowerSearch));
+                        }
+
+                        const totalItems = list.length;
+                        const pageCount =
+                            paginate && queryParams.pageSize ? Math.ceil(totalItems / queryParams.pageSize) : 1;
+
+                        if (paginate && queryParams.pageIndex !== undefined && queryParams.pageSize !== undefined) {
+                            const start = queryParams.pageIndex * queryParams.pageSize;
+                            list = list.slice(start, start + queryParams.pageSize);
+                        }
+
+                        return { data: list, page_count: pageCount, total: totalItems };
                     }
-                    const list = await resourceClient.getList(parentId);
-                    if (!list) {
-                        return null;
+
+                    // Server-Side Delegation (With Flat-List Fallback)
+                    const response = await resourceClient.getPaginated(queryParams, parentId);
+                    if (!response) return null;
+
+                    // If the backend returned a flat array instead of a PaginatedResourceList,
+                    // wrap it dynamically so the table doesn't crash!
+                    if (Array.isArray(response)) {
+                        return {
+                            data: response,
+                            page_count: 1,
+                            total: response.length,
+                        } as PaginatedResourceList<TChild>;
                     }
-                    return {
-                        data: list,
-                        page_count: 1,
-                    };
+                    return response;
                 }}
                 columns={resourceClient.config.tableColumns!}
                 onRowClick={handleRowClick}
                 selectedRowId={undefined}
                 parentId={parentId}
-                paginate={false}
+                paginate={paginate}
+                pageSize={pageSize}
+                isSearchable={true}
+                filterState={filterState}
             />
             {selectedResource && (
                 <EditResourceModal<TChild>

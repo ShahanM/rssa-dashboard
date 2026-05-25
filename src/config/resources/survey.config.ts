@@ -146,7 +146,7 @@ export const surveyConfig: SurveyResourceConfig = {
         viewTitle: 'Scale levels',
         editableFields: [
             { key: 'label', label: 'Label Text', type: 'text', required: true },
-            { key: 'value', label: 'Value', type: 'text', required: true },
+            { key: 'value', label: 'Value', type: 'number', required: true },
         ],
         formFields: [
             {

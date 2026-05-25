@@ -26,17 +26,29 @@ export const createResourceClient = <T extends BaseResourceType>(
 
     const getOne = (id: string) => api.get<T>(`${apiResourceTag}/${id}`);
 
-    const getPaginated = (queryParams: PaginatedResourceQuery) => {
-        const params = new URLSearchParams({
-            page_index: String(queryParams.pageIndex),
-            page_size: String(queryParams.pageSize),
-        });
+    const getPaginated = (queryParams: PaginatedResourceQuery, customPath?: string) => {
+        const params = new URLSearchParams();
 
+        // Conditionally append so we don't send the string "undefined"
+        if (queryParams.pageIndex !== undefined) {
+            params.append('page_index', String(queryParams.pageIndex));
+        }
+        if (queryParams.pageSize !== undefined) {
+            params.append('page_size', String(queryParams.pageSize));
+        }
         if (queryParams.sortBy) params.append('sort_by', queryParams.sortBy);
         if (queryParams.sortDir) params.append('sort_dir', queryParams.sortDir);
         if (queryParams.search) params.append('search', queryParams.search);
+        if (queryParams.isVerified !== undefined) {
+            params.append('is_verified', String(queryParams.isVerified));
+        }
 
-        return api.get<PaginatedResourceList<T>>(`${apiResourceTag}/?${params.toString()}`);
+        const basePath = customPath || apiResourceTag;
+
+        const queryString = params.toString();
+        const url = queryString ? `${basePath}/?${queryString}` : `${basePath}/`;
+
+        return api.get<PaginatedResourceList<T>>(url);
     };
 
     const update = (id: string, data: Partial<T>) => api.patch<T>(`${apiResourceTag}/${id}`, data);
@@ -67,6 +79,14 @@ export const createDependentResourceClient = <T extends BaseResourceType>(
     const { apiResourceTag } = config;
 
     const getList = (parentId: string) => api.get<T[]>(`${parentApiResourceTag}/${parentId}/${apiResourceTag}`);
+    const getPaginated = (queryParams: PaginatedResourceQuery, parentId?: string) => {
+        if (!parentId) {
+            console.error('Parent ID is required to fetch paginated dependent resource');
+            return Promise.resolve(null);
+        }
+        const customPath = `${parentApiResourceTag}/${parentId}/${apiResourceTag}`;
+        return baseResourceClient.getPaginated(queryParams, customPath);
+    };
     const reorder = async (parentId: string, data: { id: string; order_position: number }[]) => {
         await api.patch<void>(`${parentApiResourceTag}/${parentId}/${apiResourceTag}/reorder`, data);
     };
@@ -88,6 +108,7 @@ export const createDependentResourceClient = <T extends BaseResourceType>(
         create,
         parentResourceType,
         getList,
+        getPaginated,
         reorder,
         validateField,
     };

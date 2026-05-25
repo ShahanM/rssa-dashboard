@@ -25,8 +25,8 @@ const ResourceExplorer = <T extends BaseResourceType>({
 
     return (
         <div className="container mx-auto p-3">
-            <div className="flex space-x-2 justify-between mb-2 p-3">
-                <div className="container mx-auto p-3 bg-gray-50 rounded-lg me-2">
+            <div className="flex justify-between mb-2 p-1">
+                <div className="container mx-auto p-3 bg-gray-50 rounded-lg me-2 w-3xl">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-2xl font-bold mb-4">{resourceClient.config.viewTitle}</h2>
                         {canCreate && (

@@ -5,9 +5,12 @@ import { defineConfig } from 'vite';
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [react(), tailwindcss()],
-    base: '/rssa-dashboard/',
+    // base: '/rssa-dashboard/',
+    build: {
+        outDir: 'dist',
+    },
     server: {
         port: 3339,
-        open: '/rssa-dashboard/',
+        // open: '/rssa-dashboard/',
     },
 });

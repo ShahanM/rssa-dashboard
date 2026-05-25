@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApiClients, type ApiClients } from '../api/ApiContext';
 
 interface ResourceToggleProps {
@@ -15,7 +15,9 @@ const ResourceToggle: React.FC<ResourceToggleProps> = ({ resourceId, initialValu
 
     const queryClient = useQueryClient();
     const [isChecked, setIsChecked] = useState(initialValue);
-
+    useEffect(() => {
+        setIsChecked(initialValue);
+    }, [initialValue]);
     const mutation = useMutation({
         mutationFn: async (updatedValue: boolean) => {
             return resourceClient.update(resourceId, { [fieldKey]: updatedValue });

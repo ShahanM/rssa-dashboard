@@ -66,7 +66,7 @@ export const EditableResourceMetaInfo = <T extends BaseResourceType>({
         const commonProps = {
             id: field.key as string,
             name: field.key as string,
-            value: String((formData as FormDataType)[field.key] || ''),
+            value: String((formData as FormDataType)[field.key] ?? ''),
             onChange: handleChange,
             className: clsx(
                 'p-3 mt-1',

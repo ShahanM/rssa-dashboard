@@ -25,6 +25,7 @@ interface GenericTableProps<T extends BaseResourceType> {
     isSearchable?: boolean;
     parentId?: string;
     className?: string;
+    filterState?: unknown;
 }
 
 export const ResourceTable = <T extends BaseResourceType>({
@@ -39,6 +40,7 @@ export const ResourceTable = <T extends BaseResourceType>({
     isSearchable = false,
     parentId,
     className = '',
+    filterState,
 }: GenericTableProps<T>) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [pagination, setPagination] = useState({
@@ -50,25 +52,31 @@ export const ResourceTable = <T extends BaseResourceType>({
     const debouncedSearchTerm = useDebounce(searchTerm, 300); // 300ms delay
 
     const { data, isFetching } = useQuery({
-        queryKey: [resourceTag, parentId, paginate ? pagination : {}, sorting, debouncedSearchTerm] as const,
+        queryKey: [
+            resourceTag,
+            parentId,
+            paginate ? pagination : {},
+            sorting,
+            debouncedSearchTerm,
+            filterState,
+        ] as const,
         queryFn: ({ queryKey }) => {
-            const [_key, parentId, paginationState, sorting, search] = queryKey;
+            const [_key, parentId, paginationState, sorting, search, currentFilterState] = queryKey;
 
-            const params: PaginatedResourceQuery = {};
+            const params: PaginatedResourceQuery = {
+                ...(currentFilterState && typeof currentFilterState === 'object' ? currentFilterState : {}),
+            };
 
             if ('pageIndex' in paginationState && 'pageSize' in paginationState) {
                 params.pageIndex = paginationState.pageIndex as number;
                 params.pageSize = paginationState.pageSize as number;
             }
-
             if (sorting.length > 0) {
                 params.sortBy = sorting[0].id;
                 params.sortDir = sorting[0].desc ? 'desc' : 'asc';
             }
+            if (search) params.search = search;
 
-            if (search) {
-                params.search = search;
-            }
             return queryFn(params, parentId);
         },
         placeholderData: keepPreviousData,
@@ -77,10 +85,8 @@ export const ResourceTable = <T extends BaseResourceType>({
     const table = useReactTable({
         data: data?.data ?? [],
         columns,
-        state: {
-            sorting,
-            ...(paginate && { pagination }),
-        },
+        getRowId: (row) => row.id,
+        state: { sorting, ...(paginate && { pagination }) },
         onSortingChange: setSorting,
         onPaginationChange: paginate ? setPagination : undefined,
         manualPagination: true,
@@ -88,10 +94,6 @@ export const ResourceTable = <T extends BaseResourceType>({
         getCoreRowModel: getCoreRowModel(),
         pageCount: paginate ? (data?.page_count ?? -1) : 1,
     });
-
-    if (!isFetching && table.getRowModel().rows.length === 0) {
-        return <>Nothing to show</>;
-    }
 
     return (
         <div className="mb-5">
@@ -128,24 +130,20 @@ export const ResourceTable = <T extends BaseResourceType>({
                     ))}
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200 rounded-b-lg">
-                    {table.getRowModel().rows.map((row, idx) => (
+                    {table.getRowModel().rows.map((row) => (
                         <tr
                             key={row.id}
                             onClick={() => onRowClick?.(row.original)}
                             className={clsx(
                                 onRowClick && 'cursor-pointer',
-                                'hover:bg-yellow-500',
-                                selectedRowId && selectedRowId === row.original.id && 'bg-yellow-500'
+                                'hover:bg-amber-400',
+                                selectedRowId && selectedRowId === row.original.id && 'bg-amber-400'
                             )}
                         >
                             {row.getVisibleCells().map((cell) => (
                                 <td
                                     key={cell.id}
-                                    className={clsx(
-                                        'px-6 py-4',
-                                        idx !== 0 && pageSize % (idx + 1) === 0 ? 'rounded-b-lg' : '',
-                                        cell.column.columnDef.meta?.cellClassName || ''
-                                    )}
+                                    className={clsx('p-2', cell.column.columnDef.meta?.cellClassName || '')}
                                 >
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                 </td>
@@ -201,9 +199,9 @@ const TableNavigationFooter = <T extends BaseResourceType>({ table, enablePageSi
                         title="Study navigation"
                         className={clsx(
                             'mt-1 p-3 block w-27',
-                            'rounded-md border-purple-700 dark:border-purple-500 shadow-sm bg-yellow-400',
+                            'rounded-md border-purple-700 dark:border-purple-500 shadow-sm bg-amber-400',
                             'focus:border-purple-700 focus:ring-purple-700',
-                            'sm:text-sm caret-yellow-500 text-gray-900'
+                            'sm:text-sm caret-amber-400 text-gray-900'
                         )}
                     >
                         {[10, 25, 50].map((pageSize) => (
@@ -226,7 +224,7 @@ const TableNavButton: React.FC<{ label: string; onClick: () => void; disabled: b
     return (
         <button
             type="button"
-            className={clsx('me-1 cursor-pointer text-xl', 'hover:bg-yellow-500 w-15', 'rounded-lg')}
+            className={clsx('me-1 cursor-pointer text-xl', 'hover:bg-amber-400 w-15', 'rounded-lg')}
             onClick={onClick}
             disabled={disabled}
         >

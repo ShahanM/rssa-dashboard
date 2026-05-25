@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useToast } from '../toast/ToastProvider';
 import { usePermissions } from '../../hooks/usePermissions';
 import {
     createValidators,
@@ -12,6 +11,7 @@ import {
 import type { BaseResourceType } from '../../types/sharedBase.types';
 import DeleteResourceButton from '../buttons/DeleteResourceButton';
 import EditableResourceMetaInfo from '../forms/EditableMetaInfo';
+import { useToast } from '../toast/ToastProvider';
 
 type StatelessOnloadFn = () => void;
 type StatefulOnloadFn<T> = (resourceInstance: T) => void;
@@ -104,6 +104,14 @@ const ResourceInfoPanel = <T extends BaseResourceType>({
         },
     });
 
+    const handleSave = useCallback(
+        (formData: Partial<T>) => {
+            updateMutation.mutate(formData);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [updateMutation.mutate]
+    );
+
     useEffect(() => {
         if (isSuccess && resource) {
             if (onLoad) {
@@ -137,7 +145,7 @@ const ResourceInfoPanel = <T extends BaseResourceType>({
             <EditableResourceMetaInfo<T>
                 hasEditPermission={hasPermission(`update:${resourceClient.config.apiResourceTag}`)}
                 resourceInstance={resource}
-                onSave={(formData: Partial<T>) => updateMutation.mutate(formData)}
+                onSave={handleSave}
                 isSaving={updateMutation.isPending}
                 editableFields={resourceClient.config.editableFields}
                 validators={validators}
@@ -146,4 +154,4 @@ const ResourceInfoPanel = <T extends BaseResourceType>({
     );
 };
 
-export default ResourceInfoPanel;
+export default React.memo(ResourceInfoPanel) as typeof ResourceInfoPanel;

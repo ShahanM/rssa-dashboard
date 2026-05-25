@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 interface ApiMethodOptions extends RequestInit {
     isProtected?: boolean;
     params?: Record<string, string | number | boolean>;
+    responseType?: 'json' | 'blob';
 }
 
 export interface ApiClient {
@@ -43,7 +44,7 @@ export const useApi = (): ApiResponse => {
 
             setLoading(true);
             setError(null);
-            setData(null); // Clear previous data on new call
+            setData(null);
 
             const headers: Record<string, string> = {
                 'Content-Type': 'application/json',
@@ -58,7 +59,6 @@ export const useApi = (): ApiResponse => {
                 }
 
                 try {
-                    // Use the audience and scope defined in the environment/config
                     const accessToken = await getAccessTokenSilently({
                         authorizationParams: {
                             audience: AUTH0_AUDIENCE,
@@ -114,6 +114,11 @@ export const useApi = (): ApiResponse => {
                     return null;
                 }
 
+                if (options.responseType === 'blob') {
+                    const blob = await response.blob();
+                    setData(null);
+                    return blob as unknown as RT;
+                }
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('application/json')) {
                     const responseData: RT = await response.json();

@@ -112,11 +112,13 @@ export type PaginatedResourceQuery = {
     sortBy?: string | null;
     sortDir?: SortDirectionOption;
     search?: string;
+    isVerified?: boolean;
 };
 
 export type PaginatedResourceList<T> = {
-    rows: T[];
+    data: T[];
     page_count: number;
+    total: number;
 };
 
 export interface ApiKey extends BaseResourceType {
@@ -144,6 +146,7 @@ export interface User extends BaseResourceType {
 }
 
 export interface PreShuffledMovieList extends BaseResourceType {
+    id: string;
     subset_desc: string;
     seed: string;
 
@@ -174,14 +177,49 @@ export interface ParticipantAttentionCheckResponseAudit {
     passed_attention: boolean;
 }
 
+export interface ParticipantSourceMeta {
+    PROLIFIC_PID?: string;
+    STUDY_ID?: string;
+    SESSION_ID?: string;
+    [key: string]: unknown;
+}
+
 export interface StudyParticipant extends BaseResourceType {
     resource_type: 'participant';
 
-    external_id: string;
     current_status: string;
 
     attention_check_responses: ParticipantAttentionCheckResponseAudit[];
     all_attention_checks_passed: boolean;
+    is_verified: boolean;
+    discarded: boolean;
+    source_meta: ParticipantSourceMeta;
+}
+
+export interface FreeformResponse {
+    id: string;
+    context_tag: string;
+    response_text: string;
+}
+
+export interface ActivityResponse {
+    id: string;
+    context_tag: string;
+    payload_json: JSON;
+}
+
+export interface ParticipantAuditDetail extends BaseResourceType {
+    resource_type: 'participant_audit';
+    study_id: string;
+    study_condition: StudyCondition;
+    attention_check_responses: ParticipantAttentionCheckResponseAudit[];
+    all_attention_checks_passed: boolean;
+
+    freeform_responses: FreeformResponse[];
+    activity_responses: ActivityResponse[];
+
+    source_meta: ParticipantSourceMeta;
+    current_status: string;
     is_verified: boolean;
     discarded: boolean;
 }

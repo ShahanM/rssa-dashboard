@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { DependentResourceClient, ResourceClient } from '../types/resourceClient.types';
-import DeleteResourceButton from './buttons/DeleteResourceButton';
 import type { OrderedComponent } from '../types/sharedBase.types';
+import DeleteResourceButton from './buttons/DeleteResourceButton';
 
 interface SortableItemProps<T extends OrderedComponent> {
     resourceClient: ResourceClient<T> | DependentResourceClient<T>;
@@ -37,8 +37,8 @@ export const SortableItem = <T extends OrderedComponent>({
             <div
                 className={clsx(
                     'w-full list-none grid grid-cols-1 md:grid-cols-[1fr_auto]',
-                    'items-center gap-2 p-2 mb-1 bg-yellow-500',
-                    'border border-yellow-400 rounded',
+                    'items-center gap-2 px-2 py-1 mb-1 bg-amber-400',
+                    'border border-amber-300 rounded',
                     'hover:-translate-y-px hover:shadow-md'
                 )}
             >

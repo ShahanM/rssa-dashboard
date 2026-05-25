@@ -1,16 +1,17 @@
 import { useMemo } from 'react';
 import { useApi } from '../hooks/useApi';
 import {
-    type PreShuffledMovieList,
     type ApiKey,
     type Page,
     type PageContent,
+    type ParticipantAuditDetail,
+    type PreShuffledMovieList,
     type Study,
     type StudyAuthorization,
     type StudyCondition,
+    type StudyParticipant,
     type StudyStep,
     type User,
-    type StudyParticipant,
 } from '../types/studyComponents.types';
 import { type ConstructItem, type Scale, type ScaleLevel, type SurveyConstruct } from '../types/surveyComponents.types';
 import { ApiContext } from './ApiContext';
@@ -37,6 +38,7 @@ export const ApiProvider = ({ children }: { children: React.ReactNode }) => {
             localUserClient: createResourceClient<User>(api, 'local_user'),
             preShuffledMovieListClient: createResourceClient<PreShuffledMovieList>(api, 'preshuffled_movie_list'),
             participantClient: createDependentResourceClient<StudyParticipant>(api, 'participant', 'study'),
+            participantAuditClient: createResourceClient<ParticipantAuditDetail>(api, 'participant_audit'),
         };
     }, [api]);
 

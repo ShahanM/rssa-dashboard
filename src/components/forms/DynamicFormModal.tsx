@@ -1,12 +1,12 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import clsx from 'clsx';
 import { Fragment, useCallback, useMemo } from 'react';
+import { useToast } from '../../components/toast/ToastProvider';
 import { useDynamicForm } from '../../hooks/useDynamicForm';
 import { AsyncCombobox } from './AsyncCombobox';
 import { DynamicSelect } from './DynamicSelect';
 import type { FieldValidator, FormField } from './forms.typs';
 import { ModalSelect } from './ModalSelect';
-import { useToast } from '../../components/toast/ToastProvider';
 
 interface DynamicFormModalProps<T> {
     isOpen: boolean;
@@ -34,7 +34,11 @@ const DynamicFormModal = <T extends Record<string, unknown>>({
         () =>
             fields.reduce(
                 (acc, field) => {
-                    acc[field.name] = field.type === 'static' ? field.value || '' : '';
+                    if (field.defaultValue !== undefined) {
+                        acc[field.name] = field.defaultValue;
+                    } else {
+                        acc[field.name] = field.type === 'static' ? field.value || '' : '';
+                    }
                     return acc;
                 },
                 {} as Record<string, unknown>
@@ -51,7 +55,27 @@ const DynamicFormModal = <T extends Record<string, unknown>>({
         async (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             try {
-                await onSubmit(formData as T);
+                const processedData = { ...formData } as Record<string, unknown>;
+                fields.forEach((field) => {
+                    if (field.type === 'number-list') {
+                        const rawVal = processedData[field.name];
+
+                        if (typeof rawVal === 'string') {
+                            if (rawVal.trim() === '') {
+                                processedData[field.name] = null;
+                            } else {
+                                // Transforms "9,18,27" into [9, 18, 27]
+                                processedData[field.name] = rawVal
+                                    .split(',')
+                                    .map((s) => Number(s.trim()))
+                                    .filter((n) => !isNaN(n));
+                            }
+                        } else if (typeof rawVal === 'number') {
+                            processedData[field.name] = [rawVal];
+                        }
+                    }
+                });
+                await onSubmit(processedData as T);
             } catch (error) {
                 console.error('Submission failed:', error);
                 const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -61,14 +85,14 @@ const DynamicFormModal = <T extends Record<string, unknown>>({
                 resetForm(initialFormState);
             }
         },
-        [formData, onSubmit, onClose, resetForm, initialFormState, showToast]
+        [formData, onSubmit, onClose, resetForm, initialFormState, showToast, fields]
     );
 
     const renderField = (field: FormField) => {
         const commonProps = {
             id: field.name,
             name: field.name,
-            value: String((formData as Record<string, unknown>)[field.name] || ''),
+            value: String((formData as Record<string, unknown>)[field.name] ?? ''),
             onChange: handleChange,
             required: field.required,
             placeholder: field.placeholder,
@@ -128,6 +152,10 @@ const DynamicFormModal = <T extends Record<string, unknown>>({
                         }}
                     />
                 );
+            case 'number-list':
+                return <input type="text" {...commonProps} placeholder={field.placeholder || 'e.g. 10, 20, 30'} />;
+            case 'number':
+                return <input type="number" {...commonProps} />;
             case 'text':
             default:
                 return <input type="text" {...commonProps} />;
@@ -158,31 +186,39 @@ const DynamicFormModal = <T extends Record<string, unknown>>({
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                     >
-                        <DialogPanel className="min-w-md rounded-xl bg-gray-800 p-6 shadow-xl">
+                        <DialogPanel className="w-full max-w-4xl rounded-xl bg-gray-800 p-6 shadow-xl">
                             <DialogTitle as="h3" className="text-lg font-medium leading-6 text-white">
                                 {title}
                             </DialogTitle>
-                            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-                                {fields.map((field) => (
-                                    <div key={field.name}>
-                                        <label htmlFor={field.name} className="block text-sm font-medium text-gray-300">
-                                            {field.label}
-                                        </label>
-                                        {renderField(field)}
-                                        <div className="mt-1 text-xs h-4">
-                                            {validationStates[field.name] === 'validating' && (
-                                                <p className="text-gray-400">Checking...</p>
-                                            )}
-                                            {validationStates[field.name] === 'invalid' && (
-                                                <p className="text-red-500">{validationErrors[field.name]}</p>
-                                            )}
-                                            {validationStates[field.name] === 'valid' && (
-                                                <p className="text-green-500">✓ Available</p>
-                                            )}
+                            <form
+                                onSubmit={handleSubmit}
+                                className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-1"
+                            >
+                                {fields
+                                    .filter((field) => (field.showIf ? field.showIf(formData) : true))
+                                    .map((field) => (
+                                        <div key={field.name}>
+                                            <label
+                                                htmlFor={field.name}
+                                                className="block text-sm font-medium text-gray-300"
+                                            >
+                                                {field.label}
+                                            </label>
+                                            {renderField(field)}
+                                            <div className="mt-1 text-xs h-4">
+                                                {validationStates[field.name] === 'validating' && (
+                                                    <p className="text-gray-400">Checking...</p>
+                                                )}
+                                                {validationStates[field.name] === 'invalid' && (
+                                                    <p className="text-red-500">{validationErrors[field.name]}</p>
+                                                )}
+                                                {validationStates[field.name] === 'valid' && (
+                                                    <p className="text-green-500">✓ Available</p>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                                <div className="mt-6 flex justify-end space-x-2">
+                                    ))}
+                                <div className="mt-3 flex justify-end space-x-3 md:col-span-2 border-t border-gray-700 pt-3">
                                     <button
                                         type="button"
                                         onClick={onClose}
