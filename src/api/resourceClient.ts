@@ -46,13 +46,13 @@ export const createResourceClient = <T extends BaseResourceType>(
         const basePath = customPath || apiResourceTag;
 
         const queryString = params.toString();
-        const url = queryString ? `${basePath}/?${queryString}` : `${basePath}/`;
+        const url = queryString ? `${basePath}?${queryString}` : `${basePath}`;
 
         return api.get<PaginatedResourceList<T>>(url);
     };
 
     const update = (id: string, data: Partial<T>) => api.patch<T>(`${apiResourceTag}/${id}`, data);
-    const create = (data: Omit<T, ServerGeneratedKeys>) => api.post<T>(`${apiResourceTag}/`, data);
+    const create = (data: Omit<T, ServerGeneratedKeys>) => api.post<T>(`${apiResourceTag}`, data);
     const del = (id: string) => api.del(`${apiResourceTag}/${id}`);
 
     return {

@@ -30,14 +30,8 @@ const ParticipantAuditTab: React.FC<ParticipantAuditTabProps> = ({ studyId }) =>
 
         try {
             setIsExporting(true);
-
-            const blob = await api.get<Blob>(`studies/${studyId}/export`, {
-                responseType: 'blob',
-            });
-
-            if (!blob) {
-                throw new Error('No data returned from export');
-            }
+            const blob = await api.get<Blob>(`studies/${studyId}/export`, { responseType: 'blob' });
+            if (!blob) throw new Error('No data returned from export');
 
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -45,10 +39,8 @@ const ParticipantAuditTab: React.FC<ParticipantAuditTabProps> = ({ studyId }) =>
             a.href = url;
             const study_name = study?.display_name;
             a.download = `study_${study_name}_export.csv`;
-
             document.body.appendChild(a);
             a.click();
-
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
         } catch (error) {

@@ -27,9 +27,7 @@ const StudyDetails: React.FC = () => {
     const handleDelete = useCallback(() => dispatch(clearSelectedStudy()), [dispatch]);
 
     const handleConditionClick = useCallback(
-        (condition: StudyCondition) => {
-            navigate(`conditions/${condition.id}`);
-        },
+        (condition: StudyCondition) => navigate(`conditions/${condition.id}`),
         [navigate]
     );
 

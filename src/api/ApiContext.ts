@@ -40,15 +40,9 @@ export const useApiClients = () => {
     if (!clients) {
         throw new Error('useApiClients must be used within an ApiProvider');
     }
-
     function getResourceClient<K extends keyof ApiClients>(key: K): ApiClients[K];
-    // function getResourceClient(key: 'studyClient'): ResourceClient<Study>;
-    // function getResourceClient(key: 'constructClient'): ResourceClient<SurveyConstruct>;
-    // function getResourceClient(key: 'scaleClient'): ResourceClient<Scale>;
-
     function getResourceClient(key: keyof ApiClients) {
         if (clients) return clients[key];
     }
-
     return { ...clients, getResourceClient };
 };
