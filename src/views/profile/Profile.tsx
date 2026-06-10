@@ -1,6 +1,6 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { useAppAuth } from '../../auth/AuthContext';
 import Highlight from '../../components/Highlight';
 import { useApi } from '../../hooks/useApi';
 import { usePermissions } from '../../hooks/usePermissions';
@@ -14,7 +14,7 @@ type DbUser = {
 };
 
 const Profile = () => {
-    const { user: auth0User } = useAuth0();
+    const { user: auth0User } = useAppAuth();
     const navigate = useNavigate();
     const { api } = useApi();
     const { hasPermission } = usePermissions();

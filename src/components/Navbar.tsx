@@ -1,4 +1,3 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { Disclosure, DisclosureButton, Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/16/solid';
 import clsx from 'clsx';
@@ -8,6 +7,7 @@ import { Fragment } from 'react/jsx-runtime';
 import { usePermissions } from '../hooks/usePermissions';
 import LoginButton from './buttons/auth/LoginButton';
 import LogoutButton from './buttons/auth/LogoutButton';
+import { useAppAuth } from '../auth/AuthContext';
 
 interface NavBarProps {
     headerLogo?: string;
@@ -15,7 +15,7 @@ interface NavBarProps {
 }
 
 const NavBar: React.FC<NavBarProps> = ({ headerLogo, headerTitle = 'RSSA Dashboard' }) => {
-    const { user, isAuthenticated } = useAuth0();
+    const { user, isAuthenticated } = useAppAuth();
 
     return (
         <Disclosure as="nav" className="bg-gray-800">
@@ -25,9 +25,9 @@ const NavBar: React.FC<NavBarProps> = ({ headerLogo, headerTitle = 'RSSA Dashboa
                         <div className="relative flex h-16 items-center justify-between">
                             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                                 <DisclosureButton
-                                    className={`relative inline-flex items-center 
+                                    className={`relative inline-flex items-center
 									justify-center rounded-md p-2 text-gray-400
-									hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 
+									hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2
 									focus:ring-inset focus:ring-white
 								`}
                                 >
@@ -86,7 +86,7 @@ const NavBar: React.FC<NavBarProps> = ({ headerLogo, headerTitle = 'RSSA Dashboa
                                     <Menu as="div" className="relative ml-3">
                                         <div>
                                             <MenuButton
-                                                className={`relative flex  
+                                                className={`relative flex
 													focus:outline-none focus:ring-2 focus:ring-white
 													cursor-pointer
 													focus:ring-offset-2 focus:ring-offset-gray-800`}
@@ -95,9 +95,9 @@ const NavBar: React.FC<NavBarProps> = ({ headerLogo, headerTitle = 'RSSA Dashboa
                                                 <span className="sr-only">Open user menu</span>
                                                 <img
                                                     className={`
-														size-13 
-														rounded 
-														border border-gray-300 dark:border-gray-200 
+														size-13
+														rounded
+														border border-gray-300 dark:border-gray-200
 														border-solid
 													`}
                                                     src={user.picture}
@@ -116,8 +116,8 @@ const NavBar: React.FC<NavBarProps> = ({ headerLogo, headerTitle = 'RSSA Dashboa
                                         >
                                             <MenuItems
                                                 className={`
-												absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md 
-												bg-white py-0 shadow-lg ring-1 ring-black ring-opacity-5 
+												absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md
+												bg-white py-0 shadow-lg ring-1 ring-black ring-opacity-5
 												focus:outline-none
 											`}
                                             >

@@ -1,5 +1,5 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { useCallback, useMemo, useState } from 'react';
+import { useAppAuth } from '../auth/AuthContext';
 
 interface ApiMethodOptions extends RequestInit {
     isProtected?: boolean;
@@ -31,7 +31,7 @@ const RSSA_API_DEV = import.meta.env.VITE_RSSA_API_DEV!;
 const API = process.env.NODE_ENV === 'production' ? RSSA_API : RSSA_API_DEV;
 
 export const useApi = (): ApiResponse => {
-    const { getAccessTokenSilently, isAuthenticated, isLoading: authLoading } = useAuth0();
+    const { getAccessTokenSilently, isAuthenticated, isLoading: authLoading } = useAppAuth();
     const [data, setData] = useState<unknown | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);

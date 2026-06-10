@@ -1,9 +1,9 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
+import { useAppAuth } from '../auth/AuthContext';
 
 const AuthErrorAlert: React.FC<{ error: string }> = ({ error }) => {
     const [authError, setAuthError] = useState<string>('');
-    const { loginWithPopup, getAccessTokenWithPopup } = useAuth0();
+    const { loginWithPopup, getAccessTokenWithPopup } = useAppAuth();
 
     useEffect(() => {
         if (error) {

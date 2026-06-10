@@ -1,0 +1,17 @@
+services:
+    dashboard:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - '3339:3339'
+        volumes:
+            - .:/app
+            - /app/node_modules
+            - ./localhost-key.pem:/app/localhost-key.pem
+            - ./localhost.pem:/app/localhost.pem
+        environment:
+            - VITE_USE_MOCK_AUTH=true
+            - VITE_RSSA_API_DEV=http://localhost:8000/rssa/api/admin/
+            - CHOKIDAR_USEPOLLING=true
+            - WATCHPACK_POLLING=true

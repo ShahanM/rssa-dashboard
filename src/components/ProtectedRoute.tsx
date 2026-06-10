@@ -1,9 +1,9 @@
 import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { useAppAuth } from '../auth/AuthContext';
 
 const ProtectedRoute: React.FC = () => {
-    const { isAuthenticated, isLoading } = useAuth0();
+    const { isAuthenticated, isLoading } = useAppAuth();
 
     if (isLoading) {
         return (
@@ -15,8 +15,6 @@ const ProtectedRoute: React.FC = () => {
         );
     }
 
-    // If the user is authenticated, render the child route via the Outlet.
-    // Otherwise, redirect them to the custom unauthorized page.
     return isAuthenticated ? <Outlet /> : <Navigate to="/unauthorized" />;
 };
 

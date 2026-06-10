@@ -1,10 +1,10 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery } from '@tanstack/react-query';
+import { useAppAuth } from '../auth/AuthContext';
 import { useApi } from '../hooks/useApi';
 import UserCard from './profile/UserCard';
 
 const DashboardHome: React.FC = () => {
-    const { user } = useAuth0();
+    const { user } = useAppAuth();
     const { api } = useApi();
 
     const { data: dbUser } = useQuery({

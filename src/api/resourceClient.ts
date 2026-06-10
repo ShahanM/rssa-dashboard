@@ -46,7 +46,7 @@ export const createResourceClient = <T extends BaseResourceType>(
         const basePath = customPath || apiResourceTag;
 
         const queryString = params.toString();
-        const url = queryString ? `${basePath}?${queryString}` : `${basePath}`;
+        const url = queryString ? `${basePath}/?${queryString}` : `${basePath}`;
 
         return api.get<PaginatedResourceList<T>>(url);
     };

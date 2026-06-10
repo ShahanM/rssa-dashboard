@@ -1,8 +1,8 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import clsx from 'clsx';
+import { useAppAuth } from '../../../auth/AuthContext';
 
 const LogoutButton: React.FC = () => {
-    const { logout } = useAuth0();
+    const { logout } = useAppAuth();
 
     const handleLogout = () => {
         logout({

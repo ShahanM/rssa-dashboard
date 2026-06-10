@@ -1,8 +1,8 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import clsx from 'clsx';
+import { useAppAuth } from '../../../auth/AuthContext';
 
 const LoginButton: React.FC = () => {
-    const { loginWithRedirect } = useAuth0();
+    const { loginWithRedirect } = useAppAuth();
 
     return (
         <button

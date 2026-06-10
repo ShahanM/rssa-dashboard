@@ -1,4 +1,4 @@
-import { Auth0Provider, type AppState } from '@auth0/auth0-react';
+import { type AppState } from '@auth0/auth0-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React from 'react';
@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { ApiProvider } from './api/ApiProvider.tsx';
 import App from './App.tsx';
 import { store } from './store/store.ts';
+import { AuthProvider } from './auth/AuthProvider';
 
 const AUTH0_DOMAIN = import.meta.env.VITE_AUTH0_DOMAIN;
 const AUTH0_CLIENT_ID = import.meta.env.VITE_AUTH0_CLIENT_ID;
@@ -35,14 +36,14 @@ const providerConfig = {
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <Auth0Provider {...providerConfig}>
+            <AuthProvider {...providerConfig}>
                 <Provider store={store}>
                     <ApiProvider>
                         <App />
                         <ReactQueryDevtools initialIsOpen={false} />
                     </ApiProvider>
                 </Provider>
-            </Auth0Provider>
+            </AuthProvider>
         </QueryClientProvider>
     </React.StrictMode>
 );

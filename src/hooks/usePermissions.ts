@@ -1,6 +1,6 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
+import { useAppAuth } from '../auth/AuthContext';
 
 const PERMISSIONS_CLAIM = 'permissions';
 
@@ -10,7 +10,7 @@ interface DecodedAccessToken {
 }
 
 export const usePermissions = () => {
-    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently } = useAppAuth();
 
     const {
         data: permissions = [],
