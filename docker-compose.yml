@@ -3,6 +3,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+        container_name: rssa_dashboard
         ports:
             - '3339:3339'
         volumes:
